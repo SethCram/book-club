@@ -1,0 +1,40 @@
+.topbar{
+    width: 100%;
+    height: 50px;
+    background-color: white;
+    /* make topbar stick to top of page */
+    position: sticky; 
+    top: 0;
+    /* to put other elements in horizontally */
+    display: flex;
+    align-items: center; /* vertical alignment */
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.topLeft, .topRight {
+    /* area of horizontal flex (could also used consts) */
+    flex: 30%;
+    display: flex;
+    /* vertically center */
+    align-items: center;
+    /* horizontally center */
+    justify-content: center;
+}
+
+.topImg{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.topIcon{
+    font-size: 20px;
+    margin-right: 10px;
+    color: #444;
+}
+
+.topCenter {
+    /* area of horizontal flex */
+    flex: 60%;
+}
