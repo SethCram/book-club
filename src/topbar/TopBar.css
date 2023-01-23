@@ -1,0 +1,8 @@
+.topbar{
+    width: 100%;
+    height: 50px;
+    background-color: aqua;
+    /* make topbar stick to top of page */
+    position: sticky; 
+    top: 0;
+}
