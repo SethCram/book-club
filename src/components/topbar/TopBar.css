@@ -1,7 +1,7 @@
 .topbar{
     width: 100%;
     height: 50px;
-    background-color: white;
+    background-color: var(--color-primary-variant);
     /* make topbar stick to top of page */
     position: sticky; 
     top: 0;
@@ -31,10 +31,34 @@
 .topIcon{
     font-size: 20px;
     margin-right: 10px;
-    color: #444;
+    color: var(--color-bg-variant);
+    /* changes cursor into hand to click w/ hover */
+    cursor: pointer;
 }
 
 .topCenter {
     /* area of horizontal flex */
     flex: 60%;
+}
+
+.topList{
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.topListItem{
+    margin-right: 20px;
+    font-size: var(--medium-font-size);
+    font-weight: 300;
+    cursor: pointer;
+}
+
+.topSearchIcon {
+    font-size: var(--medium-font-size);
+    color: var(--color-bg-variant);
+    cursor: pointer;
+    margin-left: 15px;
 }
