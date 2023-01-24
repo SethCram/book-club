@@ -9,6 +9,7 @@
     display: flex;
     align-items: center; /* vertical alignment */
     font-family: 'Josefin Sans', sans-serif;
+    z-index: 999; /* display topbar over the top of everything in website */
 }
 
 .topLeft, .topRight {

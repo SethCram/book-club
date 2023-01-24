@@ -1,0 +1,3 @@
+.singlepostpage {
+    display: flex; /* Need to display flex to use flex settings of comps */
+}
