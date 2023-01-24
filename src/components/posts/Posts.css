@@ -1,3 +1,7 @@
 .posts{
     flex: 90%;
+    display: flex;
+    /* use as much horizontal space as possible*/
+    flex-wrap: wrap;
+    margin: 20px; /* surrounding border */
 }
