@@ -1,0 +1,53 @@
+.login{
+    height: calc(100vh - 50px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(rgb(255,255,255,0.1), rgb(255,255,255,0.3)), 
+        url(https://oldschool.runescape.wiki/images/Login_background_%28default%29.jpg?da769);
+    background-size: cover; /* crops image + stops from repeating */
+}
+
+.loginTitle{
+    font-size: 50px;
+    cursor: default;
+}
+
+.loginForm{
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.loginForm > label{
+    margin: 10px 0;
+}
+
+.loginInput{
+    padding: 10px;
+    background-color: var(--color-white);
+    border: none;
+}
+
+.loginLoginButton{
+    margin-top: 20px;
+    cursor: pointer;
+    background-color: lightcoral;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.loginRegisterButton{
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background-color: teal;
+    border: none;
+    cursor: pointer;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
