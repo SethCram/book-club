@@ -17,7 +17,7 @@ export default function TopBar() {
                         <Link to="/" className="link">HOME</Link>
                     </li>
                     <li className="topListItem">
-                        <Link to="/settings" className="link">ABOUT</Link>
+                        <Link to="/about" className="link">ABOUT</Link>
                     </li>
                     <li className="topListItem">
                         <Link to="/contact" className="link">CONTACT</Link>
@@ -34,11 +34,13 @@ export default function TopBar() {
                 {
                     user ? (
                         /* need a link here to settings */
+                        <Link to="/settings" className="link">
                         <img
                             className="topImg"
                             src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png"
                             alt=""
-                        />
+                            />
+                        </Link>
                     ) : (
                         <ul className="topList">
                             <li className="topListItem">

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import "./Post.css"
 
 export default function post() {
@@ -9,11 +10,15 @@ export default function post() {
             />
         <div className="postInfo">
               <div className="postCategories">
-                  <span className="postCategory">Music</span>
-                  <span className="postCategory">Life</span>
+          <span className="postCategory">
+            <Link to="?categoryid=categoryid" className="link">Music</Link>
+          </span>
+          <span className="postCategory">
+            <Link to="/posts/:categoryid" className="link">Life</Link>
+          </span>
               </div>
               <span className="postTitle">
-                5 Tips for Staying Productive While Working from Home
+                <Link to="/singlepostpage/:postid" className="link">5 Tips for Staying Productive While Working from Home</Link>
               </span>
               <hr />
               <span className="postDate">1 hour ago</span>

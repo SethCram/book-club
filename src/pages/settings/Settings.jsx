@@ -22,11 +22,11 @@ export default function Settings() {
                       <input type="file" id="fileInput" style={{display:"none"}} />
                   </div>
                   <label>Username</label>
-                  <input type="text" placeholder="Bob" />
+                  <input type="text" placeholder="Enter your username..." />
                   <label>Email</label>
-                  <input type="text" placeholder="Bob@gmail.com" />
+                  <input type="text" placeholder="Enter your email..." />
                   <label>Password</label>
-                  <input type="password" />
+                  <input type="password" placeholder="Enter your password..." />
                   <button className="settingsSubmit">Update</button>
               </form>
           </div>

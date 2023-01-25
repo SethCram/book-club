@@ -8,6 +8,7 @@
     align-items: center;
     font-family: 'Lora', serif;
     color: var(--color-bg-variant);
+    cursor: default;
 }
 
 .headerTitleSmall{
