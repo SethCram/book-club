@@ -16,7 +16,7 @@ import {
 } from "react-router-dom";
 
 function App() {
-  const user = false; /* testing for user */
+  const user = true; /* testing for user */
   return (
     <Router>
       <TopBar />
