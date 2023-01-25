@@ -1,3 +1,5 @@
+/* Global default css */
+
 * {
     margin: 0;
   }
@@ -18,4 +20,9 @@
     --container-width-lg: 75%;
     --container-width-md: 86%;
     --container-width-sm: 90%;
+}
+
+.link{
+  text-decoration: none;
+  color: inherit;
 }
