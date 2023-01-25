@@ -16,6 +16,7 @@ import {
 } from "react-router-dom";
 
 function App() {
+  const user = false; /* testing for user */
   return (
     <Router>
       <TopBar />
@@ -23,10 +24,10 @@ function App() {
             renders the first one that matches the current URL. */}
       <Routes>
         <Route exact path='/' element={<Home />} />
-        <Route exact path="/login" element={<Login/>}/>
-        <Route exact path="/register" element={<Register/>}/>
-        <Route exact path="/settings" element={<Settings/>}/>
-        <Route exact path="/writepage" element={<WritePage/>}/>
+        <Route exact path="/login" element={user ? <Home/> : <Login/>}/>
+        <Route exact path="/register" element={user ? <Home/> : <Register/>}/>
+        <Route exact path="/settings" element={user ? <Settings/> : <Register/>}/>
+        <Route exact path="/writepage" element={user ? <WritePage/> : <Register/>}/>
         <Route exact path="/singlepostpage/:postId" element={<SinglePostPage/>}/>
         {/*<Route path="*" element={<NotFound/>}/>*/}
       </Routes>
