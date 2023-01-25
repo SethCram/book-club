@@ -15,6 +15,5 @@ export default function Register() {
           </form>
           <button className="registerLoginButton">Login</button>
       </div>
-      
   )
 }

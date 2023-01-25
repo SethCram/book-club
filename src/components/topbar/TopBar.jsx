@@ -24,7 +24,7 @@ export default function TopBar() {
                   src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png"
                   alt="" 
                 />
-              <i class="topSearchIcon fa-solid fa-magnifying-glass"></i>
+              <i className="topSearchIcon fa-solid fa-magnifying-glass"></i>
           </div>
       </div>
   )
