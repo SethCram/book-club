@@ -5,11 +5,11 @@ const mongoose = require("mongoose");
 const authRoute = require("./routes/Auth")
 
 dotenv.config();
+app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true,
 })
     .then(console.log("Connected to MongoDB"))
     .catch((error)=>console.log(error));
