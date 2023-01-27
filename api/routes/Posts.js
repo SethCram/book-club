@@ -1,6 +1,4 @@
 const router = require("express").Router(); //can handle post, put (update), get, delete
-const User = require("../models/User");
-const bcrypt = require("bcrypt");
 const Post = require("../models/Post");
 
 //Create Post
