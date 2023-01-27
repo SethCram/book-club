@@ -16,7 +16,7 @@ router.put("/:userId", async (request, response) => { //async bc dont know how l
         }
 
         try {
-            
+            //if can find user, update it
             const updatedUser = await User.findByIdAndUpdate(
                 request.params.userId,
                 { //could use either userId since they're the same
@@ -24,7 +24,14 @@ router.put("/:userId", async (request, response) => { //async bc dont know how l
                 },
                 { new: true } //want updated user
             ); 
-            response.status(200).json(updatedUser);
+            if (updatedUser)
+            {
+                response.status(200).json(updatedUser);
+            }
+            else
+            {
+                response.status(404).json("User not found");
+            }
         }
         catch (error) {
             response.status(500).json(error);
@@ -72,11 +79,12 @@ router.delete("/:userId", async (request, response) => { //async bc dont know ho
 
 //Get User
 router.get("/:userId", async (request, response) => {
+    //if can find user, return it (besides pass)
     try {
         const user = await User.findById(request.params.userId);
         if (user)
         {
-            const { password, ...others} = user._doc;
+            const { password, email, ...others} = user._doc; //dont show password or email
             response.status(200).json(others);
         }
         else
