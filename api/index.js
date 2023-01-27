@@ -6,6 +6,7 @@ const authRoute = require("./routes/Auth");
 const userRoute = require("./routes/Users");
 const postRoute = require("./routes/Posts");
 const categoryRoute = require("./routes/Categories");
+const multer = require("multer");
 
 dotenv.config();
 app.use(express.json());
@@ -16,6 +17,20 @@ mongoose.connect(process.env.MONGO_URL, {
 })
     .then(console.log("Connected to MongoDB"))
     .catch((error)=>console.log(error));
+
+const storage = multer.diskStorage({
+    destination: (request, file, callbackFunct) => {
+        callbackFunct(null, "images"); //save files to images folder
+    },
+    filename: (request, file, callbackFunct) => {
+        callbackFunct(null, request.body.name); //"hello.jpg"); //save file w/ save file name provided (needa use hardcoded name for postman to work)
+    }
+});
+
+const upload = multer({ storage: storage });
+app.post("/api/upload", upload.single("file"), (request, response) => {
+    response.status(200).json("File has been uploaded");
+});
 
 //connect routes
 app.use("/api/auth", authRoute);
