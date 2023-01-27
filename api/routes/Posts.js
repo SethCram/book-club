@@ -101,19 +101,35 @@ router.get("/:postId", async (request, response) => {
 });
 
 //Get All Posts
-router.get("/:postId", async (request, response) => {
-    try {
-        const post = await Post.findById(request.params.postId);
+router.get("/", async (request, response) => { 
+    
+    //query-able via username or category
+    const username = request.query.username; //query = anything after ?        
+    const categoryName = request.query.category;  
 
-        //if post exists
-        if (post)
-        {
-            response.status(200).json(post);
+    try {    
+        let posts;
+
+        //if username queried, find all posts by that user
+        if (username) {
+            posts = await Post.find({ username: username });
         }
+        //if category queried, find all posts marked as that category
+        else if(categoryName)
+        {
+            posts = await Post.find({
+                categories: {
+                $in:[categoryName]
+                }
+            });
+        }
+        //if no query or unspecified query case, find all posts
         else
         {
-            response.status(404).json("No post found");
+            posts = await Post.find();
         }
+
+        response.status(200).json(posts);
 
     } catch (error) {
         response.status(500).json(error);
