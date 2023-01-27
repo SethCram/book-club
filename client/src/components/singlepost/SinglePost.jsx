@@ -1,30 +1,46 @@
 import "./SinglePost.css"
+import { useLocation } from "react-router-dom"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
 export default function SinglePost() {
+    const location = useLocation(); //get the location followed to reach this comp
+    const postId = location.pathname.split("/")[2]; //get the post id
+    const [post, setPost] = useState([]);
+
+    //retrieve post according to postId
+    useEffect(() => {
+        const getPost = async () => {
+        const response = await axios.get("/posts/" + postId);
+        setPost(response.data);
+        };
+        getPost();
+
+    }, [postId]) //rerun when postId changes
+
   return (
       <div className="singlePost">
           <div className="singlePostWrapper">
-              <img
-                  className="singlePostImg"
-                  src="https://upload.wikimedia.org/wikipedia/commons/3/30/Walking_for_Health_in_Epsom-5Aug2009_%283%29.jpg"
-                  alt="" 
-              />
+              {post.photo && (
+                <img
+                    className="singlePostImg"
+                    src={post.photo}
+                    alt="" 
+                />
+              )}
               <h1 className="singlePageTitle">
-                  The Importance of Self-Care for Mental Health
+                  {post.title}
                   <div className="singlePostIcons">
                       <i className="singlePostIcon fa-regular fa-pen-to-square"></i>
                       <i className="singlePostIcon fa-regular fa-trash-can"></i>
                   </div>
               </h1>
               <div className="singlePostInfo">
-                  <span className="singlePostAuthor">Author: <b>Seth</b></span>
-                  <span className="singlePostDate">1 hour ago</span>
+                  <span className="singlePostAuthor">Author: <b>{post.username}</b></span>
+                  <span className="singlePostDate">Published: <b>{new Date(post.createdAt).toDateString()}</b></span>
               </div>
               <p className="singlePostDescription">
-                Self-care is a crucial aspect of maintaining good mental health. It involves taking the time to focus on one's own physical, emotional, and psychological well-being. It includes activities such as exercise, healthy eating, getting enough sleep, and managing stress. Regular self-care practices can help prevent burnout, reduce the risk of developing mental health disorders, and improve overall mood and well-being.
-                Self-care can also be beneficial for individuals who are already experiencing mental health issues. For example, engaging in regular exercise can help reduce symptoms of depression and anxiety. Eating a healthy diet can help improve overall mood and energy levels. Getting enough sleep can help improve cognitive functioning and reduce the risk of developing mental health disorders.
-                Self-care is a personal and individual practice that should be tailored to meet the needs of the individual. It's not one-size-fits-all, It's important to find self-care activities that are enjoyable and that can be incorporated into daily routine. It may take some experimentation to find what works best for you.
-                In summary, self-care is essential for maintaining good mental health. It can help prevent burnout, reduce symptoms of mental health disorders, and improve overall mood and well-being. Regular self-care practices should be a priority for everyone to maintain optimal mental health.
+                {post.description}
               </p>
           </div>
       </div>
