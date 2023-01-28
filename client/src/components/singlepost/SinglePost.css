@@ -5,6 +5,8 @@
 .singlePostWrapper{
     padding: 20px;
     padding-right: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .singlePostImg{
@@ -19,6 +21,20 @@
     margin: 10px;
     font-family: 'Lora', serif;
     font-size: 28px;
+}
+
+.singlePostTitleInput{ /* should be centered under image */
+    text-align: center;
+    margin: 10px;
+    font-family: 'Lora', serif;
+    font-size: 28px;
+    border: none;
+    border-bottom: 1px solid lightgrey;
+    color: grey;
+}
+
+.singlePostTitleInput:focus{
+    outline: none;
 }
 
 .singlePostIcons{
@@ -51,6 +67,16 @@
     color: #666;
     font-size: 18px;
     line-height: 25px;
+}
+.singlePostDescriptionInput{
+    color: #666;
+    font-size: 18px;
+    line-height: 25px;
+    border: none;
+}
+
+.singlePostDescriptionInput:focus{
+    outline: none;
 }
 
 .singlePostDescription::first-letter{
