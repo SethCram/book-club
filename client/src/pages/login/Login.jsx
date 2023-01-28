@@ -8,7 +8,7 @@ export default function Login() {
 
   const emailReference = useRef(); //could login using username too (email unique so can use)
   const passwordReference = useRef();
-  const { user, dispatch, isFetching } = useContext(Context);
+  const { dispatch, isFetching } = useContext(Context);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,8 +39,6 @@ export default function Login() {
     }
   }
 
-  console.log(user);
-
   return (
       <div className="login">
           <span className="loginTitle">Login</span>
@@ -62,6 +60,7 @@ export default function Login() {
           <button
             className="loginLoginButton"
             type="submit"
+            disabled={isFetching}
           >
             Login
           </button>
