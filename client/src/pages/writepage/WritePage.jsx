@@ -18,16 +18,12 @@ export default function WritePage() {
             description: description,
         };
 
-        console.log(newPost);
-
         if (picture) {
             const data = new FormData();
             const fileName = Date.now() + picture.name;
 
             data.append("name", fileName);
             data.append("file", picture);
-
-            console.log(fileName);
 
             newPost.photo = fileName;
 
@@ -38,9 +34,7 @@ export default function WritePage() {
             }
         }
         try {
-            console.log(newPost);
             const response = await axios.post("/posts", newPost); // errors out here
-            console.log(response);
             window.location.replace("/singlePostPage/" + response.data._id);
         } catch (error) {
 

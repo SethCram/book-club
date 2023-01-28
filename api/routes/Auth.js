@@ -37,7 +37,7 @@ router.post("/login", async (request, response) => {
         response.status(200).json(others);
     }
     catch (error) {
-        console.log(error);
+        //console.log(error);
         if(user && validated) response.status(500).json(error); //to avoid catching wrong username/password
     }
 });

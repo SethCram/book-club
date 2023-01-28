@@ -43,7 +43,7 @@ router.put("/:postId", async (request, response) => { //async bc dont know how l
         }
 
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         response.status(500).json(error);
     }
 }); 
