@@ -25,7 +25,6 @@ export default function Register() { //could use context API to register but not
     } 
     catch (error) {
       setError(true);
-      console.log(error);
     }
     
   };
@@ -60,7 +59,7 @@ export default function Register() { //could use context API to register but not
           <button className="registerLoginButton">
             <Link to="/login" className="link">Login</Link>  
       </button>
-      {error && <span style={{color:"red", marginTop: "10px"}}>Something went wrong</span>}
+      {error && <span style={{color:"red", marginTop: "10px", fontWeight: "700"}}>Something went wrong</span>}
       </div>
   )
 }
