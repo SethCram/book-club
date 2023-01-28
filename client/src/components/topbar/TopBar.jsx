@@ -4,7 +4,12 @@ import { Context } from "../../context/Context";
 import "./TopBar.css"
 
 export default function TopBar() {
-    const { user } = useContext(Context);
+    const { user, dispatch } = useContext(Context);
+
+    const handleLogout = () => {
+        dispatch({ type: "LOGOUT" });
+    };
+
     return (
       <div className='topbar'>
           <div className="topLeft">
@@ -28,7 +33,7 @@ export default function TopBar() {
                         <Link to="/writepage" className="link">WRITE</Link>
                     </li>
                     <li className="topListItem">
-                        {user && <Link to="/" className="link">LOGOUT</Link> }
+                        {user && <Link to="/" onClick={handleLogout} className="link">LOGOUT</Link> }
                     </li>
               </ul>
           </div>
@@ -39,7 +44,7 @@ export default function TopBar() {
                         <Link to="/settings" className="link">
                         <img
                             className="topImg"
-                            src="https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png"
+                            src={user.profilePicture}
                             alt=""
                             />
                         </Link>
