@@ -15,8 +15,10 @@ export default function WritePage() {
         const newPost = {
             username: user.username,
             title: title,
-            description,
+            description: description,
         };
+
+        console.log(newPost);
 
         if (picture) {
             const data = new FormData();
@@ -24,6 +26,8 @@ export default function WritePage() {
 
             data.append("name", fileName);
             data.append("file", picture);
+
+            console.log(fileName);
 
             newPost.photo = fileName;
 
@@ -34,10 +38,12 @@ export default function WritePage() {
             }
         }
         try {
+            console.log(newPost);
             const response = await axios.post("/posts", newPost); // errors out here
+            console.log(response);
             window.location.replace("/singlePostPage/" + response.data._id);
         } catch (error) {
-            console.log(error);
+
         }
     };
 
@@ -59,14 +65,14 @@ export default function WritePage() {
                       type='file'
                       id='fileInput'
                       style={{ display: "none" }}
-                      onChange={event=>setPicture(event.target.files[0])} //set picture to file uploaded
+                      onChange={(event)=>setPicture(event.target.files[0])} //set picture to file uploaded
                   />
                   <input
                       className='writeInput'
                       type='text'
                       placeholder='Title'
                       autoFocus={true}
-                      onChange={event=>setTitle(event.target.title)}
+                      onChange={(event)=>setTitle(event.target.value)} //needa use event's curr txt box val
                   />
               </div>
               <div className="writeFormGroup">
@@ -74,7 +80,7 @@ export default function WritePage() {
                     className="writeInput writeText" 
                     placeholder="Tell your story..." 
                     type="text"
-                    onChange={event=>setDescription(event.target.description)}
+                    onChange={(event)=>setDescription(event.target.value)}
                 >
                 </textarea>
               </div>
