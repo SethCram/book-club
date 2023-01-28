@@ -11,16 +11,20 @@ export default function SinglePost() {
     const [post, setPost] = useState([]);
     const { user } = useContext(Context);
     const [title, setTitle] = useState("");
-    const [description, setDecription] = useState("");
+    const [description, setDescription] = useState("");
     const [updateMode, setUpdateMode] = useState(false);
 
     //retrieve post according to postId
     useEffect(() => {
         const getPost = async () => {
-        const response = await axios.get("/posts/" + postId);
-        setPost(response.data);
+            const response = await axios.get("/posts/" + postId);
+                
+            setPost(response.data);
+            //need for updating:
+            setTitle(response.data.title);        
+            setDescription(response.data.description);  
         };
-        getPost();
+        getPost();      
 
     }, [postId]) //rerun when postId changes
 
@@ -36,6 +40,20 @@ export default function SinglePost() {
         
     };
 
+    const handleUpdate = async () => {
+        try {
+            await axios.put("/posts/" + postId, {
+                username: user.username,
+                title,
+                description
+            });
+            //window.location.reload(); //reload updated page
+            setUpdateMode(false); //dont needa update this way
+        } catch (error) {
+            
+        }
+    }
+
   return (
       <div className="singlePost">
           <div className="singlePostWrapper">
@@ -47,8 +65,15 @@ export default function SinglePost() {
                 />
               )}
               
-              {updateMode ? <input type="text" value={post.title} className="singlePostTitleInput" autoFocus="true" /> : 
-                <h1 className="singlePostTitle">
+              {updateMode ?
+                <input type="text"
+                    value={title}
+                    className="singlePostTitleInput"
+                    autoFocus="true" 
+                    onChange={(event)=>setTitle(event.target.value)}
+                /> : 
+                  <h1 className="singlePostTitle">
+                    {title}
                     {post.username === user?.username && // ? indicates only do comparison if user != null
                         <div className="singlePostIcons">
                             <i className="singlePostIcon fa-regular fa-pen-to-square" onClick={()=>setUpdateMode(true)}></i>
@@ -70,10 +95,24 @@ export default function SinglePost() {
                   </span>
                   <span className="singlePostDate">Published: <b>{new Date(post.createdAt).toDateString()}</b></span>
               </div>
-              {updateMode ? <input type="text" value={post.description} className="singlePostDescriptionInput"/> :
+              {updateMode ?
+                <input
+                    type="text"
+                    value={description}
+                    className="singlePostDescriptionInput" 
+                    onChange={(event)=>setDescription(event.target.value)}
+                /> :
                 <p className="singlePostDescription">
-                    {post.description}
+                    {description}
                 </p>
+              }
+              {updateMode && 
+                <button
+                  className="singlePostUpdateButton"
+                  onClick={handleUpdate}
+                >
+                    Update
+                </button>
               }
           </div>
       </div>

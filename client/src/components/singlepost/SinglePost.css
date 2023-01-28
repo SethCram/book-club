@@ -84,3 +84,15 @@
     font-size: 30px;
     font-weight: 600;
 }
+
+.singlePostUpdateButton{
+    border: none;
+    background-color: teal;
+    padding: 5px;
+    width: 100px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end; /* puts at end (RHS) of line */
+    margin-top: 20px;
+}
