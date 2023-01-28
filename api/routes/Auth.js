@@ -27,11 +27,11 @@ router.post("/login", async (request, response) => {
     let validated = true;
     
     try {
-        user = await User.findOne({ username: request.body.username });
-        !user && response.status(400).json("Wrong username or password"); //cant respond with 2 jsons, this trigger catch block
+        user = await User.findOne({ email: request.body.email });
+        !user && response.status(400).json("Wrong email or password"); //cant respond with 2 jsons, this triggers catch block
 
         validated = await bcrypt.compare(request.body.password, user.password); //compare passed in and pass + stored pass
-        !validated && response.status(400).json("Wrong username or password");
+        !validated && response.status(400).json("Wrong email or password");
 
         const { password, email, ...others } = user._doc; //rm password + email from response
         response.status(200).json(others);
