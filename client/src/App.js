@@ -7,16 +7,17 @@ import WritePage from "./pages/writepage/WritePage";
 import Register from "./pages/register/Register";
 
 // Need the following to setup dynamic routing:
-import React from "react";
+import React, { useContext } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Link
 } from "react-router-dom";
+import { Context } from "./context/Context";
 
 function App() {
-  const user = false; /* testing for user */
+  const { user } = useContext(Context);
   return (
     <Router>
       <TopBar />
