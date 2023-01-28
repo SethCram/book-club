@@ -29,7 +29,7 @@ export default function SinglePost() {
                     alt="" 
                 />
               )}
-              <h1 className="singlePageTitle">
+              <h1 className="singlePostTitle">
                   {post.title}
                   <div className="singlePostIcons">
                       <i className="singlePostIcon fa-regular fa-pen-to-square"></i>

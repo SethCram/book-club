@@ -14,7 +14,7 @@
     object-fit: cover;
 }
 
-.singlePostTitle{
+.singlePostTitle{ /* should be centered under image */
     text-align: center;
     margin: 10px;
     font-family: 'Lora', serif;
