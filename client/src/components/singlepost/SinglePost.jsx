@@ -2,6 +2,7 @@ import "./SinglePost.css"
 import { Link, useLocation } from "react-router-dom"
 import { useEffect, useState } from "react"
 import axios from "axios"
+import { postFolder } from "../post/Post";
 
 export default function SinglePost() {
     const location = useLocation(); //get the location followed to reach this comp
@@ -24,7 +25,7 @@ export default function SinglePost() {
               {post.photo && (
                 <img
                     className="singlePostImg"
-                    src={post.photo}
+                    src={postFolder + post.photo}
                     alt="" 
                 />
               )}

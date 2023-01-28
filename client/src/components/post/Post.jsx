@@ -1,13 +1,17 @@
 import { Link } from "react-router-dom"
 import "./Post.css"
 
+export const postFolder = "http://localhost:5000/images/";
+
 export default function post({post}) {
+  
   return (
       <div className="post">
         {post.photo && ( //shows post's image if provided
           <img
             className="postImg"
-            src={post.photo} alt="" 
+            src={postFolder + post.photo} 
+            alt="" 
           />
           ) }  
         
