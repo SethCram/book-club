@@ -4,3 +4,4 @@
 - Mongoose connects the API to MongoDB Atlas 
 - Multer allows for file posting to the API
 - Uses Axios to communicate between frontend React and Express API
+- basis: https://www.youtube.com/watch?v=tlTdbc5byAs&list=PLj-4DlPRT48lGpll2kC4wOsLj7SEV_lYu
