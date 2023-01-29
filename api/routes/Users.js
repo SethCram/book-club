@@ -84,7 +84,7 @@ router.get("/:userId", async (request, response) => {
         const user = await User.findById(request.params.userId);
         if (user)
         {
-            const { password, email, ...others} = user._doc; //dont show password or email
+            const { password, ...others} = user._doc; //dont show password 
             response.status(200).json(others);
         }
         else

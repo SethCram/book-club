@@ -3,6 +3,8 @@ import "./WritePage.css"
 import axios from "axios"
 import { Context } from "../../context/Context";
 
+//should be able to update picture, but no currently possible
+
 export default function WritePage() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");

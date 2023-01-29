@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../../context/Context";
+import { imagesFolder } from "../post/Post";
 import "./TopBar.css"
 
 export default function TopBar() {
@@ -44,7 +45,7 @@ export default function TopBar() {
                         <Link to="/settings" className="link">
                         <img
                             className="topImg"
-                            src={user.profilePicture}
+                            src={imagesFolder + user.profilePicture}
                             alt=""
                             />
                         </Link>

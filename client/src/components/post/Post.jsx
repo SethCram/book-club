@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import "./Post.css"
 
-export const postFolder = "http://localhost:5000/images/";
+export const imagesFolder = "http://localhost:5000/images/";
 
 export default function post({post}) {
   
@@ -10,7 +10,7 @@ export default function post({post}) {
         {post.photo && ( //shows post's image if provided
           <img
             className="postImg"
-            src={postFolder + post.photo} 
+            src={imagesFolder + post.photo} 
             alt="" 
           />
           ) }  

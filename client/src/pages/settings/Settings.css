@@ -79,3 +79,9 @@
     margin-top: 20px;
     cursor: pointer;
 }
+
+.settingsSubmitMessage{
+    color: green;
+    text-align: center;
+    margin-top: 20px;
+}
