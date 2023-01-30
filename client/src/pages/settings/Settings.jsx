@@ -72,12 +72,33 @@ export default function Settings() {
         
     };
 
+    const handleDeleteAccount = async () => {
+
+        dispatch(UserUpdateStart());
+
+        try {
+            await axios.delete("/users/" + user._id, {
+                data: { userId: user._id }
+            });
+            
+            //auto-navigates back to register page after deletion for some reason
+            //window.location.replace("/"); 
+
+            dispatch(UserUpdateSuccessful(null));
+        } catch (error) {
+            dispatch(UserUpdateFailure());
+        }
+        
+    };
+
   return (
       <div className="settings">
           <div className="settingsWrapper">
               <div className="settingsTitle">
                   <span className="settingsUpdateTitle">Update Account</span>
-                  <span className="settingsDeleteTitle">Delete Account</span>
+                  <span className="settingsDeleteTitle" onClick={handleDeleteAccount}>
+                    Delete Account
+                  </span>
               </div>
               <form className="settingsForm" onSubmit={handleUpdate}>
                   <label>Profile Picture</label>
