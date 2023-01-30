@@ -1,6 +1,6 @@
 import "./Settings.css"
 import SideBar from "../../components/sidebar/Sidebar"
-import { useContext, useState } from "react"
+import { useContext, useState, useEffect } from "react"
 import { Context } from "../../context/Context"
 import axios from "axios";
 import { imagesFolder } from "../../components/post/Post";
@@ -14,6 +14,18 @@ export default function Settings() {
     const [success, setSuccess] = useState(false);
 
     const { user, dispatch } = useContext(Context);
+
+    //retrieve user according to userId
+    useEffect(() => {
+        const getUser = async () => { //could do so thru through using user props instead of api call
+            const response = await axios.get("/users/" + user._id);
+                
+            setUsername(response.data.username);
+            setEmail(response.data.email);        
+        };
+        getUser();      
+
+    }, [user._id]) //rerun when postId changes
     
     const handleUpdate = async (event) => {
         event.preventDefault();
@@ -87,13 +99,15 @@ export default function Settings() {
                   <label>Username</label>
                   <input
                       type="text"
-                      placeholder={user.username}
+                      placeholder="Enter a new username..."
+                      value={username}
                       onChange={(event) => { setUsername(event.target.value) }}
                   />
                   <label>Email</label>
                   <input
                       type="text"
-                      placeholder={user.email}
+                      placeholder="Enter a new email..."
+                      value={email}
                       onChange={(event) => { setEmail(event.target.value) }} 
                   />
                   <label>Password</label>
