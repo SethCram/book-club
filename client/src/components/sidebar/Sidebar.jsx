@@ -27,7 +27,7 @@ export default function Sidebar() {
                 alt="" 
               />
               <p>
-                "{user?.bio}"
+                { user && `"${user.bio}"` } 
               </p>
           </div>
           <div className='sidebarItem'>
