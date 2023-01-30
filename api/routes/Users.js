@@ -9,7 +9,7 @@ router.put("/:userId", async (request, response) => { //async bc dont know how l
     //can be safer through using JWT = Jason Web Token
     if(request.body.userId === request.params.userId) //compare url id to body id
     {
-        //is password passed in, hash it
+        //if password passed in, hash it
         if (request.body.password) {
             const salt = await bcrypt.genSalt(10);
             request.body.password = await bcrypt.hash(request.body.password, salt); //change requested password to hashed version

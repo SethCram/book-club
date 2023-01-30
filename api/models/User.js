@@ -20,6 +20,10 @@ const UserSchema = new mongoose.Schema(
             type: String, //shouldnt be str??
             default: ""
         },
+        bio: {
+            type: String,
+            default: ""
+        }
     },
     { timestamps: true } //for updated and created at timestamps
 );

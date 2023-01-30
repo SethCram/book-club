@@ -1,10 +1,13 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Context } from '../../context/Context';
+import { imagesFolder } from '../post/Post';
 import './Sidebar.css'
 
 export default function Sidebar() {
   const [categories, setCategories] = useState([]);
+  const { user } = useContext(Context);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -12,20 +15,19 @@ export default function Sidebar() {
       setCategories(response.data);
     }
     getCategories();
-  })
+  }) //shouldn't be updated all the time?
 
   return (
     <div className='sidebar'>
           <div className='sidebarItem'>
               <span className='sidebarTitle'>ABOUT ME</span>
+              <span>{user?.username}</span>
               <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"
-                  alt="" 
-                  />
+                src={imagesFolder + user?.profilePicture} //"https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"
+                alt="" 
+              />
               <p>
-                  "Exploring the world one adventure at a time.
-                  Lover of good food, great company, and endless possibilities.
-                  Join me on my journey and let's make memories together. #travel #foodie #adventureseeker"
+                {user?.bio}
               </p>
           </div>
           <div className='sidebarItem'>
