@@ -1,6 +1,8 @@
 //All actions that affect user context
 
-export const LoginStart = (userCredentials) => ({ //only use start, success, failure when fetching data
+//should use these instead of Reducer 
+
+export const LoginStart = () => ({ //only use start, success, failure when fetching data
     type: "LOGIN_START"
 });
 export const LoginSuccessful = (user) => ({
@@ -15,7 +17,7 @@ export const Logout = () => ({
     type: "LOGOUT"
 });
 
-export const UserUpdateStart = (userCredentials) => ({ //only use start, success, failure when fetching data
+export const UserUpdateStart = () => ({ //only use start, success, failure when fetching data
     type: "USER_UPDATE_START"
 });
 export const UserUpdateSuccessful = (user) => ({

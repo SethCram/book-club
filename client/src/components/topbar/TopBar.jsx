@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { LoginFailure } from "../../context/Actions";
 import { Context } from "../../context/Context";
 import { imagesFolder } from "../post/Post";
 import "./TopBar.css"
@@ -8,7 +9,7 @@ export default function TopBar() {
     const { user, dispatch } = useContext(Context);
 
     const handleLogout = () => {
-        dispatch({ type: "LOGOUT" });
+        dispatch(LoginFailure());
     };
 
     return (

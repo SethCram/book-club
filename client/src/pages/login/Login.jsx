@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useContext, useRef } from "react";
 import { Link } from "react-router-dom"
+import { LoginFailure, LoginStart, LoginSuccessful } from "../../context/Actions";
 import { Context } from "../../context/Context";
 import "./Login.css"
 
@@ -14,9 +15,7 @@ export default function Login() {
     event.preventDefault();
     
     //start login according to context
-    dispatch({
-      type: "LOGIN_START"
-    });
+    dispatch(LoginStart());
 
     try {
       //validate login
@@ -26,16 +25,11 @@ export default function Login() {
       });
 
       //tell user context of login success
-      dispatch({
-        type: "LOGIN_SUCCESS",
-        payload: response.data
-      });
+      dispatch(LoginSuccessful(response.data));
 
     } catch (error) {
       //tell user context of login failure
-      dispatch({
-        type: "LOGIN_FAILURE"
-      });
+      dispatch(LoginFailure());
     }
   }
 

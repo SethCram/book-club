@@ -4,6 +4,7 @@ import { useContext, useState } from "react"
 import { Context } from "../../context/Context"
 import axios from "axios";
 import { imagesFolder } from "../../components/post/Post";
+import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "../../context/Actions";
 
 export default function Settings() {
     const [picture, setPicture] = useState(null);
@@ -17,7 +18,7 @@ export default function Settings() {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
-        dispatch({ type: "USER_UPDATE_START" });
+        dispatch(UserUpdateStart());
 
         setSuccess(false);
         
@@ -48,11 +49,13 @@ export default function Settings() {
         try {
 
             const response = await axios.put(`/users/${user._id}`, updatedUser);
+
             //window.location.reload(); //reload page
+
             setSuccess(true);
-            dispatch({ type: "USER_UPDATE_SUCCESS", payload: response.data });
+            dispatch(UserUpdateSuccessful(response.data));
         } catch (error) {
-            dispatch({ type: "USER_UPDATE_ERROR" });
+            dispatch(UserUpdateFailure());
         }
         
     };
