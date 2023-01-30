@@ -12,6 +12,7 @@ export default function Settings() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [success, setSuccess] = useState(false);
+    const [bio, setBio] = useState("");
 
     const { user, dispatch } = useContext(Context);
 
@@ -38,6 +39,7 @@ export default function Settings() {
             userId: user._id,
             username,
             email,
+            bio,
             password
         };
 
@@ -80,7 +82,7 @@ export default function Settings() {
             await axios.delete("/users/" + user._id, {
                 data: { userId: user._id }
             });
-            
+
             //auto-navigates back to register page after deletion for some reason
             //window.location.replace("/"); 
 
@@ -130,6 +132,13 @@ export default function Settings() {
                       placeholder="Enter a new email..."
                       value={email}
                       onChange={(event) => { setEmail(event.target.value) }} 
+                  />
+                  <label>Bio</label>
+                  <input
+                      type="text"
+                      placeholder="Enter a new bio..."
+                      value={bio}
+                      onChange={(event) => { setBio(event.target.value) }} 
                   />
                   <label>Password</label>
                   <input
