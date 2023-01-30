@@ -22,7 +22,8 @@ export default function Settings() {
             const response = await axios.get("/users/" + user._id);
                 
             setUsername(response.data.username);
-            setEmail(response.data.email);        
+            setEmail(response.data.email);  
+            setBio(response.data.bio);
         };
         getUser();      
 
