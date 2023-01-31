@@ -17,8 +17,8 @@ const UserSchema = new mongoose.Schema(
             required: true
         },
         profilePicture: {
-            type: String, //shouldnt be str??
-            default: ""
+            type: String, //path to image
+            default: "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"
         },
         bio: {
             type: String,
