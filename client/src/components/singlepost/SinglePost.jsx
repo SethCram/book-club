@@ -5,10 +5,7 @@ import axios from "axios"
 import { imagesFolder } from "../post/Post";
 import { Context } from "../../context/Context";
 
-export default function SinglePost() {
-    const location = useLocation(); //get the location followed to reach this comp
-    const postId = location.pathname.split("/")[2]; //get the post id
-    const [post, setPost] = useState([]);
+export default function SinglePost({post}) {
     const { user } = useContext(Context);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -16,21 +13,18 @@ export default function SinglePost() {
 
     //retrieve post according to postId
     useEffect(() => {
-        const getPost = async () => {
-            const response = await axios.get("/posts/" + postId);
-                
-            setPost(response.data);
+        const updatePostFields = () => {
             //need for updating:
-            setTitle(response.data.title);        
-            setDescription(response.data.description);  
+            setTitle(post?.title);        
+            setDescription(post?.description);  
         };
-        getPost();      
+        updatePostFields();      
 
-    }, [postId]) //rerun when postId changes
+    }, [post]) //rerun when postId changes
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`/posts/${postId}`, {
+            await axios.delete(`/posts/${post._id}`, {
                 data: { username: user.username }
             });
             window.location.replace("/"); // go to home page if post deleted
@@ -42,7 +36,7 @@ export default function SinglePost() {
 
     const handleUpdate = async () => {
         try {
-            await axios.put("/posts/" + postId, {
+            await axios.put("/posts/" + post._id, {
                 username: user.username,
                 title,
                 description
@@ -57,7 +51,7 @@ export default function SinglePost() {
   return (
       <div className="singlePost">
           <div className="singlePostWrapper">
-              {post.photo && (
+              {post?.photo && (
                 <img
                     className="singlePostImg"
                     src={imagesFolder + post.photo}
@@ -74,7 +68,7 @@ export default function SinglePost() {
                 /> : 
                   <h1 className="singlePostTitle">
                     {title}
-                    {post.username === user?.username && // ? indicates only do comparison if user != null
+                    {post?.username === user?.username && // ? indicates only do comparison if user != null
                         <div className="singlePostIcons">
                             <i className="singlePostIcon fa-regular fa-pen-to-square" onClick={()=>setUpdateMode(true)}></i>
                             <i className="singlePostIcon fa-regular fa-trash-can" onClick={handleDelete}></i>
@@ -87,13 +81,13 @@ export default function SinglePost() {
               <div className="singlePostInfo">
                   <span className="singlePostAuthor">
                       Author:
-                      <Link className="link" to={`/?username=${post.username}`}>
+                      <Link className="link" to={`/?username=${post?.username}`}>
                           <b>
-                            {post.username}
+                            {post?.username /* needa use ? for as long as post is passed in, since it's retrieved via async funct */ }
                           </b>
                       </Link>
                   </span>
-                  <span className="singlePostDate">Published: <b>{new Date(post.createdAt).toDateString()}</b></span>
+                  <span className="singlePostDate">Published: <b>{new Date(post?.createdAt).toDateString()}</b></span>
               </div>
               {updateMode ?
                 <input
