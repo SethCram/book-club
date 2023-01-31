@@ -2,6 +2,7 @@ import { useContext, useState } from "react"
 import "./WritePage.css"
 import axios from "axios"
 import { Context } from "../../context/Context";
+import {imagesFolder} from "../settings/Settings"
 
 //should be able to update picture, but no currently possible
 
@@ -27,7 +28,7 @@ export default function WritePage() {
             data.append("name", fileName);
             data.append("file", picture);
 
-            newPost.photo = fileName;
+            newPost.photo = imagesFolder + fileName;
 
             try {
                 await axios.post("/upload", data);

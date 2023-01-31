@@ -25,8 +25,12 @@ export default function SinglePostPage() {
     const getUser = async () => {
       if (post)
       {
-        const response = await axios.get("/users/username/" + post.username);
-        setUser(response.data);
+        try {
+          const response = await axios.get("/users/username/" + post.username);
+          setUser(response.data);
+        } catch (error) {
+          //couldnt find user
+        }
       }
     };
     getUser();

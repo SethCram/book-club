@@ -2,7 +2,6 @@ import "./SinglePost.css"
 import { Link, useLocation } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
 import axios from "axios"
-import { imagesFolder } from "../post/Post";
 import { Context } from "../../context/Context";
 
 export default function SinglePost({post}) {
@@ -54,7 +53,7 @@ export default function SinglePost({post}) {
               {post?.photo && (
                 <img
                     className="singlePostImg"
-                    src={imagesFolder + post.photo}
+                    src={post.photo}
                     alt="" 
                 />
               )}

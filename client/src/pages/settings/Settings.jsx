@@ -3,8 +3,9 @@ import SideBar from "../../components/sidebar/Sidebar"
 import { useContext, useState, useEffect } from "react"
 import { Context } from "../../context/Context"
 import axios from "axios";
-import { imagesFolder } from "../../components/post/Post";
 import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "../../context/Actions";
+
+export const imagesFolder = "http://localhost:5000/images/";
 
 export default function Settings() {
     const [picture, setPicture] = useState(null);
@@ -14,7 +15,7 @@ export default function Settings() {
     const [success, setSuccess] = useState(false);
     const [bio, setBio] = useState("");
 
-    const { user, dispatch } = useContext(Context);
+    const { user, dispatch } = useContext(Context); 
 
     //retrieve user according to userId
     useEffect(() => {
@@ -52,7 +53,7 @@ export default function Settings() {
             data.append("name", fileName);
             data.append("file", picture);
 
-            updatedUser.profilePicture = fileName;
+            updatedUser.profilePicture = imagesFolder + fileName;
 
             try {
                 await axios.post("/upload", data);
@@ -107,7 +108,7 @@ export default function Settings() {
                   <label>Profile Picture</label>
                   <div className="settingsProfilePicture">
                       <img
-                          src={picture ? URL.createObjectURL(picture) : imagesFolder + user.profilePicture}
+                          src={picture ? URL.createObjectURL(picture) : user.profilePicture}
                           alt="" 
                       />
                       <label htmlFor="fileInput">

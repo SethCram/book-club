@@ -39,7 +39,7 @@ export default function Home() {
     };
     getUser();      
 
-  }, [username]) //run everytime username changes
+  }, [username, userSearchType]) //run everytime username changes
 
   return (
     <div>
