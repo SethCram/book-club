@@ -3,8 +3,8 @@ import "./Post.css"
 
 export const imagesFolder = "http://localhost:5000/images/";
 
-export default function post({post}) {
-  
+export default function post({ post }) {
+
   return (
       <div className="post">
         {post.photo && ( //shows post's image if provided

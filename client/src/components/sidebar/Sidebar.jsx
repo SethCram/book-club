@@ -5,9 +5,9 @@ import { Context } from '../../context/Context';
 import { imagesFolder } from '../post/Post';
 import './Sidebar.css'
 
-export default function Sidebar() {
+export default function Sidebar({ user }) {
   const [categories, setCategories] = useState([]);
-  const { user } = useContext(Context);
+  //const { user } = useContext(Context);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -15,19 +15,19 @@ export default function Sidebar() {
       setCategories(response.data);
     }
     getCategories();
-  }) //shouldn't be updated all the time?
+  }, []) //shouldn't be updated all the time?
 
   return (
     <div className='sidebar'>
           <div className='sidebarItem'>
               <span className='sidebarTitle'>ABOUT ME</span>
-              <span>{user?.username}</span>
+              <span>{user?.username}</span> 
               <img
                 src={imagesFolder + user?.profilePicture} //"https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"
                 alt="" 
               />
               <p>
-                { user && `"${user.bio}"` } 
+                { user?.bio && `"${user.bio}"` /*load bio in quotes if there is one*/} 
               </p>
           </div>
           <div className='sidebarItem'>

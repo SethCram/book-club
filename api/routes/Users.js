@@ -77,14 +77,36 @@ router.delete("/:userId", async (request, response) => { //async bc dont know ho
     }
 }); 
 
-//Get User
-router.get("/:userId", async (request, response) => {
+//Get User via id 
+router.get("/id/:userId", async (request, response) => {
+    
     //if can find user, return it (besides pass)
     try {
         const user = await User.findById(request.params.userId);
         if (user)
         {
             const { password, ...others} = user._doc; //dont show password 
+            response.status(200).json(others);
+        }
+        else
+        {
+            response.status(404).json("No user found");
+        }
+    }
+    catch (error) {
+        //console.log(error);
+        response.status(500).json(error);
+    }
+});
+
+//Get User via username
+router.get("/username/:username", async (request, response) => {
+    //if can find user, return it (besides pass)
+    try {
+        const user = await User.findOne({username: request.params.username});
+        if (user)
+        {
+            const { password, email, ...others} = user._doc; //dont show password 
             response.status(200).json(others);
         }
         else

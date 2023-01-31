@@ -7,7 +7,7 @@ export default function SinglePostPage() {
   return (
       <div className='singlepostpage'>
           <SinglePost/>
-          <Sidebar/>
+          <Sidebar />
     </div>
   )
 }

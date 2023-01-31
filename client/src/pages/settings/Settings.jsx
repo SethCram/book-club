@@ -19,7 +19,7 @@ export default function Settings() {
     //retrieve user according to userId
     useEffect(() => {
         const getUser = async () => { //could do so thru through using user props instead of api call
-            const response = await axios.get("/users/" + user._id);
+            const response = await axios.get("/users/id/" + user._id);
                 
             setUsername(response.data.username);
             setEmail(response.data.email);  
@@ -151,7 +151,7 @@ export default function Settings() {
                   {success && <span className="settingsSubmitMessage">Your profile has been updated</span>}
               </form>
           </div>
-          <SideBar/>
+          <SideBar user={user} />
     </div>
   )
 }
