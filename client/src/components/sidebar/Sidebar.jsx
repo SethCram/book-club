@@ -6,6 +6,10 @@ import './Sidebar.css'
 
 export default function Sidebar({ user }) {
   const [categories, setCategories] = useState([]);
+  const anyUserLinksSet = user && (user.instagramLink ||
+    user.twitterLink ||
+    user.facebookLink ||
+    user.pinterestLink);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -39,9 +43,9 @@ export default function Sidebar({ user }) {
             ))}  
           </ul>
       </div>
-      {user && 
+      {anyUserLinksSet &&
         <div className='sidebarItem'>
-          <span className='sidebarTitle'>FOLLOW AT</span>
+          {<span className='sidebarTitle'>FOLLOW AT</span>}
           <div className='sidebarSocial'>
             <SocialMediaIcons user={user} barPosition="side"/>
           </div>
