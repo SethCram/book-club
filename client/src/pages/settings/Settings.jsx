@@ -14,6 +14,10 @@ export default function Settings() {
     const [password, setPassword] = useState("");
     const [success, setSuccess] = useState(false);
     const [bio, setBio] = useState("");
+    const [instagramLink, setInstagramLink] = useState("");
+    const [twitterLink, setTwitterLink] = useState("");
+    const [facebookLink, setFacebookLink] = useState("");
+    const [pinterestLink, setPinterestLink] = useState("");
 
     const { user, dispatch } = useContext(Context); 
 
@@ -25,6 +29,10 @@ export default function Settings() {
             setUsername(response.data.username);
             setEmail(response.data.email);  
             setBio(response.data.bio);
+            setInstagramLink(response.data.instagramLink);
+            setTwitterLink(response.data.twitterLink);
+            setFacebookLink(response.data.facebookLink);
+            setPinterestLink(response.data.pinterestLink);
         };
         getUser();      
 
@@ -42,7 +50,11 @@ export default function Settings() {
             username,
             email,
             bio,
-            password
+            password,
+            instagramLink,
+            twitterLink,
+            facebookLink,
+            pinterestLink
         };
 
         if (picture)
@@ -141,6 +153,34 @@ export default function Settings() {
                       placeholder="Enter a new bio..."
                       value={bio}
                       onChange={(event) => { setBio(event.target.value) }} 
+                  />
+                  <label>Instagram</label>
+                  <input
+                      type="text"
+                      placeholder="Enter a new instagram link..."
+                      value={instagramLink}
+                      onChange={(event) => { setInstagramLink(event.target.value) }} 
+                  />
+                  <label>Twitter</label>
+                  <input
+                      type="text"
+                      placeholder="Enter a new twitter link..."
+                      value={twitterLink}
+                      onChange={(event) => { setTwitterLink(event.target.value) }} 
+                  />
+                  <label>Facebook</label>
+                  <input
+                      type="text"
+                      placeholder="Enter a new facebook link..."
+                      value={facebookLink}
+                      onChange={(event) => { setFacebookLink(event.target.value) }} 
+                  />
+                  <label>Pinterest</label>
+                  <input
+                      type="text"
+                      placeholder="Enter a new pinterest link..."
+                      value={pinterestLink}
+                      onChange={(event) => { setPinterestLink(event.target.value) }} 
                   />
                   <label>Password</label>
                   <input
