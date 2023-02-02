@@ -6,24 +6,24 @@ export default function SocialMediaIcons({user, barPosition}) {
     return (      
     <div>
         {user.instagramLink &&
-            <Link className='link' to={user.instagramLink}>
+            <a className='link' href={user.instagramLink}>
                 <i className={"fa-brands fa-square-instagram " + (topbar ? "topIcon" : "sidebarIcon")}></i>
-            </Link>
+            </a>
         }
         {user.twitterLink &&
-            <Link className='link' to={user.twitterLink}>
+            <a className='link' href={user.twitterLink}>
                     <i className={"fa-brands fa-square-twitter " + (topbar ? "topIcon" : "sidebarIcon")}></i>
-            </Link>
+            </a>
         }
         {user.facebookLink &&
-            <Link className='link' to={user.facebookLink}>
+            <a className='link' href={user.facebookLink}>
                     <i className={"fa-brands fa-square-facebook " + (topbar ? "topIcon" : "sidebarIcon")}></i>
-            </Link>
+            </a>
         }
         {user.pinterestLink &&
-            <Link className='link' to={user.pinterestLink}>
+            <a className='link' href={user.pinterestLink}>
                     <i className={"fa-brands fa-square-pinterest " + (topbar ? "topIcon" : "sidebarIcon")}></i>
-            </Link>
+            </a>
         }
     </div>
   )
