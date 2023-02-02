@@ -23,7 +23,24 @@ const UserSchema = new mongoose.Schema(
         bio: {
             type: String,
             default: ""
-        }
+        },
+        
+        instagramLink: {
+            type: String,
+            default: ""
+        },
+        twitterLink: {
+            type: String,
+            default: ""
+        },
+        facebookLink: {
+            type: String,
+            default: ""
+        },
+        pinterestLink: {
+            type: String,
+            default: ""
+        },
     },
     { timestamps: true } //for updated and created at timestamps
 );

@@ -1,12 +1,10 @@
 import axios from 'axios';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Context } from '../../context/Context';
 import './Sidebar.css'
 
 export default function Sidebar({ user }) {
   const [categories, setCategories] = useState([]);
-  //const { user } = useContext(Context);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -14,7 +12,7 @@ export default function Sidebar({ user }) {
       setCategories(response.data);
     }
     getCategories();
-  }, []) //shouldn't be updated all the time?
+  }, []) //shouldn't be updated ever? (if empty, constantly updates)
 
   return (
     <div className='sidebar'> 
@@ -44,10 +42,18 @@ export default function Sidebar({ user }) {
         <div className='sidebarItem'>
           <span className='sidebarTitle'>FOLLOW AT</span>
           <div className='sidebarSocial'>
-            <i className="sidebarIcon fa-brands fa-square-instagram"></i>
-            <i className="sidebarIcon fa-brands fa-square-twitter"></i>
-            <i className="sidebarIcon fa-brands fa-square-facebook"></i>
-            <i className="sidebarIcon fa-brands fa-square-pinterest"></i>
+            <Link className='link' to={user.instagramLink}>
+              <i className="sidebarIcon fa-brands fa-square-instagram" />
+            </Link>
+            <Link className='link' to={user.twitterLink}>
+              <i className="sidebarIcon fa-brands fa-square-twitter"></i>
+            </Link>
+            <Link className='link' to={user.facebookLink}>
+              <i className="sidebarIcon fa-brands fa-square-facebook"></i>
+            </Link>
+            <Link className='link' to={user.pinterestLink}>
+              <i className="sidebarIcon fa-brands fa-square-pinterest"></i>
+            </Link>
           </div>
         </div>
       }

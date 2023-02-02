@@ -14,10 +14,18 @@ export default function TopBar() {
     return (
       <div className='topbar'>
           <div className="topLeft">
-              <i className="topIcon fa-brands fa-square-instagram"></i>
-              <i className="topIcon fa-brands fa-square-twitter"></i>
-              <i className="topIcon fa-brands fa-square-facebook"></i>
-              <i className="topIcon fa-brands fa-square-pinterest"></i>
+            <Link className='link' to={user.instagramLink}>
+                <i className="topIcon fa-brands fa-square-instagram"></i>
+            </Link>
+            <Link className='link' to={user.twitterLink}>
+                <i className="topIcon fa-brands fa-square-twitter"></i>
+            </Link>
+            <Link className='link' to={user.facebookLink}>
+                <i className="topIcon fa-brands fa-square-facebook"></i>
+            </Link>
+            <Link className='link' to={user.pinterestLink}>
+                <i className="topIcon fa-brands fa-square-pinterest"></i>
+            </Link>
           </div>
           <div className="topCenter">
               <ul className="topList">
