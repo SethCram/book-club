@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom"
 import "./SocialMediaIcons.css"
 
 export default function SocialMediaIcons({user, barPosition}) {

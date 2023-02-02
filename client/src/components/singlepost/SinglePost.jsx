@@ -1,23 +1,25 @@
 import "./SinglePost.css"
-import { Link, useLocation } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
 import axios from "axios"
 import { Context } from "../../context/Context";
+import { imagesFolder } from "../../pages/settings/Settings";
 
 export default function SinglePost({post}) {
     const { user } = useContext(Context);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [updateMode, setUpdateMode] = useState(false);
+    const [picture, setPicture] = useState(null);
 
     //retrieve post according to postId
     useEffect(() => {
-        const updatePostFields = () => {
+        const updateLocalPostFields = () => {
             //need for updating:
             setTitle(post?.title);        
             setDescription(post?.description);  
         };
-        updatePostFields();      
+        updateLocalPostFields();      
 
     }, [post]) //rerun when postId changes
 
@@ -33,36 +35,92 @@ export default function SinglePost({post}) {
         
     };
 
-    const handleUpdate = async () => {
+    const handleUpdate = async (event) => {
+        event.preventDefault();
+
+        const updatedPost = {
+            username: user.username,
+            title,
+            description
+        };
+
+        if (picture) {
+            const data = new FormData();
+            const fileName = Date.now() + picture.name;
+            
+            data.append("name", fileName);
+            data.append("file", picture);
+
+            updatedPost.photo = imagesFolder + fileName;
+
+            try {
+                await axios.post("/upload", data);
+            } catch (error) {
+                
+            }
+        }
+        
         try {
-            await axios.put("/posts/" + post._id, {
-                username: user.username,
-                title,
-                description
-            });
-            //window.location.reload(); //reload updated page
+            await axios.put("/posts/" + post._id, updatedPost);
+
             setUpdateMode(false); //dont needa update this way
         } catch (error) {
             
         }
     }
 
+    const handlePictureDelete = async () => {
+        
+        //rm local picture and post's picture path
+        setPicture(null);
+
+        //if photo is attached to post, clear it
+        if (post.photo)
+        {
+            post.photo = "";
+
+            try {
+                await axios.put("/posts/" + post._id, post);
+            } catch (error) {
+                
+            }
+        }
+
+        //delete picture in file storage
+    };
+
   return (
       <div className="singlePost">
           <div className="singlePostWrapper">
-              {post?.photo && (
+              {(post?.photo || picture)  && (
                 <img
                     className="singlePostImg"
-                    src={post.photo}
+                    src={picture ? URL.createObjectURL(picture) : post?.photo}
                     alt="" 
                 />
               )}
+
+              {updateMode &&  //why can we use 'writeIcon' class here?
+                <div className="singlePostPictureIcons">
+                    <label htmlFor='fileInput'>
+                        <i className="singlePostPictureIcon fa-solid fa-plus"/>
+                    </label>
+                    <input
+                        type='file'
+                        id='fileInput'
+                        style={{ display: "none" }}
+                        onChange={(event)=>setPicture(event.target.files[0])} //set picture to file uploaded
+                    />
+                    {(picture || post.photo) && <i className="singlePostPictureIcon fa-regular fa-trash-can" onClick={handlePictureDelete}/>}
+                </div>
+              }
+
               
               {updateMode ?
                 <input type="text"
                     value={title}
                     className="singlePostTitleInput"
-                    autoFocus="true" 
+                    autoFocus={true} 
                     onChange={(event)=>setTitle(event.target.value)}
                 /> : 
                   <h1 className="singlePostTitle">
