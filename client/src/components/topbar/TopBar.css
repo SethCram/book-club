@@ -29,13 +29,14 @@
     object-fit: cover;
 }
 
+/*
 .topIcon{
     font-size: 20px;
     margin-right: 10px;
     color: var(--color-bg-variant);
-    /* changes cursor into hand to click w/ hover */
     cursor: pointer;
 }
+*/
 
 .topCenter {
     /* area of horizontal flex */

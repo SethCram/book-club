@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import SocialMediaIcons from '../socialmediaicons/SocialMediaIcons';
 import './Sidebar.css'
 
 export default function Sidebar({ user }) {
@@ -42,18 +43,7 @@ export default function Sidebar({ user }) {
         <div className='sidebarItem'>
           <span className='sidebarTitle'>FOLLOW AT</span>
           <div className='sidebarSocial'>
-            <Link className='link' to={user.instagramLink}>
-              <i className="sidebarIcon fa-brands fa-square-instagram" />
-            </Link>
-            <Link className='link' to={user.twitterLink}>
-              <i className="sidebarIcon fa-brands fa-square-twitter"></i>
-            </Link>
-            <Link className='link' to={user.facebookLink}>
-              <i className="sidebarIcon fa-brands fa-square-facebook"></i>
-            </Link>
-            <Link className='link' to={user.pinterestLink}>
-              <i className="sidebarIcon fa-brands fa-square-pinterest"></i>
-            </Link>
+            <SocialMediaIcons user={user} barPosition="side"/>
           </div>
         </div>
       }

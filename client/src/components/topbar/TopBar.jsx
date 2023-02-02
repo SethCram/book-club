@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { LoginFailure } from "../../context/Actions";
 import { Context } from "../../context/Context";
+import SocialMediaIcons from "../socialmediaicons/SocialMediaIcons";
 import "./TopBar.css"
 
 export default function TopBar() {
@@ -13,19 +14,8 @@ export default function TopBar() {
 
     return (
       <div className='topbar'>
-          <div className="topLeft">
-            <Link className='link' to={user.instagramLink}>
-                <i className="topIcon fa-brands fa-square-instagram"></i>
-            </Link>
-            <Link className='link' to={user.twitterLink}>
-                <i className="topIcon fa-brands fa-square-twitter"></i>
-            </Link>
-            <Link className='link' to={user.facebookLink}>
-                <i className="topIcon fa-brands fa-square-facebook"></i>
-            </Link>
-            <Link className='link' to={user.pinterestLink}>
-                <i className="topIcon fa-brands fa-square-pinterest"></i>
-            </Link>
+        <div className="topLeft">
+            <SocialMediaIcons user={user} barPosition="top"/>
           </div>
           <div className="topCenter">
               <ul className="topList">
