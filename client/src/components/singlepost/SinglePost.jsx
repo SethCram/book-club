@@ -11,6 +11,7 @@ export default function SinglePost({post}) {
     const [description, setDescription] = useState("");
     const [updateMode, setUpdateMode] = useState(false);
     const [picture, setPicture] = useState(null);
+    const [deleteOldPicture, setDeleteOldPicture] = useState(false);
 
     //retrieve post according to postId
     useEffect(() => {
@@ -44,6 +45,28 @@ export default function SinglePost({post}) {
             description
         };
 
+        const actuallyDeleteOldPicture = deleteOldPicture && post.photo !== "";
+
+        //console.log(post.photo);
+
+        //if want to delete old pic and there is one, delete it
+        if (actuallyDeleteOldPicture)
+        {
+            try {
+                //rm from post
+                updatedPost.photo = "";
+                
+                //delete from FS
+                await axios.delete("/photo/delete/", {
+                    data: { filePath: post.photo }
+                });
+
+            } catch (error) {
+                console.log("Failed to delete " + post.photo);
+            }
+        }
+
+        //if there's a new picture
         if (picture) {
             const data = new FormData();
             const fileName = Date.now() + picture.name;
@@ -67,32 +90,20 @@ export default function SinglePost({post}) {
         } catch (error) {
             
         }
-    }
 
-    const handlePictureDelete = async () => {
-        
-        //rm local picture and post's picture path
-        setPicture(null);
+        //reset deletion desires
+        setDeleteOldPicture(false);
 
-        //if photo is attached to post, clear it
-        if (post.photo)
-        {
-            post.photo = "";
-
-            try {
-                await axios.put("/posts/" + post._id, post);
-            } catch (error) {
-                
-            }
+        //if old pic deletion attempted, reload window
+        if (actuallyDeleteOldPicture) {
+            window.location.reload(); //reload page to allow old image to dissapear
         }
-
-        //delete picture in file storage
-    };
+    }
 
   return (
       <div className="singlePost">
           <div className="singlePostWrapper">
-              {(post?.photo || picture)  && (
+              {((post?.photo && !deleteOldPicture) || picture)  && (
                 <img
                     className="singlePostImg"
                     src={picture ? URL.createObjectURL(picture) : post?.photo}
@@ -105,13 +116,13 @@ export default function SinglePost({post}) {
                     <label htmlFor='fileInput'>
                         <i className="singlePostPictureIcon fa-solid fa-plus"/>
                     </label>
-                    <input
-                        type='file'
-                        id='fileInput'
-                        style={{ display: "none" }}
-                        onChange={(event)=>setPicture(event.target.files[0])} //set picture to file uploaded
+                      <input
+                          type='file'
+                          id='fileInput'
+                          style={{ display: "none" }}
+                          onChange={(event) => { setPicture(event.target.files[0]); setDeleteOldPicture(true); }} //set picture to file uploaded
                     />
-                    {(picture || post.photo) && <i className="singlePostPictureIcon fa-regular fa-trash-can" onClick={handlePictureDelete}/>}
+                      {(picture || post.photo !== "") && <i className="singlePostPictureIcon fa-regular fa-trash-can" onClick={() => { setPicture(null); setDeleteOldPicture(true); }}/>}
                 </div>
               }
 

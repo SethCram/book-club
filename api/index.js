@@ -8,6 +8,9 @@ const postRoute = require("./routes/Posts");
 const categoryRoute = require("./routes/Categories");
 const multer = require("multer");
 const path = require("path");
+const fs = require('fs')
+const { promisify } = require('util')
+const unlinkAsync = promisify(fs.unlink)
 
 dotenv.config();
 app.use(express.json());
@@ -32,6 +35,20 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 app.post("/api/upload", upload.single("file"), (request, response) => {
     response.status(200).json("File has been uploaded");
+});
+
+app.delete("/api/photo/delete", async (request, response) => {
+    //last arg should be filename
+    const fileName = request.body.filePath.split("/").pop();
+    try {
+        //delete file from local FS
+        await unlinkAsync(path.join(__dirname, "/images/" + fileName));
+
+        response.status(200).json("File has been deleted");
+    } catch (error) {
+        console.log(error);
+        response.status(500).json(error);
+    }
 });
 
 //connect routes
