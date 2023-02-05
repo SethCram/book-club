@@ -46,7 +46,7 @@ app.delete("/api/photo/delete", async (request, response) => {
 
         response.status(200).json("File has been deleted");
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         response.status(500).json(error);
     }
 });

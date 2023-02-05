@@ -1,8 +1,9 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import "./WritePage.css"
 import axios from "axios"
 import { Context } from "../../context/Context";
-import {imagesFolder} from "../settings/Settings"
+import { imagesFolder } from "../settings/Settings"
+import Multiselect from 'multiselect-react-dropdown'
 
 //should be able to update picture, but no currently possible
 
@@ -10,7 +11,9 @@ export default function WritePage() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [picture, setPicture] = useState(null);
+    const [categories, setCategories] = useState([]);
     const { user } = useContext(Context);
+    const multiSelectRef = useRef();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -36,14 +39,31 @@ export default function WritePage() {
                 
             }
         }
+      
+        if (multiSelectRef) {
+          newPost.categories = multiSelectRef.current.getSelectedItems();
+        }
+      
         try {
             const response = await axios.post("/posts", newPost); // errors out here
             window.location.replace("/singlePostPage/" + response.data._id);
         } catch (error) {
-
+          console.log(error);
         }
     };
-
+    
+    useEffect(() => {
+      const getCategories = async () => {
+        try {
+          const storedCategories = await axios.get("/categories/");
+          setCategories(storedCategories.data);
+        } catch (error) {
+        
+        }
+      }
+      getCategories();
+    }, [])
+    
     return (
       <div className='writePage'>
           {picture && 
@@ -55,6 +75,20 @@ export default function WritePage() {
           }
           <form className='writeForm' onSubmit={handleSubmit}>
               <div className='writeFormGroup'>
+                <Multiselect
+                  isObject={true}
+                  onSearch={function noRefCheck(){}}
+                  onSelect={function noRefCheck(){}} // Function will trigger on select event
+                  onRemove={function noRefCheck(){}} // Function will trigger on remove event
+                  displayValue="name" // Property name to display in the dropdown options
+                  options={categories}
+                  placeholder="Select categories..."
+                  selectionLimit={3}
+                  showArrow
+                  showCheckbox
+                  avoidHighlightFirstOption
+                  ref={multiSelectRef}
+                />
                   <label htmlFor='fileInput'>
                     <i className="writeIcon fa-solid fa-plus"></i>
                   </label>
