@@ -93,6 +93,9 @@ export default function WritePage() {
                       searchBox: {
                         border: 'none',
                       },
+                      chips: {
+                        'background': 'var(--color-gold)',
+                      }
                     }}
               />
             </div>

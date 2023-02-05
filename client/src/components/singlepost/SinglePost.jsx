@@ -1,9 +1,10 @@
 import "./SinglePost.css"
 import { Link } from "react-router-dom"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import axios from "axios"
 import { Context } from "../../context/Context";
 import { imagesFolder } from "../../pages/settings/Settings";
+import Multiselect from "multiselect-react-dropdown";
 
 export default function SinglePost({post}) {
     const { user } = useContext(Context);
@@ -12,6 +13,8 @@ export default function SinglePost({post}) {
     const [updateMode, setUpdateMode] = useState(false);
     const [picture, setPicture] = useState(null);
     const [deleteOldPicture, setDeleteOldPicture] = useState(false);
+    const [allCategories, setAllCategories] = useState([]);
+    const multiSelectRef = useRef();
 
     //retrieve post according to postId
     useEffect(() => {
@@ -100,6 +103,18 @@ export default function SinglePost({post}) {
         }
     }
 
+    useEffect(() => {
+        const getCategories = async () => {
+          try {
+            const storedCategories = await axios.get("/categories/");
+            setAllCategories(storedCategories.data);
+          } catch (error) {
+          
+          }
+        }
+        getCategories();
+      }, [])
+
   return (
       <div className="singlePost">
           <div className="singlePostWrapper">
@@ -125,8 +140,39 @@ export default function SinglePost({post}) {
                       {(picture || post.photo !== "") && <i className="singlePostPictureIcon fa-regular fa-trash-can" onClick={() => { setPicture(null); setDeleteOldPicture(true); }}/>}
                 </div>
               }
-
-              
+              <div className="singlePostCategories">
+                {updateMode ?
+                    <Multiselect
+                        className="singlePostCategory"
+                        isObject={true}
+                        onSearch={function noRefCheck(){}}
+                        onSelect={function noRefCheck(){}} // Function will trigger on select event
+                        onRemove={function noRefCheck(){}} // Function will trigger on remove event
+                        displayValue="name" // Property name to display in the dropdown options
+                        options={allCategories}
+                        selectedValues={post?.categories}
+                        placeholder="Select categories..."
+                        selectionLimit={3}
+                        showArrow
+                        showCheckbox
+                        avoidHighlightFirstOption
+                        ref={multiSelectRef}
+                        style={{
+                        searchBox: {
+                            border: 'none',
+                        },
+                        chips: {
+                            'background': '#be9656',
+                        }
+                        }}
+                    /> :
+                    post?.categories.map((category, i) => (
+                        <span className="singlePostCategory" key={i}>
+                            <Link to={`/?category=${category.name}`} className="link">{category.name}</Link>
+                        </span>
+                    ))
+                }
+              </div>
               {updateMode ?
                 <input type="text"
                     value={title}

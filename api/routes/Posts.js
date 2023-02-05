@@ -105,6 +105,8 @@ router.get("/", async (request, response) => {
     const username = request.query.username; //query = anything after ?        
     const categoryName = request.query.category;  
 
+    console.log(categoryName);
+
     try {    
         let posts;
 
@@ -117,9 +119,10 @@ router.get("/", async (request, response) => {
         {
             posts = await Post.find({
                 categories: {
-                $in:[categoryName]
+                    $in:[categoryName]
                 }
             });
+            console.log(posts); //fails for some reason
         }
         //if no query or unspecified query case, find all posts
         else

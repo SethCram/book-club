@@ -115,3 +115,18 @@
     display: flex;
     justify-content: space-between;
 }
+
+.singlePostCategories{
+    display: flex;
+    align-self: center;
+}
+
+.singlePostCategory{
+    font-family: 'Varela Round', sans-serif;
+    font-size: 11px;
+    color: #be9656;
+    line-height: 20px;
+    margin-top: 15px;
+    margin-right: 10px;
+    cursor: pointer;
+}
