@@ -73,22 +73,29 @@ export default function WritePage() {
               alt=""
             />
           }
-          <form className='writeForm' onSubmit={handleSubmit}>
-              <div className='writeFormGroup'>
-                <Multiselect
-                  isObject={true}
-                  onSearch={function noRefCheck(){}}
-                  onSelect={function noRefCheck(){}} // Function will trigger on select event
-                  onRemove={function noRefCheck(){}} // Function will trigger on remove event
-                  displayValue="name" // Property name to display in the dropdown options
-                  options={categories}
-                  placeholder="Select categories..."
-                  selectionLimit={3}
-                  showArrow
-                  showCheckbox
-                  avoidHighlightFirstOption
-                  ref={multiSelectRef}
-                />
+        <form className='writeForm' onSubmit={handleSubmit}>
+          <div className='writeFormGroup'>
+          <div className="writeMultiSelectContainer">
+            <Multiselect
+                    isObject={true}
+                    onSearch={function noRefCheck(){}}
+                    onSelect={function noRefCheck(){}} // Function will trigger on select event
+                    onRemove={function noRefCheck(){}} // Function will trigger on remove event
+                    displayValue="name" // Property name to display in the dropdown options
+                    options={categories}
+                    placeholder="Select categories..."
+                    selectionLimit={3}
+                    showArrow
+                    showCheckbox
+                    avoidHighlightFirstOption
+                    ref={multiSelectRef}
+                    style={{
+                      searchBox: {
+                        border: 'none',
+                      },
+                    }}
+              />
+            </div>
                   <label htmlFor='fileInput'>
                     <i className="writeIcon fa-solid fa-plus"></i>
                   </label>
