@@ -78,9 +78,6 @@ export default function WritePage() {
           <div className="writeMultiSelectContainer">
             <Multiselect
                     isObject={true}
-                    onSearch={function noRefCheck(){}}
-                    onSelect={function noRefCheck(){}} // Function will trigger on select event
-                    onRemove={function noRefCheck(){}} // Function will trigger on remove event
                     displayValue="name" // Property name to display in the dropdown options
                     options={categories}
                     placeholder="Select categories..."

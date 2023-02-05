@@ -13,6 +13,7 @@ export default function SinglePost({post}) {
     const [updateMode, setUpdateMode] = useState(false);
     const [picture, setPicture] = useState(null);
     const [deleteOldPicture, setDeleteOldPicture] = useState(false);
+    const [categories, setCategories] = useState([]);
     const [allCategories, setAllCategories] = useState([]);
     const multiSelectRef = useRef();
 
@@ -22,6 +23,7 @@ export default function SinglePost({post}) {
             //need for updating:
             setTitle(post?.title);        
             setDescription(post?.description);  
+            setCategories(post?.categories);
         };
         updateLocalPostFields();      
 
@@ -42,10 +44,13 @@ export default function SinglePost({post}) {
     const handleUpdate = async (event) => {
         event.preventDefault();
 
+        const uploadedCategories = multiSelectRef?.current.getSelectedItems();
+
         const updatedPost = {
             username: user.username,
             title,
-            description
+            description,
+            categories: uploadedCategories
         };
 
         const actuallyDeleteOldPicture = deleteOldPicture && post.photo !== "";
@@ -101,6 +106,9 @@ export default function SinglePost({post}) {
         if (actuallyDeleteOldPicture) {
             window.location.reload(); //reload page to allow old image to dissapear
         }
+
+        //update categories
+        setCategories(uploadedCategories);
     }
 
     useEffect(() => {
@@ -113,7 +121,7 @@ export default function SinglePost({post}) {
           }
         }
         getCategories();
-      }, [])
+    }, [])
 
   return (
       <div className="singlePost">
@@ -145,12 +153,9 @@ export default function SinglePost({post}) {
                     <Multiselect
                         className="singlePostCategory"
                         isObject={true}
-                        onSearch={function noRefCheck(){}}
-                        onSelect={function noRefCheck(){}} // Function will trigger on select event
-                        onRemove={function noRefCheck(){}} // Function will trigger on remove event
                         displayValue="name" // Property name to display in the dropdown options
                         options={allCategories}
-                        selectedValues={post?.categories}
+                        selectedValues={categories}
                         placeholder="Select categories..."
                         selectionLimit={3}
                         showArrow
@@ -166,7 +171,7 @@ export default function SinglePost({post}) {
                         }
                         }}
                     /> :
-                    post?.categories.map((category, i) => (
+                    categories?.map((category, i) => (
                         <span className="singlePostCategory" key={i}>
                             <Link to={`/?category=${category.name}`} className="link">{category.name}</Link>
                         </span>
