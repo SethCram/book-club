@@ -1,0 +1,36 @@
+.about{
+    background: linear-gradient(rgb(255,255,255,0.1), rgb(255,255,255,0.3)), 
+        url(../../assets/about-bg.jpg);
+    background-size: cover;
+}
+
+.aboutWrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 50px;
+    margin-left: 50px;
+    height: calc(100vh - 50px);
+}
+
+.aboutTitle {
+    font-size: 50px;
+    cursor: default;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.aboutDescription{
+    font-size: 20px;
+    margin-bottom: 50px;
+}
+
+.aboutContribution{
+    margin-bottom: 50px;
+    font-size: 25px;
+}
+
+.aboutContributionPhrase{
+    margin-right: 7px;
+}

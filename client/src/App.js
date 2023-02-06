@@ -15,6 +15,7 @@ import {
   Link
 } from "react-router-dom";
 import { Context } from "./context/Context";
+import About from "./pages/about/About";
 
 function App() {
   const { user } = useContext(Context);
@@ -25,6 +26,7 @@ function App() {
             renders the first one that matches the current URL. */}
       <Routes>
         <Route exact path='/' element={<Home />} />
+        <Route exact path='/about' element={<About />} />
         <Route exact path="/login" element={user ? <Home/> : <Login/>}/>
         <Route exact path="/register" element={user ? <Home/> : <Register/>}/>
         <Route exact path="/settings" element={user ? <Settings/> : <Register/>}/>
