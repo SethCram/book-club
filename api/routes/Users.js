@@ -24,8 +24,6 @@ router.put("/:userId", async (request, response) => { //async bc dont know how l
                 //if changing username
                 if (user.username != request.body?.username) {
 
-                    console.log("username changing");
-
                     //update posts and their usernames
                     try {
                         await Post.updateMany(

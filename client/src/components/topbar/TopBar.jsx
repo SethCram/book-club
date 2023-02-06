@@ -22,18 +22,22 @@ export default function TopBar() {
                     <li className="topListItem">
                         <Link to="/" className="link">HOME</Link>
                     </li>
-                    <li className="topListItem">
-                        <Link to="/about" className="link">ABOUT</Link>
-                    </li>
-                    <li className="topListItem">
-                        <Link to="/contact" className="link">CONTACT</Link>
-                    </li>
+                    {user &&
+                        <li className="topListItem">
+                            <Link to={`/?username=${user.username}`} className="link">MY POSTS</Link>
+                        </li>
+                    }
                     <li className="topListItem">
                         <Link to="/writepage" className="link">WRITE</Link>
                     </li>
                     <li className="topListItem">
-                        {user && <Link to="/" onClick={handleLogout} className="link">LOGOUT</Link> }
+                        <Link to="/about" className="link">ABOUT</Link>
                     </li>
+                    {user &&
+                        <li className="topListItem">
+                            <Link to="/" onClick={handleLogout} className="link">LOGOUT</Link> 
+                        </li>
+                    }
               </ul>
           </div>
             <div className="topRight">

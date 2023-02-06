@@ -105,8 +105,6 @@ router.get("/", async (request, response) => {
     const username = request.query.username; //query = anything after ?        
     const categoryName = request.query.category;  
 
-    console.log(categoryName);
-
     try {    
         let posts;
 
