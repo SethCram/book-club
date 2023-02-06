@@ -16,22 +16,43 @@ router.put("/:userId", async (request, response) => { //async bc dont know how l
         }
 
         try {
-            //if can find user, update it
-            const updatedUser = await User.findByIdAndUpdate(
-                request.params.userId,
-                { //could use either userId since they're the same
-                    $set: request.body //sets entire req body
-                },
-                { new: true } //want updated user
-            ); 
-            if (updatedUser)
+
+            const user = await User.findById(request.params.userId);
+
+            if (user )//&& !_.isEqual(user, request.body))
             {
+                //if changing username
+                if (user.username != request.body?.username) {
+
+                    console.log("username changing");
+
+                    //update posts and their usernames
+                    try {
+                        await Post.updateMany(
+                            { username: user.username },
+                            { username: request.body.username}
+                        );
+                    } catch (error) {
+                        response.status(500).json("Failed to update their posts usernames, so user not updated.");
+                    }
+                }
+
+                //if can find user, update it
+                const updatedUser = await User.findByIdAndUpdate(
+                    request.params.userId,
+                    { //could use either userId since they're the same
+                        $set: request.body //sets entire req body
+                    },
+                    { new: true } //want updated user
+                ); 
+
                 response.status(200).json(updatedUser);
             }
             else
             {
                 response.status(404).json("User not found");
             }
+
         }
         catch (error) {
             response.status(500).json(error);
