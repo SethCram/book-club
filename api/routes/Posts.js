@@ -118,11 +118,10 @@ router.get("/", async (request, response) => {
         else if(categoryName)
         {
             posts = await Post.find({
-                categories: {
-                    $in:[categoryName]
+                "categories.name": {
+                    $in: [categoryName] //could theoretically query via mult cats
                 }
             });
-            console.log(posts); //fails for some reason
         }
         //if no query or unspecified query case, find all posts
         else
