@@ -5,17 +5,16 @@ import Settings from "./pages/settings/Settings";
 import SinglePostPage from "./pages/singlepostpage/SinglePostPage";
 import WritePage from "./pages/writepage/WritePage";
 import Register from "./pages/register/Register";
+import { Context } from "./context/Context";
+import About from "./pages/about/About";
 
 // Need the following to setup dynamic routing:
 import React, { useContext } from "react";
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
-import { Context } from "./context/Context";
-import About from "./pages/about/About";
 
 function App() {
   const { user } = useContext(Context);

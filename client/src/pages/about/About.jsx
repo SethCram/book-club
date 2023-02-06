@@ -22,6 +22,7 @@ export default function About() {
                         className="link"
                         href="https://github.com/SethCram/book-club"
                         target="_blank"
+                        rel="noreferrer"
                     >
                         <i class="aboutContributionIcon fa-brands fa-github"></i>
                     </a>
@@ -32,6 +33,7 @@ export default function About() {
                         className="link"
                         href="https://github.com/SethCram/book-club/issues/new/choose"
                         target="_blank"
+                        rel="noreferrer"
                     >
                         <i class="aboutContributionIcon fa-solid fa-circle-exclamation"></i>
                     </a>

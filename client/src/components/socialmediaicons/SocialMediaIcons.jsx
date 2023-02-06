@@ -25,6 +25,7 @@ export default function SocialMediaIcons({user, barPosition}) {
                 <i
                     className={"fa-brands fa-square-facebook " + (topbar ? "topIcon" : "sidebarIcon")}
                     target="_blank"
+                    rel="noreferrer"
                 />
             </a>
         }
@@ -33,6 +34,7 @@ export default function SocialMediaIcons({user, barPosition}) {
                 <i
                     className={"fa-brands fa-square-pinterest " + (topbar ? "topIcon" : "sidebarIcon")}
                     target="_blank"
+                    rel="noreferrer"
                 />
             </a>
         }
