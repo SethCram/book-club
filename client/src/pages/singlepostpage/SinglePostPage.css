@@ -1,3 +1,9 @@
 .singlepostpage {
     display: flex; /* Need to display flex to use flex settings of comps */
 }
+#dark .singlepostpage{
+    min-height: 100vh;
+    height: auto !important;
+    height: 600px;
+    /*background-color: antiquewhite;*/
+}

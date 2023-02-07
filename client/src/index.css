@@ -6,6 +6,8 @@
 
 :root {
     --color-bg: white; /*#1f1f38;*/
+    --color-bg-light: white;
+    --color-bg-dark: #181a1b;
     --color-bg-variant: #444; /*#2c2c6c;*/
     --color-primary: #4db5ff;
     --color-primary-variant: rgba(77, 181, 255, 0.4);
@@ -26,4 +28,12 @@
 .link{
   text-decoration: none;
   color: inherit;
+}
+
+.indexLight{
+  background-color: var(--color-bg-light);
+}
+
+.indexDark{
+  background-color: var(--color-bg-dark);
 }

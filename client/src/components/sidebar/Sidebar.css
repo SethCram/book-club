@@ -11,6 +11,10 @@
     height: fit-content;
 }
 
+#dark .sidebar{
+    background-color: #1b1e1f;
+}
+
 .sidebarItem {
     display: flex;
     flex-direction: column;
@@ -29,6 +33,10 @@
     font-weight: 600;
     line-height: 20px;
     text-align: center;
+}
+
+#dark .sidebarTitle{
+    color: var(--color-bg-light);
 }
 
 .sidebarItem > img {

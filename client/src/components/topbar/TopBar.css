@@ -12,6 +12,10 @@
     z-index: 999; /* display topbar over the top of everything in website */
 }
 
+#dark .topbar{
+    background-color: var(--color-bg-dark);
+}
+
 .topLeft, .topRight {
     /* area of horizontal flex (could also used consts) */
     flex: 30%;
@@ -58,9 +62,21 @@
     cursor: pointer;
 }
 
+#dark .topList{
+    color: var(--color-white);
+}
+
 .topSearchIcon {
     font-size: var(--medium-font-size);
     color: var(--color-bg-variant);
     cursor: pointer;
     margin-left: 15px;
+}
+
+#dark .topSearchIcon {
+    color: var(--color-white);
+}
+
+.topSwitch{
+    margin-left: 20px;
 }

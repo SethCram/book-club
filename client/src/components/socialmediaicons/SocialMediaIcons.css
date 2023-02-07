@@ -11,3 +11,11 @@
     /* changes cursor into hand to click w/ hover */
     cursor: pointer;
 }
+
+#dark .topIcon{
+    color: var(--color-primary); /*var(--color-bg-light);*/
+}
+
+#dark .sidebarIcon{
+    color: var(--color-bg-variant);
+}
