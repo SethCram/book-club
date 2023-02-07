@@ -3,7 +3,8 @@
 }
 #dark .singlepostpage{
     min-height: 100vh;
+    /* possibly unnecessary 
     height: auto !important;
     height: 600px;
-    /*background-color: antiquewhite;*/
+    */
 }

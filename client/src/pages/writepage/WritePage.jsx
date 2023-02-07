@@ -4,6 +4,7 @@ import axios from "axios"
 import { Context } from "../../context/Context";
 import { imagesFolder } from "../settings/Settings"
 import Multiselect from 'multiselect-react-dropdown'
+import { ThemeContext } from "../../App";
 
 //should be able to update picture, but no currently possible
 
@@ -14,7 +15,8 @@ export default function WritePage() {
     const [categories, setCategories] = useState([]);
     const { user } = useContext(Context);
     const multiSelectRef = useRef();
-
+    const { theme } = useContext(ThemeContext);
+ 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -77,24 +79,40 @@ export default function WritePage() {
           <div className='writeFormGroup'>
           <div className="writeMultiSelectContainer">
             <Multiselect
-                    isObject={true}
-                    displayValue="name" // Property name to display in the dropdown options
-                    options={categories}
-                    placeholder="Select categories..."
-                    selectionLimit={3}
-                    showArrow
-                    showCheckbox
-                    avoidHighlightFirstOption
-                    ref={multiSelectRef}
-                    style={{
-                      searchBox: {
-                        border: 'none',
-                      },
-                      chips: {
-                        'background': 'var(--color-gold)',
-                      }
-                    }}
-              />
+              isObject={true}
+              displayValue="name" // Property name to display in the dropdown options
+              options={categories}
+              placeholder="Select categories..."
+              selectionLimit={3}
+              showArrow
+              showCheckbox
+              avoidHighlightFirstOption
+              ref={multiSelectRef}
+              style={theme === "dark" ? { //Select styling CSS based on theme
+                searchBox: {
+                  border: 'none'
+                },
+                chips: {
+                  'background': 'var(--color-gold)'
+                },
+                inputField: {
+                  'color' : 'white'
+                },
+                optionContainer: {
+                  'background': 'var(--color-bg-dark)'
+                },
+                circle: {
+                  'color': 'black'
+                }
+              } : {
+                searchBox: {
+                  border: 'none'
+                },
+                chips: {
+                  'background': 'var(--color-gold)'
+                },
+              }}
+            />
             </div>
                   <label htmlFor='fileInput'>
                     <i className="writeIcon fa-solid fa-plus"></i>

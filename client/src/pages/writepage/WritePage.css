@@ -1,5 +1,6 @@
 .writePage{
     padding-top: 50px;
+    height: 100vh;
 }
 
 .writeImg{
@@ -41,13 +42,17 @@
     width: 70vw;
 }
 
+#dark .writeInput{
+    background-color: var(--color-bg-dark);
+}
+
 .writeInput:focus {
     outline: none;
 }
 
 .writeText{
     font-size: 20px;
-    height: 100vh;
+    height: 70vh;
     margin-bottom: 50px;
 }
 

@@ -33,6 +33,10 @@
     color: grey;
 }
 
+#dark .singlePostInputField{
+    background-color: var(--color-bg-dark);
+}
+
 .singlePostTitleInput:focus{
     outline: none;
 }

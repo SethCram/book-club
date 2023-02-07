@@ -5,6 +5,7 @@ import axios from "axios"
 import { Context } from "../../context/Context";
 import { imagesFolder } from "../../pages/settings/Settings";
 import Multiselect from "multiselect-react-dropdown";
+import { ThemeContext } from "../../App";
 
 export default function SinglePost({post}) {
     const { user } = useContext(Context);
@@ -16,6 +17,7 @@ export default function SinglePost({post}) {
     const [categories, setCategories] = useState([]);
     const [allCategories, setAllCategories] = useState([]);
     const multiSelectRef = useRef();
+    const { theme } = useContext(ThemeContext);
 
     //retrieve post according to postId
     useEffect(() => {
@@ -134,7 +136,7 @@ export default function SinglePost({post}) {
                 />
               )}
 
-              {updateMode &&  //why can we use 'writeIcon' class here?
+              {updateMode &&  
                 <div className="singlePostPictureIcons">
                     <label htmlFor='fileInput'>
                         <i className="singlePostPictureIcon fa-solid fa-plus"/>
@@ -162,13 +164,29 @@ export default function SinglePost({post}) {
                         showCheckbox
                         avoidHighlightFirstOption
                         ref={multiSelectRef}
-                        style={{
-                        searchBox: {
-                            border: 'none',
-                        },
-                        chips: {
-                            'background': '#be9656',
-                        }
+                        style={theme === "dark" ? { //Select styling CSS based on theme
+                            searchBox: {
+                            border: 'none'
+                            },
+                            chips: {
+                            'background': 'var(--color-gold)'
+                            },
+                            inputField: {
+                            'color' : 'white'
+                            },
+                            optionContainer: {
+                            'background': 'var(--color-bg-dark)'
+                            },
+                            circle: {
+                            'color': 'black'
+                            }
+                        } : {
+                            searchBox: {
+                            border: 'none'
+                            },
+                            chips: {
+                            'background': 'var(--color-gold)'
+                            },
                         }}
                     /> :
                     categories?.map((category, i) => (
@@ -181,7 +199,7 @@ export default function SinglePost({post}) {
               {updateMode ?
                 <input type="text"
                     value={title}
-                    className="singlePostTitleInput"
+                    className="singlePostTitleInput singlePostInputField"
                     autoFocus={true} 
                     onChange={(event)=>setTitle(event.target.value)}
                 /> : 
@@ -212,7 +230,7 @@ export default function SinglePost({post}) {
                 <input
                     type="text"
                     value={description}
-                    className="singlePostDescriptionInput" 
+                    className="singlePostDescriptionInput singlePostInputField" 
                     onChange={(event)=>setDescription(event.target.value)}
                 /> :
                 <p className="singlePostDescription">
