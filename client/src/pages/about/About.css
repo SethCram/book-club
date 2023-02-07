@@ -11,23 +11,25 @@
     justify-content: center;
     margin-right: 50px;
     margin-left: 50px;
-    height: calc(100vh - 50px);
+    /*height: calc(100vh - 50px);*/
+    min-height: 100vh;
 }
 
 .aboutTitle {
     font-size: 50px;
     cursor: default;
     margin-top: 50px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .aboutDescription{
     font-size: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 25px;
 }
 
 .aboutContribution{
-    margin-bottom: 50px;
+    margin-top: 25px;
+    margin-bottom: 25px;
     font-size: 25px;
 }
 
