@@ -69,6 +69,10 @@
     border-bottom: 1px solid lightgrey;
 }
 
+#dark .settingsForm > input {
+    background-color: var(--color-bg-dark);
+}
+
 .settingsSubmit{
     width: 150px;
     align-self: center;
