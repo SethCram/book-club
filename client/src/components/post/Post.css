@@ -2,6 +2,7 @@
     width: 385px;
     margin: 0px 25px 40px 25px;
     background-color: var(--color-bg-light-tint);
+    min-height: 300px;
 }
 
 #dark .post {
@@ -19,6 +20,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-self: center;
 }
 
 .postCategory{
@@ -37,6 +39,7 @@
     font-weight: 700;
     margin-top: 15px;
     cursor: pointer;
+    margin-bottom: 10px;
 }
 
 .postAuthorDate{
@@ -69,4 +72,8 @@
     -webkit-box-orient: vertical;
     margin-left: 10px;
     margin-right: 10px;
+}
+
+.postDescription::first-letter{
+    margin-left: 20px;
 }

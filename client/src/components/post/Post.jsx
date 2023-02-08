@@ -27,7 +27,6 @@ export default function post({ post }) {
           <span className="postTitle">
             <Link to={`singlepostpage/${post._id}`} className="link">{post.title}</Link> {/* obj id comes with _ before it */ }
           </span>
-          <hr />
           <div className="postAuthorDate">
             <Link className="link" to={`/?username=${post?.username}`}>
               <b className="postAuthor">
@@ -38,7 +37,7 @@ export default function post({ post }) {
               {new Date(post.createdAt).toDateString()}
             </b>
           </div>
-        </div>
+      </div>
         <p className="postDescription">
           {post.description}
         </p>
