@@ -25,7 +25,7 @@ export default function post({ post }) {
             
           </div>
           <span className="postTitle">
-            <Link to={`singlePostPage/${post._id}`} className="link">{post.title}</Link> {/* obj id comes with _ before it */ }
+            <Link to={`singlepostpage/${post._id}`} className="link">{post.title}</Link> {/* obj id comes with _ before it */ }
           </span>
           <hr />
           <span className="postDate">Published: <b>{new Date(post.createdAt).toDateString()}</b></span>

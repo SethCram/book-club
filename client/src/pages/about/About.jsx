@@ -16,7 +16,7 @@ export default function About() {
                     Book Club should ultimately provide trusted content to allow site visitors to accurately determine fact from fiction, extending the Stack Overflow reputation system into more non-technical fields such as lifestyle tips, home maintenance, and general advice.
                     In addition, the users of Book Club will be given thoughtful feedback and a good gauge to determine what the community thinks of their work.
                 </p>
-                <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vR09_leK1o_rWDyEh5y2XFQnewpAsDsH7KMYCTVN7Lp4-8DWj-ypn5XleNzpRVYkZQSVq8UcDPSt6d3/embed?start=true&loop=true&delayms=3000" frameborder="0" width="480" height="299" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                <iframe title="iframeProposalSlides" src="https://docs.google.com/presentation/d/e/2PACX-1vR09_leK1o_rWDyEh5y2XFQnewpAsDsH7KMYCTVN7Lp4-8DWj-ypn5XleNzpRVYkZQSVq8UcDPSt6d3/embed?start=true&loop=true&delayms=3000" frameborder="0" width="480" height="299" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
                 <div className="aboutContribution">
                     <span className="aboutContributionPhrase">Book Club is open source and accepting contributions</span>
                     <a
