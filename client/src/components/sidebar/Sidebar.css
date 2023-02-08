@@ -2,7 +2,7 @@
     flex: 30%;
     margin: 20px;
     padding-bottom: 30px;
-    background-color: var(--color-light);
+    background-color: var(--color-bg-light-tint);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -12,7 +12,7 @@
 }
 
 #dark .sidebar{
-    background-color: #1b1e1f;
+    background-color: var(--color-bg-dark-tint);
 }
 
 .sidebarItem {

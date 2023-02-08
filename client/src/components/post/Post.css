@@ -1,6 +1,11 @@
 .post{
     width: 385px;
     margin: 0px 25px 40px 25px;
+    background-color: var(--color-bg-light-tint);
+}
+
+#dark .post {
+    background-color: var(--color-bg-dark-tint);
 }
 
 .postImg{
@@ -34,11 +39,19 @@
     cursor: pointer;
 }
 
-.postDate{
+.postAuthorDate{
     font-family: 'Lora', serif;
     font-style: italic;
     font-size: #999;
     color: var(--color-bg-variant);
+}
+
+.postAuthor{
+    margin-right: 0px;
+}
+
+.postDate{
+    margin-left: 50px;
 }
 
 .postDescription{
@@ -54,4 +67,6 @@
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
+    margin-left: 10px;
+    margin-right: 10px;
 }

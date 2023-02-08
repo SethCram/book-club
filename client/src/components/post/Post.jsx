@@ -28,7 +28,16 @@ export default function post({ post }) {
             <Link to={`singlepostpage/${post._id}`} className="link">{post.title}</Link> {/* obj id comes with _ before it */ }
           </span>
           <hr />
-          <span className="postDate">Published: <b>{new Date(post.createdAt).toDateString()}</b></span>
+          <div className="postAuthorDate">
+            <Link className="link" to={`/?username=${post?.username}`}>
+              <b className="postAuthor">
+                {post.username }
+              </b>
+            </Link>
+            <b className="postDate">
+              {new Date(post.createdAt).toDateString()}
+            </b>
+          </div>
         </div>
         <p className="postDescription">
           {post.description}

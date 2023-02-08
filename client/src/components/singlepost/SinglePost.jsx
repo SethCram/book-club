@@ -217,10 +217,10 @@ export default function SinglePost({post}) {
               
               <div className="singlePostInfo">
                   <span className="singlePostAuthor">
-                      Author:
+                      Author: 
                       <Link className="link" to={`/?username=${post?.username}`}>
                           <b>
-                            {post?.username /* needa use ? for as long as post is passed in, since it's retrieved via async funct */ }
+                            {" " + post?.username /* needa use ? for as long as post is passed in, since it's retrieved via async funct */ }
                           </b>
                       </Link>
                   </span>
