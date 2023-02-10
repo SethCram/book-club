@@ -2,7 +2,11 @@
     width: 385px;
     margin: 0px 25px 40px 25px;
     background-color: var(--color-bg-light-tint);
-    min-height: 300px;
+    min-height: 490px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
 }
 
 #dark .post {

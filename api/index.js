@@ -38,9 +38,11 @@ app.post("/api/upload", upload.single("file"), (request, response) => {
 });
 
 app.delete("/api/photo/delete", async (request, response) => {
-    //last arg should be filename
-    const fileName = request.body.filePath.split("/").pop();
+
     try {
+        //last arg should be filename
+        const fileName = request.body.filePath.split("/").pop();
+
         //delete file from local FS
         await unlinkAsync(path.join(__dirname, "/images/" + fileName));
 
