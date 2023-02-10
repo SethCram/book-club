@@ -32,11 +32,11 @@ const storage = multer.diskStorage({
     }
 });
 
+//file upload and deletion
 const upload = multer({ storage: storage });
 app.post("/api/upload", upload.single("file"), (request, response) => {
     response.status(200).json("File has been uploaded");
 });
-
 app.delete("/api/photo/delete", async (request, response) => {
 
     try {
