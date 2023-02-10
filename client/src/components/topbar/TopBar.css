@@ -26,6 +26,17 @@
     justify-content: center;
 }
 
+.topTitle{
+    display: flex;
+    margin-right: 20px;
+    margin-left: 40px;
+}
+
+.topTitleImage{
+    max-width: 20px;
+    max-height: 20px;
+}
+
 .topImg{
     width: 40px;
     height: 40px;

@@ -6,6 +6,7 @@ import SocialMediaIcons from "../socialmediaicons/SocialMediaIcons";
 import ReactSwitch from 'react-switch'
 import "./TopBar.css"
 import { ThemeContext } from "../../App";
+import BC from "../../assets/favicon_io/android-chrome-512x512.png"
 
 export default function TopBar() {
     const { user, dispatch } = useContext(Context);
@@ -19,6 +20,10 @@ export default function TopBar() {
     return (
       <div className='topbar'>
         <div className="topLeft">
+            <div className="topTitle">
+                <img className="topTitleImage" src={BC} alt=""/>
+                Book Club
+            </div>
             <SocialMediaIcons user={user} barPosition="top"/>
           </div>
           <div className="topCenter">
