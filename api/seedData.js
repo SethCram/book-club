@@ -1,3 +1,4 @@
+const { faker } = require('@faker-js/faker');
 const dotenv = require("dotenv");
 const mongoose = require('mongoose');
 //models
@@ -28,11 +29,92 @@ const seedPosts = [
     },
 ];
 
-const seedDB = async () => {
-    await Post.insertMany(seedPosts);
+const createFakeTitle = () => {
+    return faker.commerce.productAdjective() + " " + faker.animal.type();
 };
 
-seedDB().then(() => {
+const createFakePosts = (numOfPosts, authorsUsernames, categories, postPicFileName) => {
+    let posts = [];
+
+    console.log(numOfPosts);
+
+    for (let i = 0; i < numOfPosts; i++) {
+        posts.push({
+            title: faker.helpers.unique(createFakeTitle), 
+            description: faker.commerce.productDescription(),
+            username: faker.helpers.arrayElement(authorsUsernames),
+            photo: faker.image.animals(),
+            categories: faker.helpers.arrayElements(categories)
+        });
+    }
+
+    console.log(posts);
+
+    return posts;
+};
+
+const createFakeUsers = (numOf, password) => {
+    let users = [];
+
+    for (let i = 0; i < numOf; i++) {
+        users.push({
+            username: faker.helpers.unique( faker.internet.userName ),
+            email: faker.helpers.unique( faker.internet.email ),
+            password: password,
+            profilePicture: faker.internet.avatar(),
+            bio: faker.company.catchPhrase(),
+            instagramLink: faker.internet.url(),
+            twitterLink: faker.internet.url(),
+            facebookLink: faker.internet.url(),
+            pinterestLink: faker.internet.url(),
+        });
+    }
+
+    return users;
+};
+
+const seedDB = async () => {
+    //await Post.insertMany(seedPosts);
+    console.log(createFakePosts(
+        numOfPosts = 5,
+        authorsUsernames = ['charles', 'pauline'],
+        categories = ['Life', 'Art'],
+        postPicFileName = ""
+    ));
+
+    console.log(createFakeUsers(
+        numOf = 5, password = '123456'
+    ));
+};
+
+const removeFakeData = async () => {
+    await Post.deleteMany({ data: seedPosts });
+};
+
+const closeConnection = () => {
+    console.log("Connection closed.");
     mongoose.connection.close();
-});
+}
+
+try {
+    switch(process.argv[2]){
+        case '-i':
+            console.log("Inserting fake data.");
+            seedDB().then(closeConnection);
+            break;
+        
+        case '-d':
+            console.log("Deleting fake data.");
+            removeFakeData().then(closeConnection);
+            break;
+        
+        default:
+            console.log("Please pass a viable option to the script.");
+            closeConnection();
+            break;
+    }
+} catch (error) {
+    console.log(error);
+    closeConnection(); //close just incase not closed before (what if already closed?)
+} 
 
