@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGO_URL, {
     .then(console.log("Connected to MongoDB"))
     .catch((error) => console.log(error));
 
-//const fakeCategoryName = 'Fake';
+const fakeCategoryName = 'Fake';
 
 const createFakeTitle = () => {
     return faker.commerce.productAdjective() + " " + faker.animal.type();
@@ -29,14 +29,14 @@ const createFakePosts = (numOf, authorsUsernames, categories) => {
     for (let i = 0; i < numOf; i++) {
         posts.push({
             title: faker.helpers.unique(createFakeTitle), 
-            description: faker.commerce.productDescription(),
+            description: faker.commerce.productDescription() + "/n" + faker.lorem.paragraphs(3, '<br/>\n'),
             username: faker.helpers.arrayElement(authorsUsernames),
             photo: faker.image.animals(),
-            categories: faker.helpers.arrayElements(categories)
+            categories: { name: faker.helpers.arrayElements(categories) }
         });
 
         //ensure each fake post tagged w/ Fake
-        posts[i].categories.push('Fake');
+        posts[i].categories.push({name : fakeCategoryName});
     }
 
     return posts;
@@ -101,26 +101,36 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
     );
 
     //add fake category to posting bc mandatory for each new post
-    newCatNames.push('Fake'); //what happens if already present in DB + insert it?
-    newCats.push({ name: 'Fake' });
+    newCatNames.push(fakeCategoryName); 
+    
+    //if cant find fake category, add it for creation 
+    //if (!Category.find({ name: fakeCategoryName }))
+    //{
+    //    newCats.push({ name: fakeCategoryName });
+    //}
 
     //insert new posts, users, and cats to DB
-    await Post.insertMany(newPosts).then(console.log(`${numOfPosts} posts created.`));
-    await User.insertMany(newUsers).then(console.log(`${numOfUsers} users created.`));
-    await Category.insertMany(newCats).then(console.log(`${numOfCats + 1} categories created.`));
+    await Post.insertMany(newPosts).then(console.log(`${numOfPosts} posts inserted.`));
+    await User.insertMany(newUsers).then(console.log(`${numOfUsers} users inserted.`));
+    await Category.insertMany(newCats).then(console.log(`${newCats.length} categories inserted.`));
 };
 
 const removeFakeData = async () => {
 
     //get all posts marked as fake
     const fakePosts = await Post.find({
-        'categories.name': 'Fake'
+        'categories.name': fakeCategoryName
     });
-    let fakeUsernames = fakePosts.map(fakePost => fakePost.username);
-    let fakeCategoryNames = fakePosts.map(
+    let fakeUsernames = fakePosts.map(fakePost => fakePost.username); //can contain duplicates
+    let fakeCategoryNamesUnflattened = fakePosts.map(
         fakePost => fakePost.categories.map(
             fakeCategory => fakeCategory.name
-        ));
+        )); //can contain duplicates
+    const fakeCategoryNames = fakeCategoryNamesUnflattened.flat(Infinity);
+    
+    console.log(fakePosts);
+    console.log(fakeUsernames);
+    console.log(fakeCategoryNames);
 
     await User.deleteMany({
         username: {
@@ -135,7 +145,7 @@ const removeFakeData = async () => {
     }).then(console.log("Deleted all categories linked to fake category names."));
 
     await Post.deleteMany({
-        'categories.name': 'Fake'
+        'categories.name': fakeCategoryName
     }).then(console.log("Deleted all posts with a fake category."));
 };
 
