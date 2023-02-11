@@ -1,6 +1,7 @@
 const { faker } = require('@faker-js/faker');
 const dotenv = require("dotenv");
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 //models
 const Post = require('./models/Post');
 const Category = require('./models/Category');
@@ -15,30 +16,17 @@ mongoose.connect(process.env.MONGO_URL, {
 })
     .then(console.log("Connected to MongoDB"))
     .catch((error) => console.log(error));
-    
-const seedPosts = [
-    {
-        title: "Interesting Title1",
-        description: "Establish a routine and stick to it - set regular work hours and take regular breaks to maintain a sense of structure and balance in your day. Create a dedicated workspace - set up a designated area in your home that is solely for work to help separate work from leisure. Take regular breaks - stepping away from your work for short breaks can help you stay focused and refreshed throughout the day. Prioritize and plan your tasks - make a to-do list and prioritize your tasks to help you stay on track and focused on what needs to be done. Stay connected - working from home can be isolating, so make sure to stay connected with your colleagues and friends through virtual communication channels such as video conferencing, instant messaging and email.",
-        username: "paul1",
-    },
-    {
-        title: "Interesting Title2",
-        description: "Establish a routine and stick to it - set regular work hours and take regular breaks to maintain a sense of structure and balance in your day. Create a dedicated workspace - set up a designated area in your home that is solely for work to help separate work from leisure. Take regular breaks - stepping away from your work for short breaks can help you stay focused and refreshed throughout the day. Prioritize and plan your tasks - make a to-do list and prioritize your tasks to help you stay on track and focused on what needs to be done. Stay connected - working from home can be isolating, so make sure to stay connected with your colleagues and friends through virtual communication channels such as video conferencing, instant messaging and email.",
-        username: "paul2",
-    },
-];
+
+//const fakeCategoryName = 'Fake';
 
 const createFakeTitle = () => {
     return faker.commerce.productAdjective() + " " + faker.animal.type();
 };
 
-const createFakePosts = (numOfPosts, authorsUsernames, categories, postPicFileName) => {
+const createFakePosts = (numOf, authorsUsernames, categories) => {
     let posts = [];
 
-    console.log(numOfPosts);
-
-    for (let i = 0; i < numOfPosts; i++) {
+    for (let i = 0; i < numOf; i++) {
         posts.push({
             title: faker.helpers.unique(createFakeTitle), 
             description: faker.commerce.productDescription(),
@@ -46,9 +34,10 @@ const createFakePosts = (numOfPosts, authorsUsernames, categories, postPicFileNa
             photo: faker.image.animals(),
             categories: faker.helpers.arrayElements(categories)
         });
-    }
 
-    console.log(posts);
+        //ensure each fake post tagged w/ Fake
+        posts[i].categories.push('Fake');
+    }
 
     return posts;
 };
@@ -73,22 +62,81 @@ const createFakeUsers = (numOf, password) => {
     return users;
 };
 
-const seedDB = async () => {
-    //await Post.insertMany(seedPosts);
-    console.log(createFakePosts(
-        numOfPosts = 5,
-        authorsUsernames = ['charles', 'pauline'],
-        categories = ['Life', 'Art'],
-        postPicFileName = ""
-    ));
+const createFakeCategories = (numOf) => {
+    let cats = [];
 
-    console.log(createFakeUsers(
-        numOf = 5, password = '123456'
-    ));
+    for (let i = 0; i < numOf; i++) {
+        cats.push({
+            name: faker.helpers.unique(faker.random.word) 
+        });
+    }
+
+    return cats;
+};
+
+const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
+
+    //create new cats and get their names
+    const newCats = createFakeCategories(
+        numOf = numOfCats
+    );
+    let newCatNames = newCats.map(newCat => newCat.name);
+
+    //create new users and get their usernames
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(process.env.DEV_PASSWORD, salt);
+    const newUsers = createFakeUsers(
+        numOf = numOfUsers, password = hashedPassword 
+    );
+    let newUsernames = [];
+    for (let i = 0; i < newUsers.length; i++) {
+        newUsernames.push(newUsers[i].username);
+    }
+
+    //create new posts according to created users and cats
+    const newPosts = createFakePosts(
+        numOf = numOfPosts,
+        authorsUsernames = newUsernames,
+        categories = newCatNames
+    );
+
+    //add fake category to posting bc mandatory for each new post
+    newCatNames.push('Fake'); //what happens if already present in DB + insert it?
+    newCats.push({ name: 'Fake' });
+
+    //insert new posts, users, and cats to DB
+    await Post.insertMany(newPosts).then(console.log(`${numOfPosts} posts created.`));
+    await User.insertMany(newUsers).then(console.log(`${numOfUsers} users created.`));
+    await Category.insertMany(newCats).then(console.log(`${numOfCats + 1} categories created.`));
 };
 
 const removeFakeData = async () => {
-    await Post.deleteMany({ data: seedPosts });
+
+    //get all posts marked as fake
+    const fakePosts = await Post.find({
+        'categories.name': 'Fake'
+    });
+    let fakeUsernames = fakePosts.map(fakePost => fakePost.username);
+    let fakeCategoryNames = fakePosts.map(
+        fakePost => fakePost.categories.map(
+            fakeCategory => fakeCategory.name
+        ));
+
+    await User.deleteMany({
+        username: {
+            $in: fakeUsernames
+        }
+    }).then(console.log("Deleted all users with fake usernames."));
+
+    await Category.deleteMany({
+        name: {
+            $in: fakeCategoryNames
+        }
+    }).then(console.log("Deleted all categories linked to fake category names."));
+
+    await Post.deleteMany({
+        'categories.name': 'Fake'
+    }).then(console.log("Deleted all posts with a fake category."));
 };
 
 const closeConnection = () => {
@@ -100,16 +148,40 @@ try {
     switch(process.argv[2]){
         case '-i':
             console.log("Inserting fake data.");
-            seedDB().then(closeConnection);
+
+            //defaults to 1 post created by 1 user with only 'Fake' cat
+            let numOfPosts = 1, numOfUsers = 1, numOfCats = 0;
+
+            //set amt of data to create based on cmd line args
+            if (
+                process.argv[3] && process.argv[3] === "-p" &&
+                process.argv[4] && !isNaN(process.argv[4]) //if nxt arg is digit
+            ) {
+                numOfPosts = process.argv[4];
+            };
+            if (
+                process.argv[5] && process.argv[5] === "-u" &&
+                process.argv[6] && !isNaN(process.argv[6]) //if nxt arg is digit
+            ) {
+                numOfUsers = process.argv[6];
+            };
+            if (
+                process.argv[7] && process.argv[7] === "-c" &&
+                process.argv[8] && !isNaN(process.argv[8]) //if nxt arg is digit
+            ) {
+                numOfCats = process.argv[8];
+            };
+
+            seedDB(numOfPosts, numOfUsers, numOfCats).then(closeConnection);
             break;
         
         case '-d':
-            console.log("Deleting fake data.");
+            console.log("Deleting all fake data.");
             removeFakeData().then(closeConnection);
             break;
         
         default:
-            console.log("Please pass a viable option to the script.");
+            console.log("Please pass a viable option to the script (-i or -d).");
             closeConnection();
             break;
     }
