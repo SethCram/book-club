@@ -77,6 +77,16 @@ export default function Home() {
     return search;
   }
 
+  const incrPageCount = () => {
+    return Math.min(totalPages-1, pageNumber + 1);
+  }
+
+  const decrPageCount = () => {
+    return Math.max(0, pageNumber - 1);
+  }
+
+  
+
   return (
     <>
         <Header />
@@ -84,7 +94,9 @@ export default function Home() {
           <Posts posts={ posts } />
         {userSearchType && <Sidebar user={user} />}
         <div className="homePagination">
-          <button>Previous</button>
+          <Link className="link" to={"/" + updatePagePagination(search, "page", decrPageCount())}>
+            <button onClick={() => { setPageNumber(decrPageCount()) }}>Previous</button>
+          </Link>
           {pages.map((pageIndex) => (
             <Link className="link" key={pageIndex} to={"/" + updatePagePagination(search, "page", pageIndex)}>
               <button
@@ -96,7 +108,9 @@ export default function Home() {
               </button>
             </Link>
           ))}
-          <button>Next</button>
+          <Link className="link" to={"/" + updatePagePagination(search, "page", incrPageCount())}>
+            <button onClick={() => { setPageNumber(incrPageCount()) }}>Next</button>
+          </Link>
         </div>
         </div>
     </>
