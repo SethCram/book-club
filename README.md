@@ -6,3 +6,8 @@
 - Uses Axios to communicate between frontend React and Express API
 - Icons retrieved from Font Awesome
 - basis: https://www.youtube.com/watch?v=tlTdbc5byAs&list=PLj-4DlPRT48lGpll2kC4wOsLj7SEV_lYu
+- Test data script manages fake posts, users, and categories 
+  - all linked together
+  - from api dir: 
+    - insertion: "node seedData.js -i -p # -u # -c #"
+    - deletion: "node seedData.js -d"
