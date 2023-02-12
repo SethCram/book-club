@@ -17,8 +17,6 @@ export default function Home() {
   const pages = new Array(totalPages).fill(null).map((v, i) => i);
 
   useEffect(() => { //cant detch data in here since using sync funct
-
-    console.log(search);
     
     const fetchPosts = async () => {
       const response = await axios.get("/posts" + search);  
@@ -71,7 +69,7 @@ export default function Home() {
     //no pre-existing search 
     else
     {
-      search = "?page=" + pageIndex + "/";
+      search = "?page=" + pageIndex;
     }
 
     return search;
@@ -92,26 +90,28 @@ export default function Home() {
         <Header />
         <div className='home'>
           <Posts posts={ posts } />
-        {userSearchType && <Sidebar user={user} />}
-        <div className="homePagination">
-          <Link className="link" to={"/" + updatePagePagination(search, "page", decrPageCount())}>
-            <button onClick={() => { setPageNumber(decrPageCount()) }}>Previous</button>
-          </Link>
-          {pages.map((pageIndex) => (
-            <Link className="link" key={pageIndex} to={"/" + updatePagePagination(search, "page", pageIndex)}>
-              <button
-                className="homePaginationButton"
-                key={pageIndex}
-                onClick={() => setPageNumber(pageIndex)}
-              >
-                {pageIndex + 1}
-              </button>
-            </Link>
-          ))}
-          <Link className="link" to={"/" + updatePagePagination(search, "page", incrPageCount())}>
-            <button onClick={() => { setPageNumber(incrPageCount()) }}>Next</button>
-          </Link>
-        </div>
+          {userSearchType && <Sidebar user={user} />}
+          {pages.length > 1 &&
+            <span className="homePagination">
+              <Link className="link" to={"/" + updatePagePagination(search, "page", decrPageCount())}>
+                <button onClick={() => { setPageNumber(decrPageCount()) }}>Previous</button>
+              </Link>
+              {pages.map((pageIndex) => (
+                <Link className="link" key={pageIndex} to={"/" + updatePagePagination(search, "page", pageIndex)}>
+                  <button
+                    className="homePaginationButton"
+                    key={pageIndex}
+                    onClick={() => setPageNumber(pageIndex)}
+                  >
+                    {pageIndex + 1}
+                  </button>
+                </Link>
+              ))}
+              <Link className="link" to={"/" + updatePagePagination(search, "page", incrPageCount())}>
+                <button onClick={() => { setPageNumber(incrPageCount()) }}>Next</button>
+              </Link>
+            </span>
+          }
         </div>
     </>
       

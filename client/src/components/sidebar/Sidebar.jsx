@@ -32,20 +32,21 @@ export default function Sidebar({ user }) {
             { user?.bio && `"${user.bio}"` /*load bio in quotes if there is one*/} 
           </p>
         </div >
-        
-      <div className='sidebarItem'>
-        {user && <span className='sidebarTitle'>CATEGORIES</span>}
+      {user &&
+        <div className='sidebarItem'>
+          <span className='sidebarTitle'>CATEGORIES</span>
           <ul className='sidebarList'>
-            {user && categories.map((category, i) => (
+            {categories.map((category, i) => (
               <Link className='link' to={`/?category=${category.name}`} key={i}>
                 <li className='sidebarListItem'>{category.name}</li>
               </Link>
-            ))}  
+            ))}
           </ul>
-      </div>
+        </div>
+      }
       {anyUserLinksSet &&
         <div className='sidebarItem'>
-          {<span className='sidebarTitle'>FOLLOW AT</span>}
+          <span className='sidebarTitle'>FOLLOW AT</span>
           <div className='sidebarSocial'>
             <SocialMediaIcons user={user} barPosition="side"/>
           </div>
