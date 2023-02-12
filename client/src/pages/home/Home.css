@@ -1,4 +1,14 @@
 .home{
     display: flex;
     min-height: 40vh;
+    flex-direction: column;
+}
+
+.homePagination{
+    padding-left: 40%;
+    padding-right: 40%;
+}
+
+.homePaginationButton{
+    
 }
