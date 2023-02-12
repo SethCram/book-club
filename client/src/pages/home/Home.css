@@ -1,16 +1,28 @@
 .home{
     display: flex;
-    min-height: 40vh;
+    min-height: 100%;
     flex-direction: column;
+    margin: 0 auto -100px; /* margin must be same as homePush + homePagination height */
+}
+
+.homeColumnAligned{
+    display: flex;
+    flex-direction: row;
+}
+
+.homePush, .homePagination{
+    height: 100px;
 }
 
 .homePagination{
     display: flex;
+    flex-direction: row;
     justify-items: center;
     justify-content: center;
     align-items: center;
     align-content: center;
     padding-bottom: 10px;
+    width: 100%;
 }
 
 .homePaginationButton{

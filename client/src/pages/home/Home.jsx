@@ -89,9 +89,13 @@ export default function Home() {
     <>
         <Header />
         <div className='home'>
-          <Posts posts={ posts } />
-          {userSearchType && <Sidebar user={user} />}
-          {pages.length > 1 &&
+          <div className="homeColumnAligned">
+            <Posts posts={ posts } />
+            {userSearchType && <Sidebar user={user} />}
+            
+            <div className="homePush"></div>
+          </div>
+          {pages.length > 1 && 
             <span className="homePagination">
               <Link className="link" to={"/" + updatePagePagination(search, "page", decrPageCount())}>
                 <button onClick={() => { setPageNumber(decrPageCount()) }}>Previous</button>
