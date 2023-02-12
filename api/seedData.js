@@ -27,15 +27,19 @@ const createFakePosts = (numOf, authorsUsernames, categories) => {
     let posts = [];
 
     for (let i = 0; i < numOf; i++) {
+        //create baseline post
         posts.push({
             title: faker.helpers.unique(createFakeTitle), 
-            description: faker.commerce.productDescription() + "/n" + faker.lorem.paragraphs(3, '<br/>\n'),
+            description: faker.commerce.productDescription() + " " + faker.lorem.paragraphs(3),
             username: faker.helpers.arrayElement(authorsUsernames),
-            photo: faker.image.animals(),
-            categories: { name: faker.helpers.arrayElements(categories) }
+            photo: faker.image.animals(randomize = true),
+            categories: []
         });
-
-        //ensure each fake post tagged w/ Fake
+        //add some categories
+        faker.helpers.arrayElements(categories).forEach(catName => {
+            posts[i].categories.push({name: catName})
+        });
+        //ensure each fake post tagged w/ "Fake"
         posts[i].categories.push({name : fakeCategoryName});
     }
 
@@ -127,23 +131,22 @@ const removeFakeData = async () => {
             fakeCategory => fakeCategory.name
         )); //can contain duplicates
     const fakeCategoryNames = fakeCategoryNamesUnflattened.flat(Infinity);
-    
-    console.log(fakePosts);
-    console.log(fakeUsernames);
-    console.log(fakeCategoryNames);
 
+    //delete all users w/ a fake username
     await User.deleteMany({
         username: {
             $in: fakeUsernames
         }
     }).then(console.log("Deleted all users with fake usernames."));
 
+    //delete all categories connected to a fake category
     await Category.deleteMany({
         name: {
             $in: fakeCategoryNames
         }
     }).then(console.log("Deleted all categories linked to fake category names."));
 
+    //delete all posts marked as "Fake"
     await Post.deleteMany({
         'categories.name': fakeCategoryName
     }).then(console.log("Deleted all posts with a fake category."));
