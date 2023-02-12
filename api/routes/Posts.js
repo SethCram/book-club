@@ -104,30 +104,44 @@ router.get("/", async (request, response) => {
     //query-able via username or category
     const username = request.query.username; //query = anything after ?        
     const categoryName = request.query.category;  
+    const page = parseInt(request.query.page);
+    const PAGE_SIZE = 10;
 
     try {    
-        let posts;
 
-        //if username queried, find all posts by that user
+        let filter;
+
+        //if username queried, filter by all posts by that user
         if (username) {
-            posts = await Post.find({ username: username });
+            filter = { username: username };
         }
-        //if category queried, find all posts marked as that category
+        //if category queried, filter by all posts marked as that category
         else if(categoryName)
         {
-            posts = await Post.find({
+            filter = {
                 "categories.name": {
                     $in: [categoryName] //could theoretically query via mult cats
                 }
-            });
+            };
         }
-        //if no query or unspecified query case, find all posts
+        //if no query or unspecified query case, filter by all posts
         else
         {
-            posts = await Post.find();
+            filter = {};
         }
 
-        response.status(200).json(posts);
+        //find posts by filter
+        posts = await Post.find(filter)
+                .limit(PAGE_SIZE)
+                .skip(PAGE_SIZE * page);
+
+        //count documents by filter
+        const totalPostPages = Math.ceil( await Post.countDocuments(filter) / PAGE_SIZE);
+
+        response.status(200).json({
+            totalPages: totalPostPages,
+            posts
+        });
 
     } catch (error) {
         response.status(500).json(error);
