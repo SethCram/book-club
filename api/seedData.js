@@ -32,7 +32,7 @@ const createFakePosts = (numOf, authorsUsernames, categories) => {
             title: faker.helpers.unique(createFakeTitle), 
             description: faker.commerce.productDescription() + " " + faker.lorem.paragraphs(3),
             username: faker.helpers.arrayElement(authorsUsernames),
-            photo: faker.image.animals(randomize = true),
+            photo: faker.image.animals(1234, 1234, true),
             categories: []
         });
         //add some categories
