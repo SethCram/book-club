@@ -37,14 +37,14 @@ export default function Login() {
       <div className="login">
           <span className="loginTitle">Login</span>
           <form className="loginForm" onSubmit={handleSubmit}>
-              <label>Email</label>
+          <label>Email</label>
           <input
             className="loginInput"
             type="text"
             placeholder="Enter your email..." 
             ref={emailReference}
             />
-                <label>Password</label>
+          <label>Password</label>
           <input
             className="loginInput"
             type="password"
