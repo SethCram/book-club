@@ -1,6 +1,6 @@
 .writePage{
     padding-top: 50px;
-    height: 100vh;
+    min-height: calc(100vh - 50px);
 }
 
 .writeImg{

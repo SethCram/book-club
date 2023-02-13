@@ -2,7 +2,7 @@
     display: flex; /* Need to display flex to use flex settings of comps */
 }
 #dark .singlepostpage{
-    min-height: 100vh;
+    min-height: calc(100vh - 50px); /* bc topbar is 50px*/
     /* possibly unnecessary 
     height: auto !important;
     height: 600px;

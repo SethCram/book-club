@@ -1,0 +1,44 @@
+.notFound{
+    text-align: center;
+    height: 92.7vh;
+}
+
+.notFoundWrapper{
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.notFoundLogo {
+    height: 25vmin;
+    pointer-events: none;
+    padding: 50px;
+}
+
+.notFoundDetails {
+    padding: 50px;
+}
+
+.notFoundLink{
+    color: black;
+    padding: 50px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .notFoundLogo {
+        animation: logoSpin infinite 15s linear;
+    }
+}
+
+@keyframes logoSpin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -16,6 +16,7 @@ import {
   Routes,
   Route
 } from "react-router-dom";
+import NotFound from "./pages/notfound/NotFound";
 
 export const ThemeContext = createContext(null);
 
@@ -42,7 +43,7 @@ function App() {
             <Route exact path="/settings" element={user ? <Settings/> : <Register/>}/>
             <Route exact path="/writepage" element={user ? <WritePage/> : <Register/>}/>
             <Route exact path="/singlepostpage/:postId" element={<SinglePostPage/>}/>
-            {/*<Route path="*" element={<NotFound/>}/>*/}
+            <Route path="*" element={<NotFound/>}/>
           </Routes>
         </Router>
       </div>
