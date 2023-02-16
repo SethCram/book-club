@@ -131,9 +131,9 @@ router.get("/", async (request, response) => {
         }
 
         //find posts by filter
-        posts = await Post.find(filter)
-                .limit(PAGE_SIZE)
-                .skip(PAGE_SIZE * page);
+        const posts = await Post.find(filter)
+            .limit(PAGE_SIZE)
+            .skip(PAGE_SIZE * page);
 
         //count documents by filter
         const totalPostPages = Math.ceil( await Post.countDocuments(filter) / PAGE_SIZE);
@@ -141,6 +141,40 @@ router.get("/", async (request, response) => {
         response.status(200).json({
             totalPages: totalPostPages,
             posts
+        });
+
+    } catch (error) {
+        response.status(500).json(error);
+    }
+});
+
+//Sum All Posts by a param
+router.get("/sum/sum", async (request, response) => { 
+    
+    //query-able via summation
+    const username = request.query.username;
+    const sumBy = request.query.sumBy;
+    const user_cats = parseInt(request.query.count);
+
+    try {
+
+        //if (sumBy && username) {
+        //    if (sumBy === "category") {
+                //find posts by filter + aggregate
+        const posts = await Post.aggregate([
+            { "$match" : { username: username }},
+            { $unwind: "$categories" },
+            { $sortByCount: "$categories.name"}, //sorts in descending order
+            //{ $rename: { "_id": "name" }}
+        ])
+            .limit(user_cats);
+        //    }
+        //}
+
+        //console.log(posts);
+        
+        response.status(200).json({
+            categoryCount: posts
         });
 
     } catch (error) {
