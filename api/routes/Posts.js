@@ -174,7 +174,7 @@ router.get("/sum/sum", async (request, response) => {
         //console.log(posts);
         
         response.status(200).json({
-            categoryCount: posts
+            categoriesCount: posts
         });
 
     } catch (error) {
