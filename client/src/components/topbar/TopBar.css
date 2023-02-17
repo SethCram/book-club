@@ -44,15 +44,6 @@
     object-fit: cover;
 }
 
-/*
-.topIcon{
-    font-size: 20px;
-    margin-right: 10px;
-    color: var(--color-bg-variant);
-    cursor: pointer;
-}
-*/
-
 .topCenter {
     /* area of horizontal flex */
     flex: 60%;
@@ -70,7 +61,6 @@
     margin-right: 20px;
     font-size: var(--medium-font-size);
     font-weight: 300;
-    cursor: pointer;
 }
 
 #dark .topList{
