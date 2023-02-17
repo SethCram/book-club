@@ -1,15 +1,12 @@
 .sidebarIcon {
     font-size: 16px;
     margin-left: 10px;
-    cursor: pointer;
 }
 
 .topIcon{
     font-size: 20px;
     margin-left: 10px;
     color: var(--color-bg-variant);
-    /* changes cursor into hand to click w/ hover */
-    cursor: pointer;
 }
 
 #dark .topIcon{
