@@ -24,7 +24,14 @@ const UserSchema = new mongoose.Schema(
             type: String,
             default: ""
         },
-        
+        reputation: {
+            type: Number,
+            default: 0,
+            validate : {
+                validator : Number.isInteger,
+                message   : '{VALUE} is not an integer value'
+            }
+        },
         instagramLink: {
             type: String,
             default: ""

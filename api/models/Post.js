@@ -22,7 +22,15 @@ const PostSchema = new mongoose.Schema(
         categories: {
             type: Array,
             required: false
-        }
+        },
+        reputation: {
+            type: Number,
+            default: 0,
+            validate : {
+                validator : Number.isInteger,
+                message   : '{VALUE} is not an integer value'
+            }
+        },
     },
     { timestamps: true } //for updated and created at timestamps
 );
