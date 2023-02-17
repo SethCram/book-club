@@ -34,16 +34,14 @@ export default function Sidebar({ user }) {
         <div className='sidebarItem' >
           <span className='sidebarTitle'>ABOUT ME</span>
           <span className='sidebarReputation'> 
-            <div className="sidebarReputationIconNumbering">
-              <span className="fa-stack fa-xl">
-                  <i className="fa-solid fa-star fa-xl"></i>
-                  <span className="fa fa-stack-1x">
-                      <span className="sidebarReputationNumber">
-                          {user?.reputation}
-                      </span>
-                  </span>
-              </span>
-            </div>
+            <span className="fa-stack fa-xl">
+                <i className="fa-solid fa-star fa-xl"></i>
+                <span className="fa fa-stack-1x">
+                    <span className="sidebarReputationNumber">
+                        {user?.reputation}
+                    </span>
+                </span>
+            </span>
             {user ? user.username : "No user found"}
           </span> 
           <img
