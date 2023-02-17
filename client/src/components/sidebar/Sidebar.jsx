@@ -52,7 +52,7 @@ export default function Sidebar({ user }) {
             { user?.bio && `"${user.bio}"` /*load bio in quotes if there is one*/} 
           </p>
         </div >
-      {user &&
+      {anyUserLinksSet &&
         <div className='sidebarItem'>
           <span className='sidebarTitle'>CATEGORIES</span>
           <ul className='sidebarList'>

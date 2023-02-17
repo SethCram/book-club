@@ -24,7 +24,7 @@ export default function TopBar() {
                 <img className="topTitleImage" src={BC} alt=""/>
                 Book Club
             </div>
-            <SocialMediaIcons user={user} barPosition="top"/>
+            <SocialMediaIcons user={user} barPosition="top" />
           </div>
           <div className="topCenter">
               <ul className="topList">
