@@ -70,3 +70,17 @@
     align-items: center;
     justify-content: center;
 }
+
+.sidebarReputation{
+    display: flex;
+    align-items: center;
+}
+
+.sidebarReputationNumber{
+    font-size: 10px;
+    display: block; 
+    left: 17px;
+    color: var(--color-white);
+    cursor: default;
+    position: absolute;
+}

@@ -52,14 +52,25 @@ export default function TopBar() {
             <div className="topRight">
                 {
                     user ? (
-                        /* need a link here to settings */
-                        <Link to="/settings" className="link">
-                        <img
-                            className="topImg"
-                            src={user.profilePicture}
-                            alt=""
-                            />
-                        </Link>
+                        <>
+                            <div className="topListReputation">
+                                <span className="fa-stack fa-xl">
+                                    <i className="fa-solid fa-star fa-xl"></i>
+                                    <span className="fa fa-stack-1x">
+                                        <span className="topListReputationNumber">
+                                            {user.reputation}
+                                        </span>
+                                    </span>
+                                </span>
+                            </div>
+                            <Link to="/settings" className="link">
+                                <img
+                                    className="topImg"
+                                    src={user.profilePicture}
+                                    alt=""
+                                />
+                            </Link>
+                        </>
                     ) : (
                         <ul className="topList">
                             <li className="topListItem">
