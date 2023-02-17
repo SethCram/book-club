@@ -10,11 +10,19 @@ export default function Home() {
   const [posts, setPosts] = useState([]); //init arr empty bc no data fetched (state var)
   const [pageNumber, setPageNumber] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const { search } = useLocation(); //just take search prop of location
   const [user, setUser] = useState(null);
-  const userSearchType = search?.split("=")[0] === "?username";
-  const username = search?.split("=")[1];
+  const { search } = useLocation(); //just take search prop of location
   const pages = new Array(totalPages).fill(null).map((v, i) => i);
+
+  const findQueryStrValue = (queries, queryString) => {
+    for (let i = 0; i < queries.length; i++) {
+      if (queries[i].indexOf(queryString) !== -1) {
+        return queries[i].split("=")[1];
+      }
+    }
+  }
+  const queries = search.split('&&'); 
+  const username = findQueryStrValue(queries, "username");
 
   useEffect(() => { //cant detch data in here since using sync funct
     
@@ -32,7 +40,7 @@ export default function Home() {
   useEffect(() => {
     const getUser = async () => { 
       //only set user if the search type is requesting them
-      if (userSearchType)
+      if (username)
       {
         try {
           const response = await axios.get("/users/username/" + username);
@@ -44,7 +52,7 @@ export default function Home() {
     };
     getUser();      
 
-  }, [username, userSearchType]) //run everytime username changes
+  }, [username]) //run everytime username changes
 
   function updateUrlParameter(url, param, value){
     var regex = new RegExp('([?|&]'+param+'=)[^\&]+');
@@ -83,15 +91,13 @@ export default function Home() {
     return Math.max(0, pageNumber - 1);
   }
 
-  
-
   return (
     <>
         <Header />
         <div className='home'>
           <div className="homeColumnAligned">
             <Posts posts={ posts } />
-            {userSearchType && <Sidebar user={user} />}
+            {username && <Sidebar user={user} />}
             
             <div className="homePush"></div>
           </div>

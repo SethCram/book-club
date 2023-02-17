@@ -109,25 +109,21 @@ router.get("/", async (request, response) => {
 
     try {    
 
-        let filter;
+        let filter = {}; //if no query or unspecified query case, filter by all posts
 
         //if username queried, filter by all posts by that user
         if (username) {
-            filter = { username: username };
+            filter["username"] = username;
         }
+        
         //if category queried, filter by all posts marked as that category
-        else if(categoryName)
+        if(categoryName)
         {
-            filter = {
-                "categories.name": {
-                    $in: [categoryName] //could theoretically query via mult cats
-                }
+
+            filter["categories.name"] = {
+                $in: [categoryName] //could theoretically query via mult cats
             };
-        }
-        //if no query or unspecified query case, filter by all posts
-        else
-        {
-            filter = {};
+            
         }
 
         //find posts by filter

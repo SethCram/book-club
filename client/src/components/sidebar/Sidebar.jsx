@@ -48,7 +48,7 @@ export default function Sidebar({ user }) {
           <ul className='sidebarList'>
             {categoriesCount.map((categoryCount, i) => (
               <li className='sidebarListItem' key={i}>
-                <Link className='link' to={`/?category=${categoryCount._id}`} >
+                <Link className='link' to={`/?category=${categoryCount._id}&&username=${user.username}`} >
                   {categoryCount.count} {categoryCount._id}
                 </Link>
               </li>
