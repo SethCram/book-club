@@ -30,6 +30,8 @@
     display: flex;
     margin-right: 20px;
     margin-left: 40px;
+    align-content: center;
+    justify-content: center;
 }
 
 .topTitleImage{
@@ -80,11 +82,6 @@
 
 .topSwitch{
     margin-left: 20px;
-}
-
-.topListReputation{
-
-    
 }
 
 .topListReputationNumber{

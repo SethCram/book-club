@@ -37,13 +37,26 @@
     cursor: pointer;
 }
 
+.postTitleRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.postReputationNumber{
+    display:block; 
+    margin-top:-1px;
+    font-size: 10px;
+    margin-right: 24px;
+    color: var(--color-white);
+    cursor: default;
+}
+
 .postTitle{
     font-family: 'Josefin Sans', sans-serif;
     font-size: 24px;
     font-weight: 700;
-    margin-top: 15px;
     cursor: pointer;
-    margin-bottom: 10px;
 }
 
 .postAuthorDate{

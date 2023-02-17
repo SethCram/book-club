@@ -22,7 +22,7 @@ export default function TopBar() {
         <div className="topLeft">
             <div className="topTitle">
                 <img className="topTitleImage" src={BC} alt=""/>
-                Book Club
+                <h2>Book Club</h2>
             </div>
             <SocialMediaIcons user={user} barPosition="top" />
           </div>
@@ -53,15 +53,13 @@ export default function TopBar() {
                 {
                     user ? (
                         <>
-                            <div className="topListReputation">
-                                <span className="fa-stack fa-xl">
-                                    <i className="fa-solid fa-star fa-xl"></i>
-                                    <span className="fa fa-stack-1x">
-                                        <span className="topListReputationNumber">
-                                            {user.reputation}
-                                        </span>
-                                    </span>
-                                </span>
+                            <div className="fa-stack fa-xl">
+                                <i className="fa-solid fa-star fa-xl"></i>
+                                <div className="fa fa-stack-1x">
+                                    <div className="topListReputationNumber">
+                                        {user.reputation}
+                                    </div>
+                                </div>
                             </div>
                             <Link to="/settings" className="link">
                                 <img

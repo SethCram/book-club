@@ -22,10 +22,19 @@ export default function post({ post }) {
                 </span>
               ))
             }
-            
           </div>
-          <span className="postTitle">
-            <Link to={`singlepostpage/${post._id}`} className="link">{post.title}</Link> {/* obj id comes with _ before it */ }
+          <span className="postTitleRow">
+            <div className="fa-stack fa-xl">
+              <i className="fa-solid fa-diamond fa-xl"></i>
+              <div className="fa fa-stack-1x">
+                <div className="postReputationNumber">
+                    {post.reputation}
+                </div>
+              </div>
+            </div>
+            <div className="postTitle">
+              <Link to={`singlepostpage/${post._id}`} className="link">{post.title}</Link> {/* obj id comes with _ before it */ }
+            </div>
           </span>
           <div className="postAuthorDate">
             <Link className="link" to={`/?username=${post?.username}`}>

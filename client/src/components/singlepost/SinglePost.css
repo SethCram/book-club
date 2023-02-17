@@ -133,3 +133,19 @@
     margin-top: 15px;
     margin-right: 10px;
 }
+
+.singlePostTitleRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.singlePostReputationNumber{
+    display:block; 
+    margin-top: -1px;
+    font-size: 10px;
+    margin-right: 24px;
+    color: var(--color-white);
+    cursor: default;
+}

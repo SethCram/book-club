@@ -196,24 +196,33 @@ export default function SinglePost({post}) {
                     ))
                 }
               </div>
-              {updateMode ?
-                <input type="text"
-                    value={title}
-                    className="singlePostTitleInput singlePostInputField"
-                    autoFocus={true} 
-                    onChange={(event)=>setTitle(event.target.value)}
-                /> : 
-                  <h1 className="singlePostTitle">
-                    {title}
-                    {post?.username === user?.username && // ? indicates only do comparison if user != null
-                        <div className="singlePostIcons">
-                            <i className="singlePostIcon fa-regular fa-pen-to-square" onClick={()=>setUpdateMode(true)}></i>
-                            <i className="singlePostIcon fa-regular fa-trash-can" onClick={handleDelete}></i>
+              <span className="singlePostTitleRow">
+                <div className="fa-stack fa-xl">
+                    <i className="fa-solid fa-diamond fa-xl"></i>
+                    <div className="fa fa-stack-1x">
+                        <div className="singlePostReputationNumber">
+                            {post.reputation}
                         </div>
-                    }
-                </h1>
-              }
-                  
+                    </div>
+                </div>
+                {updateMode ?
+                    <input type="text"
+                        value={title}
+                        className="singlePostTitleInput singlePostInputField"
+                        autoFocus={true} 
+                        onChange={(event)=>setTitle(event.target.value)}
+                    /> : 
+                    <h1 className="singlePostTitle">
+                        {title}
+                        {post?.username === user?.username && // ? indicates only do comparison if user != null
+                            <div className="singlePostIcons">
+                                <i className="singlePostIcon fa-regular fa-pen-to-square" onClick={()=>setUpdateMode(true)}></i>
+                                <i className="singlePostIcon fa-regular fa-trash-can" onClick={handleDelete}></i>
+                            </div>
+                        }
+                    </h1>
+                }
+              </span>
               
               <div className="singlePostInfo">
                   <span className="singlePostAuthor">
