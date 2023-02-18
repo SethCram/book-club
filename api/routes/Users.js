@@ -2,6 +2,7 @@ const router = require("express").Router(); //can handle post, put (update), get
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const Post = require("../models/Post");
+const Vote = require("../models/Vote");
 
 //Update user
 router.put("/:userId", async (request, response) => { //async bc dont know how long it'll take
@@ -19,7 +20,7 @@ router.put("/:userId", async (request, response) => { //async bc dont know how l
 
             const user = await User.findById(request.params.userId);
 
-            if (user )//&& !_.isEqual(user, request.body))
+            if (user )
             {
                 //if changing username
                 if (user.username != request.body?.username) {
@@ -67,7 +68,7 @@ router.delete("/:userId", async (request, response) => { //async bc dont know ho
     
     //can be safer through using JWT = Jason Web Token
     // compare url id to request body id to see if correct user altering
-    if(request.body.userId === request.params.userId) 
+    if(request.body.userId === request.params.userId)
     {
         //if can find user, delete it
         const user = await User.findById(request.params.userId);
@@ -76,6 +77,8 @@ router.delete("/:userId", async (request, response) => { //async bc dont know ho
             try {
                 //delete all posts posted by someone with same username
                 //await Post.deleteMany({ username: user.username });
+
+                await Vote.deleteMany({ username: user.username });
                 
                 await User.findByIdAndDelete(request.params.userId); 
                 response.status(200).json("User has been deleted");
