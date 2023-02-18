@@ -78,10 +78,11 @@ router.delete("/:userId", async (request, response) => { //async bc dont know ho
                 //delete all posts posted by someone with same username
                 //await Post.deleteMany({ username: user.username });
 
-                await Vote.deleteMany({ username: user.username });
+                //delete all their votes
+                await Vote.deleteMany({ authorId: request.params.userId });
                 
                 await User.findByIdAndDelete(request.params.userId); 
-                response.status(200).json("User has been deleted");
+                response.status(200).json("User and their votes have been deleted");
             }
             catch (error) {
                 response.status(500).json(error);
