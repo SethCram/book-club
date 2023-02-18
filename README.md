@@ -4,6 +4,8 @@
 
 ## Developer Notes
 ### Instructions
+- Node.js must be installed
+- Project dependencies can be installed via "npm install" in the respective directories
 - Both the api and client can be started running "npm start"
 - Test data script manages fake posts, users, and categories 
   - all linked together
