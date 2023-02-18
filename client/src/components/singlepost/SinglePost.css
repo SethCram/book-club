@@ -142,10 +142,29 @@
 }
 
 .singlePostReputationNumber{
-    display:block; 
-    margin-top: -1px;
     font-size: 10px;
-    margin-right: 24px;
+    display: block; 
+    top: -1px;
+    left: 16px;
     color: var(--color-white);
     cursor: default;
+    position: absolute;
+}
+
+.singlePostScoringIcon{
+    cursor: pointer;
+}
+
+.singlePostScoringIcons{
+    margin: 0.8rem;
+    float: right;
+}
+
+/* For switching icons on-hover */
+.lock:hover .icon-unlock,
+.lock .icon-lock {
+    display: none;
+}
+.lock:hover .icon-lock {
+    display: inline;
 }

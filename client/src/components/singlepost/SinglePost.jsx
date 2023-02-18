@@ -18,6 +18,8 @@ export default function SinglePost({post}) {
     const [allCategories, setAllCategories] = useState([]);
     const multiSelectRef = useRef();
     const { theme } = useContext(ThemeContext);
+    const [vote, setVote] = useState(null);
+
 
     //retrieve post according to postId
     useEffect(() => {
@@ -27,9 +29,25 @@ export default function SinglePost({post}) {
             setDescription(post?.description);  
             setCategories(post?.categories);
         };
-        updateLocalPostFields();      
+        updateLocalPostFields();   
 
     }, [post]) //rerun when postId changes
+
+    useEffect(() => {
+        const getVote = async () => {
+            //get vote
+            const vote = await axios.get(`/votes/get/`, {
+                params: {
+                    authorId: user._id,
+                    linkedId: post._id
+                }
+            });
+            setVote(vote);
+        };
+        if (user && post) {
+            getVote();
+        }
+    }, [post, user])
 
     const handleDelete = async () => {
         try {
@@ -125,6 +143,54 @@ export default function SinglePost({post}) {
         getCategories();
     }, [])
 
+    const handleVote = async (score) => {
+
+        let newVote = {};
+
+        try {
+
+            //get vote
+            const vote = await axios.get(`/votes/get/`, {
+                params: {
+                    authorId: user._id,
+                    linkedId: post._id
+                }
+            });
+            //update vote w/ new score
+            const newVote = await axios.put(`/votes/update/${vote.data[0]._id}`, {
+                score,
+                linkedId: post._id,
+                voteId: vote.data[0]._id,
+                authorId: user._id
+            });
+
+            /*
+            //update vote w/ new score
+            await axios.put(`/votes/update/${user._id}`, {
+                score,
+                linkedId: post._id,
+                authorId: user._id
+            });
+            */
+        } catch (error) {
+            try {
+                //if couldn't find a vote
+                if (error?.response.status === 404) {
+                    //create new vote
+                    const newVote = await axios.post("/votes/vote", {
+                        score,
+                        linkedId: post._id,
+                        authorId: user._id
+                    }); 
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        } finally {
+            setVote(newVote);
+        }
+    };
+
   return (
       <div className="singlePost">
           <div className="singlePostWrapper">
@@ -201,7 +267,7 @@ export default function SinglePost({post}) {
                     <i className="fa-solid fa-diamond fa-xl"></i>
                     <div className="fa fa-stack-1x">
                         <div className="singlePostReputationNumber">
-                            {post.reputation}
+                            {post?.reputation}
                         </div>
                     </div>
                 </div>
@@ -222,8 +288,31 @@ export default function SinglePost({post}) {
                         }
                     </h1>
                 }
+                {!updateMode && user &&
+                    <>
+                        <div className="singlePostScoringIcons lock">
+                            <i 
+                                className="singlePostScoringIcon icon-unlock fa-regular fa-thumbs-up"
+                                onClick={() => {handleVote(-1) }}
+                            ></i>
+                            <i 
+                              className="singlePostScoringIcon icon-lock fa-solid fa-thumbs-up"
+                              onClick={() => {handleVote(1) }}
+                            ></i>
+                        </div>
+                        <div className="singlePostScoringIcons lock">
+                            <i 
+                              className="singlePostScoringIcon icon-unlock fa-regular fa-thumbs-down"
+                              onClick={() => {handleVote(1) }}
+                            ></i>
+                            <i 
+                              className="singlePostScoringIcon icon-lock fa-solid fa-thumbs-down"
+                              onClick={() => {handleVote(-1) }}
+                            ></i>
+                        </div>
+                    </>
+                }
               </span>
-              
               <div className="singlePostInfo">
                   <span className="singlePostAuthor">
                       Author: 
