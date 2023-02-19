@@ -216,8 +216,8 @@ router.get("/get/", async (request, response) => {
             linkedId: request.query.linkedId
         });
 
-        if (vote) {
-            response.status(200).json(vote);
+        if (vote && vote.length !== 0) {
+            response.status(200).json(vote[0]);
         }
         else {
             response.status(404).json("Can't find vote.");
