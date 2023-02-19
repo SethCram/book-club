@@ -21,6 +21,23 @@ export default function SinglePost({post}) {
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
 
+    var clearThumbsUpScore;
+    var solidThumbsUpScore;
+    var clearThumbsDownScore;
+    var solidThumbsDownScore;
+    //if tablet or 
+    if (window.matchMedia("(max-width: 600px)").matches ||
+        window.matchMedia("(max-width: 1024px)").matches) {
+        clearThumbsUpScore = 1;
+        solidThumbsUpScore = 0;
+        clearThumbsDownScore = -1;
+        solidThumbsDownScore = 0;
+    } else {
+        clearThumbsUpScore = 0;
+        solidThumbsUpScore = 1;
+        clearThumbsDownScore = 0;
+        solidThumbsDownScore = -1;
+    }
 
     //retrieve post according to postId
     useEffect(() => {
@@ -320,21 +337,21 @@ export default function SinglePost({post}) {
                         <div className="singlePostScoringIconPairing lock">
                             <i 
                                 className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
-                                onClick={() => {handleVote(0) }}
+                                onClick={() => {handleVote(clearThumbsUpScore) }}
                             ></i>
                             <i 
                               className={`singlePostScoringIcon ${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
-                              onClick={() => {handleVote(1) }}
+                              onClick={() => {handleVote(solidThumbsUpScore) }}
                             ></i>
                         </div>
                         <div className="singlePostScoringIconPairing lock">
                             <i 
                               className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
-                              onClick={() => {handleVote(0) }}
+                              onClick={() => {handleVote(clearThumbsDownScore) }}
                             ></i>
                             <i 
                               className={`singlePostScoringIcon ${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
-                              onClick={() => {handleVote(-1) }}
+                              onClick={() => {handleVote(solidThumbsDownScore) }}
                             ></i>
                         </div>
                     </div>

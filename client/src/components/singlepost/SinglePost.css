@@ -178,3 +178,19 @@
 .lock:hover .icon-lock {
     display: inline;
 }
+
+/* MEDIA QUERIES */
+
+/* For tablets */
+@media screen and (max-width: 1024px) {
+    .lock:hover{ /*glitchy*/
+        display: none;
+    }
+}
+
+/* For phones */
+@media screen and (max-width: 600px) {
+    .lock:hover{ /*glitchy*/
+        display: none;
+    }
+}
