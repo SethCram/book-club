@@ -171,11 +171,11 @@
 }
 
 /* For switching icons on-hover */
-.lock:hover .icon-unlock,
+.lock:hover .icon-unlock, /* needa be hovering over unlock icon */
 .lock .icon-lock {
     display: none;
 }
-.lock:hover .icon-lock {
+.lock:hover .icon-lock { /* needa be hovering over lock icon */
     display: inline;
 }
 
@@ -183,14 +183,14 @@
 
 /* For tablets */
 @media screen and (max-width: 1024px) {
-    .lock:hover{ /*glitchy*/
+    .lock:hover .icon-lock{ /*glitchy*/
         display: none;
     }
 }
 
 /* For phones */
 @media screen and (max-width: 600px) {
-    .lock:hover{ /*glitchy*/
+    .lock:hover .icon-lock{ /*glitchy*/
         display: none;
     }
 }
