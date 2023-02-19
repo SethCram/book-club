@@ -16,11 +16,47 @@
     object-fit: cover;
 }
 
+.singlePostTitleRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.singlepostReputation{
+    flex: 25%;
+}
+
+.singlePostReputationNumber{
+    font-size: 10px;
+    display: block; 
+    top: -1px;
+    left: 16px;
+    color: var(--color-white);
+    cursor: default;
+    position: absolute;
+}
+
 .singlePostTitle{ /* should be centered under image */
     text-align: center;
     margin: 10px;
     font-family: 'Lora', serif;
     font-size: 28px;
+    flex: 50%;
+}
+
+.singlePostScoringIcons{
+    flex: 25%;
+}
+
+.singlePostScoringIconPairing{
+    margin: 0.8rem;
+    float: right;
+}
+
+.singlePostScoringIcon{
+    cursor: pointer;
 }
 
 .singlePostTitleInput{ /* should be centered under image */
@@ -132,32 +168,6 @@
     line-height: 20px;
     margin-top: 15px;
     margin-right: 10px;
-}
-
-.singlePostTitleRow{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-
-.singlePostReputationNumber{
-    font-size: 10px;
-    display: block; 
-    top: -1px;
-    left: 16px;
-    color: var(--color-white);
-    cursor: default;
-    position: absolute;
-}
-
-.singlePostScoringIcon{
-    cursor: pointer;
-}
-
-.singlePostScoringIcons{
-    margin: 0.8rem;
-    float: right;
 }
 
 /* For switching icons on-hover */

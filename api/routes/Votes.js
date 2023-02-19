@@ -46,6 +46,9 @@ router.post("/vote", async (request, response) => {
         //if cant find duplicate vote
         if (!foundDuplicateVote)
         {
+            //make sure requester isn't author of post
+            //const authoredPost = await Post.findOne({})
+
             //update linked post or comment rep
             const updatedLinkedModel = await updateLinkedModel(request.body.linkedId, request.body.score);
 
@@ -89,13 +92,12 @@ router.put("/update/:voteId", async (request, response) => {
                 //allow altering of vote if requester is author (should prolly use JWT)
                 if (vote.authorId.equals(request.body.authorId)) {
                     try {
-                        //ensure score set properly
-                        if (request.body.score !== 1 && request.body.score !== -1) {
-                            throw new Error("Score must be +1 or -1.");
-                        }
+
+                        //calc how much new score differs from old one
+                        const changeInVoteScoring = request.body.score - vote.score;
 
                         //update linked post or comment rep
-                        const updatedLinkedModel = await updateLinkedModel(vote.linkedId, request.body.score);
+                        const updatedLinkedModel = await updateLinkedModel(vote.linkedId, changeInVoteScoring);
 
                         //only allow updating of score
                         const updatedVote = await Vote.findByIdAndUpdate(

@@ -155,7 +155,11 @@ export default function SinglePost({post}) {
 
     const handleVote = async (score) => {
 
+        //console.log(score);
+
         let voteObject;
+
+        let changeInVoteScoring;
 
         try {
 
@@ -167,6 +171,8 @@ export default function SinglePost({post}) {
                     voteId: vote._id,
                     authorId: user._id
                 });
+
+                changeInVoteScoring = voteObject.data.vote.score - vote.score
             }
             else
             {
@@ -176,12 +182,15 @@ export default function SinglePost({post}) {
                     linkedId: post._id,
                     authorId: user._id
                 }); 
+
+                changeInVoteScoring = voteObject.data.vote.score;
             }
 
             //set new vote properly
             setVote(voteObject.data.vote);
-            //set local post rep score
-            setRepScore(repScore + voteObject.data.vote.score);
+
+            //change local post rep score
+            setRepScore(repScore + changeInVoteScoring);
 
         } catch (error) {
             console.log(error);
@@ -287,7 +296,7 @@ export default function SinglePost({post}) {
                 }
               </div>
               <span className="singlePostTitleRow">
-                <div className="fa-stack fa-xl">
+                <div className="singlepostReputation fa-stack fa-xl">
                     <i className="fa-solid fa-diamond fa-xl"></i>
                     <div className="fa fa-stack-1x">
                         <div className="singlePostReputationNumber">
@@ -304,37 +313,37 @@ export default function SinglePost({post}) {
                     /> : 
                     <h1 className="singlePostTitle">
                         {title}
-                        {post?.username === user?.username && // ? indicates only do comparison if user != null
-                            <div className="singlePostIcons">
-                                <i className="singlePostIcon fa-regular fa-pen-to-square" onClick={()=>setUpdateMode(true)}></i>
-                                <i className="singlePostIcon fa-regular fa-trash-can" onClick={handleDelete}></i>
-                            </div>
-                        }
                     </h1>
                 }
-                {!updateMode && user &&
-                    <>
-                        <div className="singlePostScoringIcons lock">
+                {!updateMode && user && post?.username !== user?.username &&
+                    <div className="singlePostScoringIcons">
+                        <div className="singlePostScoringIconPairing lock">
                             <i 
-                                className={`singlePostScoringIcon ${chooseVoteIconClass(-1, true)} fa-regular fa-thumbs-up`}
-                                onClick={() => {handleVote(-1) }}
+                                className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
+                                onClick={() => {handleVote(0) }}
                             ></i>
                             <i 
                               className={`singlePostScoringIcon ${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
                               onClick={() => {handleVote(1) }}
                             ></i>
                         </div>
-                        <div className="singlePostScoringIcons lock">
+                        <div className="singlePostScoringIconPairing lock">
                             <i 
-                              className={`singlePostScoringIcon ${chooseVoteIconClass(1, true)} fa-regular fa-thumbs-down`}
-                              onClick={() => {handleVote(1) }}
+                              className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
+                              onClick={() => {handleVote(0) }}
                             ></i>
                             <i 
                               className={`singlePostScoringIcon ${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
                               onClick={() => {handleVote(-1) }}
                             ></i>
                         </div>
-                    </>
+                    </div>
+                }
+                {!updateMode && post?.username === user?.username &&
+                    <div className="singlePostIcons">
+                        <i className="singlePostIcon fa-regular fa-pen-to-square" onClick={()=>setUpdateMode(true)}></i>
+                        <i className="singlePostIcon fa-regular fa-trash-can" onClick={handleDelete}></i>
+                    </div>
                 }
               </span>
               <div className="singlePostInfo">
