@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import ReputationIcon from '../reputationIcon/ReputationIcon';
 import SocialMediaIcons from '../socialmediaicons/SocialMediaIcons';
 import './Sidebar.css'
 
@@ -34,14 +35,7 @@ export default function Sidebar({ user }) {
         <div className='sidebarItem' >
           <span className='sidebarTitle'>ABOUT ME</span>
           <span className='sidebarReputation'> 
-            <span className="fa-stack fa-xl">
-                <i className="fa-solid fa-star fa-xl"></i>
-                <span className="fa fa-stack-1x">
-                    <span className="sidebarReputationNumber">
-                        {user?.reputation}
-                    </span>
-                </span>
-            </span>
+          <ReputationIcon repScore={user?.reputation} isUser={true} fromSideBar={true} />
             {user ? user.username : "No user found"}
           </span> 
           <img

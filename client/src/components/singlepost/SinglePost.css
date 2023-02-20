@@ -20,26 +20,10 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    /*justify-content: space-between;*/
-
 }
 
 .singlepostReputation{
     flex: 25%;
-}
-
-/* Manual constant sizing of reputation lettering box */
-.singlePostReputationNumberBox{
-    box-sizing: content-box;
-    width: 56px;
-}
-
-.singlePostReputationNumber{
-    font-size: 10px; 
-    color: var(--color-white);
-    cursor: default;
-    margin-right: 20px;
-    margin-top: -1px;
 }
 
 .singlePostTitle{ /* should be centered under image */

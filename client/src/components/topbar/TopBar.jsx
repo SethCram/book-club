@@ -7,6 +7,7 @@ import ReactSwitch from 'react-switch'
 import "./TopBar.css"
 import { ThemeContext } from "../../App";
 import BC from "../../assets/favicon_io/android-chrome-512x512.png"
+import ReputationIcon from "../reputationIcon/ReputationIcon";
 
 export default function TopBar() {
     const { user, dispatch } = useContext(Context);
@@ -53,14 +54,7 @@ export default function TopBar() {
                 {
                     user ? (
                         <>
-                            <div className="fa-stack fa-xl">
-                                <i className="fa-solid fa-star fa-xl"></i>
-                                <div className="fa fa-stack-1x">
-                                    <div className="topListReputationNumber">
-                                        {user.reputation}
-                                    </div>
-                                </div>
-                            </div>
+                            <ReputationIcon repScore={user.reputation} isUser={true}/>
                             <Link to="/settings" className="link">
                                 <img
                                     className="topImg"

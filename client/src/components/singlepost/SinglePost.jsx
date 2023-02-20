@@ -6,6 +6,7 @@ import { Context } from "../../context/Context";
 import { imagesFolder } from "../../pages/settings/Settings";
 import Multiselect from "multiselect-react-dropdown";
 import { ThemeContext } from "../../App";
+import ReputationIcon from "../reputationIcon/ReputationIcon";
 
 export default function SinglePost({post}) {
     const { user } = useContext(Context);
@@ -340,13 +341,8 @@ export default function SinglePost({post}) {
                 }
               </div>
               <span className="singlePostTitleRow">
-                <div className="singlepostReputation fa-stack fa-xl">
-                      <i className={`${chooseReputationIconColor(repScore)} fa-solid fa-diamond fa-xl`}></i>
-                    <div className="singlePostReputationNumberBox fa fa-stack-1x">
-                        <div className="singlePostReputationNumber">
-                            {repScore}
-                        </div>
-                    </div>
+                <div className="singlepostReputation">
+                    <ReputationIcon repScore={repScore} isPost={true} />
                 </div>
                 {updateMode ?
                     <input type="text"

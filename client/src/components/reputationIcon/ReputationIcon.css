@@ -1,0 +1,22 @@
+/* Manual constant sizing of reputation lettering box */
+.reputationNumberBox{
+    box-sizing: content-box;
+    width: 56px;
+}
+
+.reputationNumber{
+    display:block; 
+    font-size: 10px;
+    margin-right: 20px;
+    color: var(--color-white);
+    cursor: default;
+}
+
+/* Different number centering */
+.reputationNumberOther{
+    margin-top: -2px;
+}
+
+.reputationNumberSideBar{
+    margin-top: 0px;
+}
