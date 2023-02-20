@@ -241,6 +241,33 @@ export default function SinglePost({post}) {
         }
     };
 
+    const chooseReputationIconColor = (score) => {
+        if (score < 0) {
+            return "reddishBrown";
+        }
+        else if (score < 10)
+        {
+            return; //keep inherent black icon color
+        }
+        else if (score < 50)
+        {
+            return "bronze";    
+        }
+        else if (score < 100)
+        {
+            return "silver";    
+        }
+        else if (score < 500)
+        {
+            return "gold";    
+        }
+        else
+        {
+            return "platinum";    
+        }
+
+    }
+
   return (
       <div className="singlePost">
           <div className="singlePostWrapper">
@@ -314,8 +341,8 @@ export default function SinglePost({post}) {
               </div>
               <span className="singlePostTitleRow">
                 <div className="singlepostReputation fa-stack fa-xl">
-                    <i className="fa-solid fa-diamond fa-xl"></i>
-                    <div className="fa fa-stack-1x">
+                      <i className={`${chooseReputationIconColor(repScore)} fa-solid fa-diamond fa-xl`}></i>
+                    <div className="singlePostReputationNumberBox fa fa-stack-1x">
                         <div className="singlePostReputationNumber">
                             {repScore}
                         </div>

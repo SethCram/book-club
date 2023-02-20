@@ -14,6 +14,9 @@
     --color-primary-variant: rgba(77, 181, 255, 0.4);
     --color-white: #fff;
     --color-gold: #be9656;
+    --color-silver: silver;
+    --color-bronze: #9b702b;
+    --color-platinum: #4db5ff;
 
     --transition: all 400ms ease;
 
@@ -36,4 +39,25 @@
 
 .indexDark{
   background-color: var(--color-bg-dark);
+}
+
+/* SCORING ICON COLORS */
+.reddishBrown{
+  color: brown;
+}
+
+.bronze{
+  color: var(--color-bronze);
+}
+
+.silver{
+  color: var(--color-silver);
+}
+
+.gold{
+  color: var(--color-gold);
+}
+
+.platinum{
+  color: var(--color-platinum);
 }

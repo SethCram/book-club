@@ -20,7 +20,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
 
 }
 
@@ -28,14 +28,18 @@
     flex: 25%;
 }
 
+/* Manual constant sizing of reputation lettering box */
+.singlePostReputationNumberBox{
+    box-sizing: content-box;
+    width: 56px;
+}
+
 .singlePostReputationNumber{
-    font-size: 10px;
-    display: block; 
-    top: -1px;
-    left: 16px;
+    font-size: 10px; 
     color: var(--color-white);
     cursor: default;
-    position: absolute;
+    margin-right: 20px;
+    margin-top: -1px;
 }
 
 .singlePostTitle{ /* should be centered under image */
@@ -78,13 +82,15 @@
 }
 
 .singlePostIcons{
-    float: right; /* float so horizontal w/ title */
     font-size: 16px;
+    flex: 25%;
 }
 
 .singlePostIcon{
+    float: right;
     margin-left: 10px;
     cursor: pointer;
+    margin: 0.5rem;
 }
 
 /* Implement inner class differences */
