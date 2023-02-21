@@ -25,7 +25,7 @@ export default function post({ post }) {
             }
           </div>
           <span className="postTitleRow">
-            <ReputationIcon repScore={post.reputation} isPost={true}/>
+            <ReputationIcon repScore={post.reputation} post={post}/>
             <div className="postTitle">
               <Link to={`singlepostpage/${post._id}`} className="link">{post.title}</Link> {/* obj id comes with _ before it */ }
             </div>

@@ -1,59 +1,45 @@
 import "./ReputationIcon.css"
 
-export default function ReputationIcon({repScore, isUser = false, isPost = false, fromSideBar= false}) {
-    const chooseReputationIconColor = (score) => {
-        if (score < 0) {
-            return "reddishBrown";
+export default function ReputationIcon({repScore, user = null, post = null, fromSideBar= false}) {
+    const chooseReputationIconColor = () => {
+
+        let badgeName;
+
+        if (user) {
+            badgeName = user.badgeName;
+        } else if (post) {
+            badgeName = post.badgeName;
         }
-        else if (score < 10)
-        {
-            return ""; //keep inherent black icon color
-        }
-        else if (score < 50)
-        {
-            return "bronze";    
-        }
-        else if (score < 100)
-        {
-            return "silver";    
-        }
-        else if (score < 500)
-        {
-            return "gold";    
-        }
-        else
-        {
-            return "platinum";    
+
+        switch (badgeName) {
+            case "red":
+                return "reddishBrown";
+            case "bronze":
+                return "bronze";
+            case "silver":
+                return "silver";
+            case "gold":
+                return "gold";
+            case "platinum":
+                return "platinum";
+            default:
+                return "";
         }
     }
 
     const chooseReputationIconShape = () => {
-        if (isUser) {
+        if (user) {
             return "fa-solid fa-star";
         }
-        else if (isPost) {
+        else if (post) {
             return "fa-solid fa-diamond";
-        }
-    }
-
-    const chooseReputationLetteringLocation = () => {
-        if (isPost) {
-            return "reputationNumberBox";
-        }
-        else if (fromSideBar)
-        {
-            return "reputationNumberSideBar";
-        }
-        else
-        {
-            return "";
         }
     }
 
   return (
     <div className="fa-stack fa-xl">
-        <i className={`${chooseReputationIconColor(repScore)} ${chooseReputationIconShape()} fa-xl`}></i>
-          <div className={`${isPost ? "reputationNumberBox" : ""} fa fa-stack-1x`}>
+        <i className={`${chooseReputationIconColor()} ${chooseReputationIconShape()} fa-xl`}></i>
+          <div className={`${post ? "reputationNumberBox" : ""} fa fa-stack-1x`}>
             <div className={`${fromSideBar ? "reputationNumberSideBar" : "reputationNumberOther" } reputationNumber`}>
                 {repScore}
             </div>

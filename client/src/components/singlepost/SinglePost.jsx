@@ -342,7 +342,7 @@ export default function SinglePost({post}) {
               </div>
               <span className="singlePostTitleRow">
                 <div className="singlepostReputation">
-                    <ReputationIcon repScore={repScore} isPost={true} />
+                    <ReputationIcon repScore={repScore} post={post} />
                 </div>
                 {updateMode ?
                     <input type="text"

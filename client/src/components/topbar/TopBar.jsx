@@ -54,7 +54,7 @@ export default function TopBar() {
                 {
                     user ? (
                         <>
-                            <ReputationIcon repScore={user.reputation} isUser={true}/>
+                            <ReputationIcon repScore={user.reputation} user={user}/>
                             <Link to="/settings" className="link">
                                 <img
                                     className="topImg"

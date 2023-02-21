@@ -50,20 +50,22 @@ const updateLinkedModelAuthorScore = async (username, additionalScore) => {
             //console.log(newScore);
             //console.log(author.reputation);
 
-            //if new score and current user rep would be inserted at diff indices, new badge must be inserted
+            //find where old+new scores would be inserted in ASC order arr
             const newScoreIndex = sortedIndex(allBadges, newScore);
             const oldScoreIndex = sortedIndex(allBadges, author.reputation);
 
             //console.log(newScoreIndex);
             //console.log(oldScoreIndex);
 
-            if (newScoreIndex !== oldScoreIndex) {
+            //if new score inserted at higher spot than old score, new badge must be inserted
+            if (newScoreIndex > oldScoreIndex) {
 
-                //find new badge using insertion index (should go for the lower bound one)
+                //find new badge using insertion index 
                 const newBadge = await Badge.findOne({
                     score: allBadges[newScoreIndex-1].score //can go one index above bounds
                 })
 
+                //should always work but just incase
                 if (newBadge) {
                    updateFilter["badgeName"] = newBadge.name; 
                 }

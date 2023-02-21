@@ -35,7 +35,7 @@ export default function Sidebar({ user }) {
         <div className='sidebarItem' >
           <span className='sidebarTitle'>ABOUT ME</span>
           <span className='sidebarReputation'> 
-          <ReputationIcon repScore={user?.reputation} isUser={true} fromSideBar={true} />
+          <ReputationIcon repScore={user?.reputation} user={user} fromSideBar={true} />
             {user ? user.username : "No user found"}
           </span> 
           <img
