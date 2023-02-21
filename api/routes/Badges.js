@@ -14,12 +14,22 @@ router.post("/", async (request, response) => {
     }
 })
 
-//query by any trivial search key
-router.get("/:searchKey", async (request, response) => {
+//query by score or name (both unique)
+router.get("/get/", async (request, response) => {
     try {
-        const badge = await Badge.findOne({
-            $get: request.params.searchKey
-        })
+
+        let badge = {};
+
+        if (request.query.score) {
+            badge = await Badge.findOne({
+                score: request.query.score
+            })
+        }
+        else if (request.query.name) {
+            badge = await Badge.findOne({
+                name: request.query.name
+            })
+        }
 
         response.status(200).json(badge);
     }

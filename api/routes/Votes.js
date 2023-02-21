@@ -1,24 +1,77 @@
 const router = require("express").Router();
+const Badge = require("../models/Badge");
 const Post = require("../models/Post");
+const User = require("../models/User");
 const Vote = require("../models/Vote");
+
+const updateLinkedModelAuthorScore = async (username, additionalScore) => {
+    //find the author and update their score
+    const author = await User.findOneAndUpdate(
+        {
+            username
+        },
+        {
+            $inc: {
+                reputation: additionalScore
+            }
+        }, 
+        { new: true }
+    )
+
+    return author;
+ }
 
 const updateLinkedModel = async (linkedId, score) => {
     //update linked post or comment
     const post = await Post.findById(linkedId);
 
-    //calc new score by adding to post rep
-    const newScore = post.reputation + score;
-
     let updatedModel = {};
+    let updatedAuthor = {};
 
     if (post)
     {
+        //calc new score by adding to post rep
+        const newScore = post.reputation + score;
+
+        //find badge if new score matches
+        const newBadge = await Badge.findOne({
+            score: newScore
+        })
+
+        let postUpdateFilter = {
+            reputation: newScore
+        };
+
+        //if badge found to update
+        if (newBadge) {
+            //if no current badge on post, update post w/ new badge
+            if (!post.badgeName)
+            {
+                postUpdateFilter["badgeName"] = newBadge.name;
+                //update linked model's author thru increasing score by half the new badge's
+                updatedAuthor = await updateLinkedModelAuthorScore(post.username, Math.round(newBadge.score / 2))
+            }
+            //if post has badge name and trying to update it to a diff badge
+            else if (post.badgeName != newBadge.name)
+            {
+                //retrieve post badge
+                const currPostBadge = await Badge.findOne({
+                    name: post.badgeName
+                })
+
+                //if updating too a higher badge score, allow it
+                if (currPostBadge.score < newBadge.score) {
+                    postUpdateFilter["badgeName"] = newBadge.name;
+                    //update linked model's author thru increasing score by half the new badge's
+                    updatedAuthor = await updateLinkedModelAuthorScore(post.username, Math.round(newBadge.score / 2))
+                }
+            }
+        }
+
         updatedModel = await Post.findByIdAndUpdate(
             linkedId,
             {
-                $set: {
-                    reputation: newScore
-                }
+                $set: postUpdateFilter
             },
             { new: true }
         );
@@ -29,7 +82,18 @@ const updateLinkedModel = async (linkedId, score) => {
         //const comment = await Comment.findById
     }
 
-    return updatedModel;
+    //if an updated author
+    if (Object.keys(updatedAuthor).length !== 0) {
+        //abstract away their pass and email fields
+        const { password, email, ...others } = updatedAuthor._doc;
+        return [updatedModel, others];
+    }
+    //if author not updated
+    else
+    {
+        return [updatedModel, updatedAuthor];
+    }
+    
 };
 
 //create vote and update linked post rep
@@ -52,8 +116,8 @@ router.post("/vote", async (request, response) => {
             //make sure requester isn't author of post
             //const authoredPost = await Post.findOne({})
 
-            //update linked post or comment rep
-            const updatedLinkedModel = await updateLinkedModel(request.body.linkedId, request.body.score);
+            //update linked post or comment rep and possibly author rep
+            const updatedModels = await updateLinkedModel(request.body.linkedId, request.body.score);
 
             //create and save new vote
             const newVote = new Vote({
@@ -66,7 +130,8 @@ router.post("/vote", async (request, response) => {
     
             response.status(200).json({
                 vote,
-                linkedModel: updatedLinkedModel
+                linkedModel: updatedModels[0],
+                updatedAuthor: updatedModels[1]
             });
         }
         //if found duplicate vote
@@ -100,7 +165,7 @@ router.put("/update/:voteId", async (request, response) => {
                         const changeInVoteScoring = request.body.score - vote.score;
 
                         //update linked post or comment rep
-                        const updatedLinkedModel = await updateLinkedModel(vote.linkedId, changeInVoteScoring);
+                        const updatedModels = await updateLinkedModel(vote.linkedId, changeInVoteScoring);
 
                         //only allow updating of score
                         const updatedVote = await Vote.findByIdAndUpdate(
@@ -115,7 +180,8 @@ router.put("/update/:voteId", async (request, response) => {
 
                         response.status(200).json({
                             vote: updatedVote,
-                            linkedModel: updatedLinkedModel
+                            linkedModel: updatedModels[0],
+                            updatedAuthor: updatedModels[1]
                         });
                     } catch (error) {
                         response.status(500).json(error);
