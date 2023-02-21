@@ -4,21 +4,109 @@ const Post = require("../models/Post");
 const User = require("../models/User");
 const Vote = require("../models/Vote");
 
+function sortedIndex(array, value) {
+
+    var low = 0,
+        high = array.length;
+
+    while (low < high) {
+        var mid = (low + high) >>> 1;
+        if (array[mid].score < value) low = mid + 1;
+        else high = mid;
+    }
+    return low;
+}
+
 const updateLinkedModelAuthorScore = async (username, additionalScore) => {
-    //find the author and update their score
-    const author = await User.findOneAndUpdate(
+    //find author
+    const author = await User.findOne(
         {
             username
-        },
-        {
-            $inc: {
-                reputation: additionalScore
-            }
-        }, 
-        { new: true }
-    )
+        }
+    );
 
-    return author;
+    let updatedAuthor = {};
+
+    //if author found
+    if (author) {
+
+        //calc new score
+        const newScore = author.reputation + additionalScore;
+
+        //default update filter incr's rep by additional score
+        let updateFilter = {
+            reputation: newScore
+        }
+
+        const ASC = 1;
+
+        //get all badges + sort them in ascending order
+        const allBadges = await Badge.find().sort({ score: ASC });
+
+        //make sure badges were retrieved and increasing score
+        if (allBadges && newScore > author.reputation) {
+            
+            //console.log(allBadges);
+            //console.log(newScore);
+            //console.log(author.reputation);
+
+            //if new score and current user rep would be inserted at diff indices, new badge must be inserted
+            const newScoreIndex = sortedIndex(allBadges, newScore);
+            const oldScoreIndex = sortedIndex(allBadges, author.reputation);
+
+            //console.log(newScoreIndex);
+            //console.log(oldScoreIndex);
+
+            if (newScoreIndex !== oldScoreIndex) {
+
+                //find new badge using insertion index (should go for the lower bound one)
+                const newBadge = await Badge.findOne({
+                    score: allBadges[newScoreIndex-1].score //can go one index above bounds
+                })
+
+                if (newBadge) {
+                   updateFilter["badgeName"] = newBadge.name; 
+                }
+            }
+        }
+
+        /*
+        //find badge if new score matches
+        const newBadge = await Badge.findOne({
+            score: newScore
+        })
+
+        //if new badge found to add
+        if (newBadge) {
+            //if no current badge on author, update w/ new badge
+            if (!author.badgeName) {
+                updateFilter["badgeName"] = newBadge.name;
+            }
+            //if post has badge name and trying to update it to a diff badge
+            else if (user.badgeName != newBadge.name) {
+                //retrieve user badge
+                const currPostBadge = await Badge.findOne({
+                    name: user.badgeName
+                })
+
+                //if updating too a higher badge score, allow it
+                if (currPostBadge.score < newBadge.score) {
+                    updateFilter["badgeName"] = newBadge.name;
+                }
+            }
+        }
+        */
+
+        //find the author and update their score
+        updatedAuthor = await User.findOneAndUpdate(
+            {
+                username
+            },
+            updateFilter, 
+            { new: true })
+    }
+
+    return updatedAuthor;
  }
 
 const updateLinkedModel = async (linkedId, score) => {
@@ -164,8 +252,12 @@ router.put("/update/:voteId", async (request, response) => {
                         //calc how much new score differs from old one
                         const changeInVoteScoring = request.body.score - vote.score;
 
+                        console.log("above linked model");
+
                         //update linked post or comment rep
                         const updatedModels = await updateLinkedModel(vote.linkedId, changeInVoteScoring);
+
+                        console.log("below linked model");
 
                         //only allow updating of score
                         const updatedVote = await Vote.findByIdAndUpdate(
