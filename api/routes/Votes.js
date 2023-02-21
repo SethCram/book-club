@@ -6,6 +6,9 @@ const updateLinkedModel = async (linkedId, score) => {
     //update linked post or comment
     const post = await Post.findById(linkedId);
 
+    //calc new score by adding to post rep
+    const newScore = post.reputation + score;
+
     let updatedModel = {};
 
     if (post)
@@ -14,7 +17,7 @@ const updateLinkedModel = async (linkedId, score) => {
             linkedId,
             {
                 $set: {
-                    reputation: post.reputation + score
+                    reputation: newScore
                 }
             },
             { new: true }

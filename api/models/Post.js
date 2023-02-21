@@ -31,7 +31,9 @@ const PostSchema = new mongoose.Schema(
                 message   : '{VALUE} is not an integer value'
             }
         },
-        
+        badgeName: {
+            type: String
+        }
     },
     { timestamps: true } //for updated and created at timestamps
 );

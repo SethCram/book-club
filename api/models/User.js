@@ -48,6 +48,9 @@ const UserSchema = new mongoose.Schema(
             type: String,
             default: ""
         },
+        badgeName: {
+            type: String
+        }
     },
     { timestamps: true } //for updated and created at timestamps
 );

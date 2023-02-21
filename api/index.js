@@ -7,6 +7,7 @@ const userRoute = require("./routes/Users");
 const postRoute = require("./routes/Posts");
 const categoryRoute = require("./routes/Categories");
 const voteRoute = require("./routes/Votes");
+const badgeRoute = require("./routes/Badges");
 const multer = require("multer");
 const path = require("path");
 const fs = require('fs')
@@ -60,6 +61,7 @@ app.use("/api/users", userRoute);
 app.use("/api/posts", postRoute);
 app.use("/api/categories", categoryRoute);
 app.use("/api/votes", voteRoute);
+app.use("/api/badges", badgeRoute);
 
 app.listen("5000", () => {
     console.log("Backend running.");
