@@ -12,7 +12,7 @@ function sortedIndex(array, value) {
 
     while (low < high) {
         var mid = (low + high) >>> 1;
-        if (array[mid].score < value) low = mid + 1;
+        if (array[mid].score <= value) low = mid + 1;
         else high = mid;
     }
     return low;
@@ -99,6 +99,7 @@ const updateUserRep = async (additionalScore, username = "", userId = "") => {
     }
  }
 
+//Update linked model always and author user if necessary
 const updateLinkedModel = async (linkedId, score) => {
     //update linked post or comment
     const post = await Post.findById(linkedId);
@@ -156,8 +157,10 @@ const updateLinkedModel = async (linkedId, score) => {
     }
     else
     {
-        //UPDATE LINKED COMMENT 
+        //UPDATE LINKED COMMENT LATER
         //const comment = await Comment.findById
+
+        throw new Error("Couldn't find linked Object by their id.");
     }
 
     return [updatedModel, updatedAuthor];
@@ -194,7 +197,7 @@ router.post("/vote", async (request, response) => {
             //check if number of votes by user is gonna fall on a threshold value
             if ((((await Vote.countDocuments({ authorId })) + 1) % 100) === 0) {
                 updatedVoter = await updateUserRep(
-                    5,
+                    10,
                     username= "", //not sure why but this is necessary
                     userId = authorId);
             }

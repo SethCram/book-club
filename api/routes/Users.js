@@ -108,8 +108,8 @@ router.get("/id/:userId", async (request, response) => {
         const user = await User.findById(request.params.userId);
         if (user)
         {
-            const { password, ...others} = user._doc; //dont show password 
-            response.status(200).json(others);
+            const { password, ...publicUser} = user._doc; //dont show password 
+            response.status(200).json(publicUser);
         }
         else
         {
@@ -129,8 +129,8 @@ router.get("/username/:username", async (request, response) => {
         const user = await User.findOne({username: request.params.username});
         if (user)
         {
-            const { password, email, ...others} = user._doc; //dont show password 
-            response.status(200).json(others);
+            const { password, email, ...publicUser} = user._doc; //dont show password 
+            response.status(200).json(publicUser);
         }
         else
         {

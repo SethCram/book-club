@@ -33,8 +33,8 @@ router.post("/login", async (request, response) => {
         validated = await bcrypt.compare(request.body.password, user.password); //compare passed in and pass + stored pass
         !validated && response.status(400).json("Wrong email or password");
 
-        const { password, ...others } = user._doc; //rm password from response
-        response.status(200).json(others);
+        const { password, ...publicUser } = user._doc; //rm password from response
+        response.status(200).json(publicUser);
     }
     catch (error) {
         //console.log(error);
