@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const mongoose = require("mongoose");
 const Badge = require("../models/Badge");
 const Post = require("../models/Post");
 const User = require("../models/User");
@@ -17,21 +18,30 @@ function sortedIndex(array, value) {
     return low;
 }
 
-const updateLinkedModelAuthorScore = async (username, additionalScore) => {
-    //find author
-    const author = await User.findOne(
-        {
-            username
-        }
-    );
 
-    let updatedAuthor = {};
+const updateUserRep = async (additionalScore, username = "", userId = "") => {
 
-    //if author found
-    if (author) {
+    let searchParam;
+
+    //setup searchParam depending on what's been passed in
+    if (username) {
+        searchParam = { username };
+        //console.log(username);
+    }
+    else if (userId) {
+        searchParam = { _id: mongoose.Types.ObjectId(userId) };
+    }
+    else {
+        throw new Error("Requires a userId or username to find user.");
+    }
+
+    const user = await User.findOne(searchParam);
+
+    //if user found
+    if (user) {
 
         //calc new score
-        const newScore = author.reputation + additionalScore;
+        const newScore = user.reputation + additionalScore;
 
         //default update filter incr's rep by additional score
         let updateFilter = {
@@ -44,15 +54,15 @@ const updateLinkedModelAuthorScore = async (username, additionalScore) => {
         const allBadges = await Badge.find().sort({ score: ASC });
 
         //make sure badges were retrieved and increasing score
-        if (allBadges && newScore > author.reputation) {
+        if (allBadges && newScore > user.reputation) {
             
             //console.log(allBadges);
             //console.log(newScore);
-            //console.log(author.reputation);
+            //console.log(user.reputation);
 
             //find where old+new scores would be inserted in ASC order arr
             const newScoreIndex = sortedIndex(allBadges, newScore);
-            const oldScoreIndex = sortedIndex(allBadges, author.reputation);
+            const oldScoreIndex = sortedIndex(allBadges, user.reputation);
 
             //console.log(newScoreIndex);
             //console.log(oldScoreIndex);
@@ -67,48 +77,26 @@ const updateLinkedModelAuthorScore = async (username, additionalScore) => {
 
                 //should always work but just incase
                 if (newBadge) {
-                   updateFilter["badgeName"] = newBadge.name; 
+                    updateFilter["badgeName"] = newBadge.name; 
+                    //console.log("update badge name to " + newBadge.name);
                 }
             }
         }
 
-        /*
-        //find badge if new score matches
-        const newBadge = await Badge.findOne({
-            score: newScore
-        })
-
-        //if new badge found to add
-        if (newBadge) {
-            //if no current badge on author, update w/ new badge
-            if (!author.badgeName) {
-                updateFilter["badgeName"] = newBadge.name;
-            }
-            //if post has badge name and trying to update it to a diff badge
-            else if (user.badgeName != newBadge.name) {
-                //retrieve user badge
-                const currPostBadge = await Badge.findOne({
-                    name: user.badgeName
-                })
-
-                //if updating too a higher badge score, allow it
-                if (currPostBadge.score < newBadge.score) {
-                    updateFilter["badgeName"] = newBadge.name;
-                }
-            }
-        }
-        */
-
-        //find the author and update their score
-        updatedAuthor = await User.findOneAndUpdate(
-            {
-                username
-            },
+        //find the user and update their score
+        const updatedUser = await User.findOneAndUpdate(
+            searchParam,
             updateFilter, 
             { new: true })
+        
+        const { password, email, ...publicUser } = updatedUser._doc;
+        
+        return publicUser;
     }
-
-    return updatedAuthor;
+    else
+    {
+        throw new Error("Couldn't find user to updated.")
+    }
  }
 
 const updateLinkedModel = async (linkedId, score) => {
@@ -139,7 +127,7 @@ const updateLinkedModel = async (linkedId, score) => {
             {
                 postUpdateFilter["badgeName"] = newBadge.name;
                 //update linked model's author thru increasing score by half the new badge's
-                updatedAuthor = await updateLinkedModelAuthorScore(post.username, Math.round(newBadge.score / 2))
+                updatedAuthor = await updateUserRep(Math.round(newBadge.score / 2), username=post.username)
             }
             //if post has badge name and trying to update it to a diff badge
             else if (post.badgeName != newBadge.name)
@@ -153,7 +141,7 @@ const updateLinkedModel = async (linkedId, score) => {
                 if (currPostBadge.score < newBadge.score) {
                     postUpdateFilter["badgeName"] = newBadge.name;
                     //update linked model's author thru increasing score by half the new badge's
-                    updatedAuthor = await updateLinkedModelAuthorScore(post.username, Math.round(newBadge.score / 2))
+                    updatedAuthor = await updateUserRep(Math.round(newBadge.score / 2), username=post.username)
                 }
             }
         }
@@ -172,32 +160,27 @@ const updateLinkedModel = async (linkedId, score) => {
         //const comment = await Comment.findById
     }
 
-    //if an updated author
-    if (Object.keys(updatedAuthor).length !== 0) {
-        //abstract away their pass and email fields
-        const { password, email, ...others } = updatedAuthor._doc;
-        return [updatedModel, others];
-    }
-    //if author not updated
-    else
-    {
-        return [updatedModel, updatedAuthor];
-    }
+    return [updatedModel, updatedAuthor];
     
 };
 
 //create vote and update linked post rep
 router.post("/vote", async (request, response) => {
+    
+    const authorId = request.body.authorId;
+    const linkedId = request.body.linkedId;
+    const score = request.body.score;
+    
     try {
 
-        if (request.body.score !== 1 && request.body.score !== -1) {
+        if (score !== 1 && score !== -1) {
             throw new Error("Score must be +1 or -1.");
         }
 
         //find a vote w/ user as author and same linkedId
         const foundDuplicateVote = await Vote.findOne({
-            authorId: request.body.authorId,
-            linkedId: request.body.linkedId,
+            authorId,
+            linkedId,
         });
 
         //if cant find duplicate vote
@@ -206,22 +189,35 @@ router.post("/vote", async (request, response) => {
             //make sure requester isn't author of post
             //const authoredPost = await Post.findOne({})
 
+            let updatedLinkedModel, updatedAuthor, updatedVoter;
+
+            //check if number of votes by user is gonna fall on a threshold value
+            if ((((await Vote.countDocuments({ authorId })) + 1) % 100) === 0) {
+                updatedVoter = await updateUserRep(
+                    5,
+                    username= "", //not sure why but this is necessary
+                    userId = authorId);
+            }
+
             //update linked post or comment rep and possibly author rep
-            const updatedModels = await updateLinkedModel(request.body.linkedId, request.body.score);
+            const updatedModels = await updateLinkedModel(linkedId, score);
+            updatedLinkedModel = updatedModels[0];
+            updatedAuthor = updatedModels[1];
 
             //create and save new vote
             const newVote = new Vote({
-                score: request.body.score,
-                linkedId: request.body.linkedId,
-                authorId:request.body.authorId
+                score,
+                linkedId,
+                authorId
             });
     
             const vote = await newVote.save();
     
             response.status(200).json({
                 vote,
-                linkedModel: updatedModels[0],
-                updatedAuthor: updatedModels[1]
+                linkedModel: updatedLinkedModel,
+                updatedAuthor,
+                updatedVoter
             });
         }
         //if found duplicate vote
@@ -231,6 +227,7 @@ router.post("/vote", async (request, response) => {
         }
         
     } catch (error) {
+        //console.log(error);
         response.status(500).json(error);
     }
 });
@@ -254,12 +251,8 @@ router.put("/update/:voteId", async (request, response) => {
                         //calc how much new score differs from old one
                         const changeInVoteScoring = request.body.score - vote.score;
 
-                        console.log("above linked model");
-
                         //update linked post or comment rep
                         const updatedModels = await updateLinkedModel(vote.linkedId, changeInVoteScoring);
-
-                        console.log("below linked model");
 
                         //only allow updating of score
                         const updatedVote = await Vote.findByIdAndUpdate(
@@ -278,6 +271,7 @@ router.put("/update/:voteId", async (request, response) => {
                             updatedAuthor: updatedModels[1]
                         });
                     } catch (error) {
+                        //console.log(error);
                         response.status(500).json(error);
                     }
                 }
@@ -300,89 +294,19 @@ router.put("/update/:voteId", async (request, response) => {
     }
 });
 
-/*
-//update vote and update linked post rep
-router.put("/update/:authorId", async (request, response) => {
-    //ensure author id's match
-    if (request.body.authorId === request.params.authorId) {
-
-        const vote = await Vote.findOne({
-            authorId: request.body.authorId,
-            linkedId: request.body.linkedId
-        });
-
-        console.log(vote);
-
-        if (vote) {
-
-            if (vote.score !== request.body.score) {
-
-                //allow altering of vote if requester is author (should prolly use JWT)
-                if (vote.authorId.equals(request.body.authorId)) {
-                    try {
-                        //ensure score set properly
-                        if (request.body.score !== 1 && request.body.score !== -1) {
-                            throw new Error("Score must be +1 or -1.");
-                        }
-
-                        //update linked post or comment rep
-                        const updatedLinkedModel = await updateLinkedModel(vote.linkedId, request.body.score);
-
-                        //only allow updating of score
-                        const updatedVote = await Vote.findOneAndUpdate(
-                            {
-                                authorId: request.body.authorId,
-                                linkedId: request.body.linkedId
-                            },
-                            {
-                                $set: {
-                                    score: request.body.score
-                                }
-                            },
-                            { new: true }
-                        );
-
-                        response.status(200).json({
-                            vote: updatedVote,
-                            linkedModel: updatedLinkedModel
-                        });
-                    } catch (error) {
-                        response.status(500).json(error);
-                    }
-                }
-                else {
-                    response.status(401).json("You can only update your own vote");
-                }
-            }
-            else
-            {
-                response.status(400).json("You can't update a vote using the same score");
-            }
-        }
-        else {
-            response.status(404).json("No vote found");
-        } 
-    }
-    else
-    {
-        response.status(401).json("You can only update your own vote");
-    }
-});
-*/
-
 //get vote (only author should be able to get their votes) (should use JWT)
 router.get("/get/", async (request, response) => {
 
     try {
         
         //find vote
-        const vote = await Vote.find({
+        const vote = await Vote.findOne({
             authorId: request.query.authorId,
             linkedId: request.query.linkedId
         });
 
         if (vote && vote.length !== 0) {
-            response.status(200).json(vote[0]);
+            response.status(200).json(vote);
         }
         else {
             response.status(404).json("Can't find vote.");
@@ -392,57 +316,44 @@ router.get("/get/", async (request, response) => {
     }
 });
 
-/*
-//create/update vote and update linked post rep
-router.post("/upsert", async (request, response) => {
+//Get All Vote (can be via authorId or linkedId or neither)
+router.get("/", async (request, response) => {
+
+    const userId = request.query.authorId;
+    const linkedId = request.query.linkedId;
+
+    let filter = {};
+
+    if (userId) {
+        filter["authorId"] = userId;
+    }
+
+    if (linkedId) {
+        filter["linkedId"] = linkedId;
+    }
+
     try {
+        
+        //find all votes matching filter
+        const votes = await Vote.find(filter);
 
-        if (request.body.score !== 1 && request.body.score !== -1) {
-            throw new Error("Score must be +1 or -1.");
-        }
-
-        //find a vote w/ user as author and same linkedId
-        const foundDuplicateVote = await Vote.findOne({
-            authorId: request.body.authorId,
-            linkedId: request.body.linkedId,
-        });
-
-        //if cant find duplicate vote
-        if (!foundDuplicateVote)
-        {
-            //update linked post or comment rep
-            const updatedLinkedModel = await updateLinkedModel(request.body.linkedId, request.body.score);
-
-            //create and save new vote
-            const vote = Vote.updateOne(
-                {
-                    score: request.body.score,
-                    linkedId: request.body.linkedId,
-                    authorId:request.body.authorId
-                },
-                {
-                    $set: {
-                        score: request.body.score
-                    }
-                },
-                { upsert: true, new: true  }
-            );
-    
-            response.status(200).json({
-                vote,
-                linkedModel: updatedLinkedModel
+        if (votes) {
+            //abstract away author of votes 
+            const anonVotes = votes.map((vote) => {
+                const { authorId, ...publicVote } = vote._doc;
+                return publicVote;
             });
+
+            response.status(200).json(anonVotes);
         }
-        //if found duplicate vote
         else
         {
-            response.status(403).json("Duplicate record can't be created.");
+            response.status(404).json("No votes found.");
         }
-        
+
     } catch (error) {
         response.status(500).json(error);
     }
-});
-*/
+})
 
 module.exports = router;
