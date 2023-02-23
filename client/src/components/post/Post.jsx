@@ -27,10 +27,10 @@ export default function post({ post }) {
           <span className="postTitleRow">
             <ReputationIcon repScore={post.reputation} post={post}/>
             <div className="postTitle">
-              <Link to={`singlepostpage/${post._id}`} className="link">{post.title}</Link> {/* obj id comes with _ before it */ }
+              <Link to={`singlepostpage/${post._id}`} className="link">{post.title}</Link> 
             </div>
           </span>
-          <div className="postAuthorDate">
+          <span className="postAuthorDate">
             <Link className="link" to={`/?username=${post?.username}`}>
               <b className="postAuthor">
                 {post.username }
@@ -39,7 +39,7 @@ export default function post({ post }) {
             <b className="postDate">
               {new Date(post.createdAt).toDateString()}
             </b>
-          </div>
+          </span>
       </div>
         <p className="postDescription">
           {post.description}

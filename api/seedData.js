@@ -66,6 +66,27 @@ const createFakeReputation = (badges) => {
     return repObject;
 }
 
+const createRandomPhotoUrl = (width, height) => {
+    
+    const listOfFuncts = [
+        faker.image.animals,
+        faker.image.abstract,
+        faker.image.business,
+        faker.image.city,
+        faker.image.fashion,
+        faker.image.food,
+        faker.image.image,
+        faker.image.nature,
+        faker.image.nightlife,
+        faker.image.people,
+        faker.image.sports,
+        faker.image.technics,
+        faker.image.transport,
+    ]
+
+    return faker.helpers.arrayElement(listOfFuncts)(width, height, true);
+}
+
 const createFakePosts = (numOf, authorsUsernames, categories, badges) => {
     
     if (numOf < authorsUsernames.length) {
@@ -79,8 +100,9 @@ const createFakePosts = (numOf, authorsUsernames, categories, badges) => {
         let tmpPost = {
             title: faker.helpers.unique(createFakeTitle), 
             description: faker.commerce.productDescription() + " " + faker.lorem.paragraphs(3),
-            photo: faker.image.animals(1234, 1234, true),
-            categories: []
+            photo: createRandomPhotoUrl(1234, 1234),
+            categories: [],
+            createdAt: faker.date.recent(365) //create dates within the past year
         }
 
         //ensure every author used atleast once in a fake post
@@ -259,17 +281,15 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
         badges,
     );
 
-    //insert new posts
-    const insertedPosts = await Post.insertMany(newPosts);
-    console.log(`${insertedPosts.length} posts inserted.`)
-
     //create new fake votes
     const newVotes = createFakeVotes(newPosts, newUsers);
 
     //add fake category to posting bc mandatory for each new post
     newCatNames.push(fakeCategoryName); 
 
-    //insert new users, cats, and votes to DB
+    //insert new posts, users, cats, and votes to DB
+    const insertedPosts = await Post.insertMany(newPosts);
+    console.log(`${insertedPosts.length} posts inserted.`)
     const insertedUsers = await User.insertMany(newUsers);
     console.log(`${insertedUsers.length} users inserted.`);
     const insertedCats = await Category.insertMany(newCats);

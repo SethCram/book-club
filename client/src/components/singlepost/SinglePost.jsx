@@ -328,30 +328,32 @@ export default function SinglePost({post}) {
                         {title}
                     </h1>
                 }
-                {!updateMode && user && post?.username !== user?.username &&
-                    <div className="singlePostScoringIcons">
-                        <div className="singlePostScoringIconPairing lock">
-                            <i 
-                                className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
-                                onClick={() => {handleVote(clearThumbsUpScore) }}
-                            ></i>
-                            <i 
-                              className={`singlePostScoringIcon ${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
-                              onClick={() => {handleVote(solidThumbsUpScore) }}
-                            ></i>
-                        </div>
-                        <div className="singlePostScoringIconPairing lock">
-                            <i 
-                              className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
-                              onClick={() => {handleVote(clearThumbsDownScore) }}
-                            ></i>
-                            <i 
-                              className={`singlePostScoringIcon ${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
-                              onClick={() => {handleVote(solidThumbsDownScore) }}
-                            ></i>
-                        </div>
-                    </div>
-                }
+                <div className="singlePostScoringIcons">
+                    {!updateMode && user && post?.username !== user?.username &&
+                        <>
+                            <div className="singlePostScoringIconPairing lock">
+                                <i 
+                                    className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
+                                    onClick={() => {handleVote(clearThumbsUpScore) }}
+                                ></i>
+                                <i 
+                                className={`singlePostScoringIcon ${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
+                                onClick={() => {handleVote(solidThumbsUpScore) }}
+                                ></i>
+                            </div>
+                            <div className="singlePostScoringIconPairing lock">
+                                <i 
+                                className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
+                                onClick={() => {handleVote(clearThumbsDownScore) }}
+                                ></i>
+                                <i 
+                                className={`singlePostScoringIcon ${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
+                                onClick={() => {handleVote(solidThumbsDownScore) }}
+                                ></i>
+                            </div>
+                        </>
+                    }
+                </div>
                 {!updateMode && post?.username === user?.username &&
                     <div className="singlePostIcons">
                         <i className="singlePostIcon fa-regular fa-pen-to-square" onClick={()=>setUpdateMode(true)}></i>
