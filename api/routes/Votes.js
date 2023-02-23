@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const mongoose = require("mongoose");
 const Badge = require("../models/Badge");
 const Post = require("../models/Post");
 const User = require("../models/User");
