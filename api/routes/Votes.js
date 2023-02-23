@@ -19,17 +19,13 @@ function sortedIndex(array, value) {
 }
 
 
-const updateUserRep = async (additionalScore, username = "", userId = "") => {
+const updateUserRep = async (additionalScore, username) => {
 
     let searchParam;
 
     //setup searchParam depending on what's been passed in
     if (username) {
         searchParam = { username };
-        //console.log(username);
-    }
-    else if (userId) {
-        searchParam = { _id: mongoose.Types.ObjectId(userId) };
     }
     else {
         throw new Error("Requires a userId or username to find user.");
@@ -170,19 +166,20 @@ const updateLinkedModel = async (linkedId, score) => {
 //create vote and update linked post rep
 router.post("/vote", async (request, response) => {
     
-    const authorId = request.body.authorId;
+    const username = request.body.username;
     const linkedId = request.body.linkedId;
     const score = request.body.score;
     
     try {
 
         if (score !== 1 && score !== -1) {
+            console.log(score);
             throw new Error("Score must be +1 or -1.");
         }
 
         //find a vote w/ user as author and same linkedId
         const foundDuplicateVote = await Vote.findOne({
-            authorId,
+            username,
             linkedId,
         });
 
@@ -192,26 +189,26 @@ router.post("/vote", async (request, response) => {
             //make sure requester isn't author of post
             //const authoredPost = await Post.findOne({})
 
-            let updatedLinkedModel, updatedAuthor, updatedVoter;
+            let updatedVoter;
 
             //check if number of votes by user is gonna fall on a threshold value
-            if ((((await Vote.countDocuments({ authorId })) + 1) % 100) === 0) {
+            if ((((await Vote.countDocuments({ username })) + 1) % 100) === 0) {
                 updatedVoter = await updateUserRep(
                     10,
-                    username= "", //not sure why but this is necessary
-                    userId = authorId);
+                    username
+                );
             }
 
             //update linked post or comment rep and possibly author rep
             const updatedModels = await updateLinkedModel(linkedId, score);
-            updatedLinkedModel = updatedModels[0];
-            updatedAuthor = updatedModels[1];
+            const updatedLinkedModel = updatedModels[0];
+            const updatedAuthor = updatedModels[1];
 
             //create and save new vote
             const newVote = new Vote({
                 score,
                 linkedId,
-                authorId
+                username
             });
     
             const vote = await newVote.save();
@@ -230,7 +227,7 @@ router.post("/vote", async (request, response) => {
         }
         
     } catch (error) {
-        //console.log(error);
+        console.log(error);
         response.status(500).json(error);
     }
 });
@@ -248,7 +245,7 @@ router.put("/update/:voteId", async (request, response) => {
             if (vote.score !== request.body.score) {
 
                 //allow altering of vote if requester is author (should prolly use JWT)
-                if (vote.authorId.equals(request.body.authorId)) {
+                if (vote.username === request.body.username) {
                     try {
 
                         //calc how much new score differs from old one
@@ -274,7 +271,7 @@ router.put("/update/:voteId", async (request, response) => {
                             updatedAuthor: updatedModels[1]
                         });
                     } catch (error) {
-                        //console.log(error);
+                        console.log(error);
                         response.status(500).json(error);
                     }
                 }
@@ -304,7 +301,7 @@ router.get("/get/", async (request, response) => {
         
         //find vote
         const vote = await Vote.findOne({
-            authorId: request.query.authorId,
+            username: request.query.username,
             linkedId: request.query.linkedId
         });
 
@@ -319,16 +316,16 @@ router.get("/get/", async (request, response) => {
     }
 });
 
-//Get All Vote (can be via authorId or linkedId or neither)
+//Get All Vote (can be via username or linkedId or neither)
 router.get("/", async (request, response) => {
 
-    const userId = request.query.authorId;
+    const username = request.query.username;
     const linkedId = request.query.linkedId;
 
     let filter = {};
 
-    if (userId) {
-        filter["authorId"] = userId;
+    if (username) {
+        filter["username"] = username;
     }
 
     if (linkedId) {
@@ -343,7 +340,7 @@ router.get("/", async (request, response) => {
         if (votes) {
             //abstract away author of votes 
             const anonVotes = votes.map((vote) => {
-                const { authorId, ...publicVote } = vote._doc;
+                const { username, ...publicVote } = vote._doc;
                 return publicVote;
             });
 

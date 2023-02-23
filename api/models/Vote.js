@@ -14,8 +14,8 @@ const VoteSchema = new mongoose.Schema(
             type: mongoose.ObjectId,
             required: true,
         },
-        authorId: {
-            type: mongoose.ObjectId,
+        username: {
+            type: String,
             required: true,
         }
     }

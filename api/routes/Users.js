@@ -79,7 +79,7 @@ router.delete("/:userId", async (request, response) => { //async bc dont know ho
                 //await Post.deleteMany({ username: user.username });
 
                 //delete all their votes
-                await Vote.deleteMany({ authorId: request.params.userId });
+                await Vote.deleteMany({ username: request.body.username });
                 
                 await User.findByIdAndDelete(request.params.userId); 
                 response.status(200).json("User and their votes have been deleted");

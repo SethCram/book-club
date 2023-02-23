@@ -61,7 +61,7 @@ export default function SinglePost({post}) {
                //get vote
                 const vote = await axios.get(`/votes/get/`, {
                     params: {
-                        authorId: user._id,
+                        username: user.username,
                         linkedId: post._id
                     }
                 });
@@ -187,7 +187,7 @@ export default function SinglePost({post}) {
                     score,
                     linkedId: post._id,
                     voteId: vote._id,
-                    authorId: user._id
+                    username: user.username
                 });
 
                 changeInVoteScoring = voteObject.data.vote.score - vote.score
@@ -198,7 +198,7 @@ export default function SinglePost({post}) {
                 voteObject = await axios.post("/votes/vote", {
                     score,
                     linkedId: post._id,
-                    authorId: user._id
+                    username: user.username
                 }); 
 
                 changeInVoteScoring = voteObject.data.vote.score;
@@ -241,33 +241,6 @@ export default function SinglePost({post}) {
             } 
         }
     };
-
-    const chooseReputationIconColor = (score) => {
-        if (score < 0) {
-            return "reddishBrown";
-        }
-        else if (score < 10)
-        {
-            return; //keep inherent black icon color
-        }
-        else if (score < 50)
-        {
-            return "bronze";    
-        }
-        else if (score < 100)
-        {
-            return "silver";    
-        }
-        else if (score < 500)
-        {
-            return "gold";    
-        }
-        else
-        {
-            return "platinum";    
-        }
-
-    }
 
   return (
       <div className="singlePost">

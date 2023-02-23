@@ -94,7 +94,7 @@ export default function Settings() {
 
         try {
             await axios.delete("/users/" + user._id, {
-                data: { userId: user._id }
+                data: { userId: user._id, username: user.username }
             });
 
             //auto-navigates back to register page after deletion for some reason
