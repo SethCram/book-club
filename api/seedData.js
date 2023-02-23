@@ -7,6 +7,7 @@ const Post = require('./models/Post');
 const Category = require('./models/Category');
 const User = require('./models/User');
 const Vote = require('./models/Vote');
+const Badge = require('./models/Badge');
 
 //load env file contents
 dotenv.config();
@@ -24,8 +25,28 @@ const createFakeTitle = () => {
     return faker.commerce.productAdjective() + " " + faker.animal.type();
 };
 
-const createFakePosts = (numOf, authorsUsernames, categories) => {
+function sortedIndex(array, value) {
+
+    var low = 0,
+        high = array.length;
+
+    while (low < high) {
+        var mid = (low + high) >>> 1;
+        if (array[mid].score <= value) low = mid + 1;
+        else high = mid;
+    }
+    return low;
+}
+
+//inclusive random funct on both bounds
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
+  }
+
+const createFakePosts = (numOf, authorsUsernames, categories, badges, numOfBadges) => {
     let posts = [];
+
+    let badgesLeft = numOfBadges;
 
     for (let i = 0; i < numOf; i++) {
         //create baseline post
@@ -41,27 +62,57 @@ const createFakePosts = (numOf, authorsUsernames, categories) => {
             posts[i].categories.push({name: catName})
         });
         //ensure each fake post tagged w/ "Fake"
-        posts[i].categories.push({name : fakeCategoryName});
+        posts[i].categories.push({ name: fakeCategoryName });
+
+        //if any badges left, 
+        if (badgesLeft > 0) {
+            //generate a random rep
+            const postRep = faker.helpers.arrayElement(
+                [
+                    getRndInteger(-50, -1),
+                    getRndInteger(10, 50),
+                    getRndInteger(51, 100),
+                    getRndInteger(101, 500)
+                ]
+            );
+            
+            posts[i]["reputation"] = postRep;
+
+            //assign the approp badge name for range
+            let badgeIndex = sortedIndex(badges, postRep);
+            if (badgeIndex !== 0) {
+                badgeIndex -= 1;
+            }
+            posts[i]["badgeName"] = badges[badgeIndex].name;
+
+            badgesLeft -= 1;
+        }
+        
+        //badgeIndex could be 0 if number less than -1?
     }
 
     return posts;
 };
 
+const createFakeUser = (password) => {
+    return {
+        username: faker.helpers.unique( faker.internet.userName ),
+        email: faker.helpers.unique( faker.internet.email ),
+        password: password,
+        profilePicture: faker.internet.avatar(),
+        bio: faker.company.catchPhrase(),
+        instagramLink: faker.internet.url(),
+        twitterLink: faker.internet.url(),
+        facebookLink: faker.internet.url(),
+        pinterestLink: faker.internet.url(),
+    }
+}
+
 const createFakeUsers = (numOf, password) => {
     let users = [];
 
     for (let i = 0; i < numOf; i++) {
-        users.push({
-            username: faker.helpers.unique( faker.internet.userName ),
-            email: faker.helpers.unique( faker.internet.email ),
-            password: password,
-            profilePicture: faker.internet.avatar(),
-            bio: faker.company.catchPhrase(),
-            instagramLink: faker.internet.url(),
-            twitterLink: faker.internet.url(),
-            facebookLink: faker.internet.url(),
-            pinterestLink: faker.internet.url(),
-        });
+        users.push(createFakeUser(password));
     }
 
     return users;
@@ -79,7 +130,77 @@ const createFakeCategories = (numOf) => {
     return cats;
 };
 
-const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
+//Creates numsOfEachBadge 
+// assumes badges r in descending order
+//const createFakeVotes = (numsOfEachBadge, posts, badgesDescOrdered, votersPassword) => {
+const createFakeVotes = (posts, users) => {
+    let votes = [];
+
+    //for each post
+    for (let j = 0; j < posts.length; j++) {
+        //have each user vote on it
+        for (let i = 0; i < users.length; i++) {
+            //if they arent the author
+            if (posts[j].username !== users[i].username) {
+                votes.push({
+                    score: faker.helpers.arrayElement([-1,1]),
+                    linkedId: mongoose.Types.ObjectId(posts[j]._id), //check if object id or str and whether it matters
+                    username: users[i].username
+                });
+            }
+        }        
+    }
+
+    return votes
+
+    /*
+    let voteScore;
+    let numOfVotesRequired;
+    let voters = [];
+
+    //Walk thru badge creation mult times
+    for (let k = 0; k < numsOfEachBadge; k++) {
+
+        //walk thru each badge that has a post left
+        for (let i = 0; i < badgesDescOrdered.length && i < posts.length; i++) {
+
+            //number of votes required to achieve this badge
+            numOfVotesRequired = Math.abs(badgesDescOrdered[i].score);
+
+            //create enough voters and votes for 1 post to reach a badge
+            for (let j = 0; j < numOfVotesRequired; j++) {
+
+                //if first iteration, should be highest badge score
+                // so create a user for every vote 
+                // as long as already haven't previously 
+                // (reuse these voters in subsequent votes)
+                if (i == 0 && voters.length < badgesDescOrdered[i].score) {
+                    voters.push(createFakeUser(votersPassword));
+                }
+
+                //if trying to get a negative scored badge
+                if (badgesDescOrdered[i].score < 0) {
+                    voteScore = -1;
+                }
+                //trying to get positively scored badge
+                else
+                {
+                    voteScore = 1;
+                }
+
+                votes.push({
+                    score: voteScore,
+                    linkedId: posts[i+k*i]._id, //check if object id or str and whether it matters
+                    username: voters[j].username
+                });
+            }
+        }
+    }
+    return [votes, voters]
+    */
+};
+
+const seedDB = async (numOfPosts, numOfUsers, numOfCats, numOfBadges) => {
 
     //create new cats and get their names
     const newCats = createFakeCategories(
@@ -98,26 +219,44 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
         newUsernames.push(newUsers[i].username);
     }
 
+    const badges = await Badge.find().sort({ score: "ascending" });
+
     //create new posts according to created users and cats
     const newPosts = createFakePosts(
         numOf = numOfPosts,
         authorsUsernames = newUsernames,
-        categories = newCatNames
+        categories = newCatNames,
+        badges,
+        numOfBadges = numOfBadges
     );
+
+    const insertedPosts = await Post.insertMany(newPosts);
+    
+    console.log(`${insertedPosts.length} posts inserted.`)
+
+    const newVotes = createFakeVotes(newPosts, newUsers);
+
+    /*
+    //sort badges in descending order
+    const badges = await Badge.find().sort({ score: 'descending' });
+
+    const [newVotes, newVoters] = createFakeVotes(
+        numsOfEachBadge,
+        insertedPosts,
+        badges,
+        hashedPassword
+    );
+    //combine both voters + authors into new users group
+    const newUsers = newAuthors.concat(newVoters);
+    */
 
     //add fake category to posting bc mandatory for each new post
     newCatNames.push(fakeCategoryName); 
-    
-    //if cant find fake category, add it for creation 
-    //if (!Category.find({ name: fakeCategoryName }))
-    //{
-    //    newCats.push({ name: fakeCategoryName });
-    //}
 
     //insert new posts, users, and cats to DB
-    await Post.insertMany(newPosts).then(console.log(`${numOfPosts} posts inserted.`));
-    await User.insertMany(newUsers).then(console.log(`${numOfUsers} users inserted.`));
+    await User.insertMany(newUsers).then(console.log(`${newUsers.length} users inserted.`));
     await Category.insertMany(newCats).then(console.log(`${newCats.length} categories inserted.`));
+    await Vote.insertMany(newVotes).then(console.log(`${newVotes.length} votes inserted.`));
 };
 
 const removeFakeData = async () => {
@@ -139,8 +278,11 @@ const removeFakeData = async () => {
         }
     };
 
-    const deletedVotesCount = await Vote.deleteMany(userFilter);
-    console.log(`Deleted ${deletedVotesCount.deletedCount} votes with fake usernames.`);
+    //delete all posts marked as "Fake"
+    const deletedPostsCount = await Post.deleteMany({
+        'categories.name': fakeCategoryName
+    });
+    console.log(`Deleted ${deletedPostsCount.deletedCount} posts with a fake category.`);
 
     //delete all users w/ a fake username
     const deletedUsersCount = await User.deleteMany(userFilter);
@@ -154,11 +296,8 @@ const removeFakeData = async () => {
     });
     console.log(`Deleted ${deletedCatsCount.deletedCount} categories linked to fake category names.`);
 
-    //delete all posts marked as "Fake"
-    const deletedPostsCount = await Post.deleteMany({
-        'categories.name': fakeCategoryName
-    });
-    console.log(`Deleted ${deletedPostsCount.deletedCount} posts with a fake category.`);
+    const deletedVotesCount = await Vote.deleteMany(userFilter);
+    console.log(`Deleted ${deletedVotesCount.deletedCount} votes with fake usernames.`);
 };
 
 const closeConnection = () => {
@@ -168,49 +307,54 @@ const closeConnection = () => {
     //mongoose.disconnect()
 }
 
-try {
-    switch(process.argv[2]){
-        case '-i':
+const main = async (process) => {
+
+    var argv = require('minimist-lite')(process.argv.slice(2));
+    //console.log(argv);
+    
+    try {
+        
+        //defaults to 5 posts created by 1 user linked to 'Fake' cat and 0 badges
+        let numOfPosts = 5, numOfUsers = 1, numOfCats = 0, numOfBadges = 0;
+    
+        //if inserting data
+        if (argv.i) {
+
             console.log("Inserting fake data.");
+            
+            if (argv.p) {
+                numOfPosts = argv.p;
+            }
+    
+            if (argv.u) {
+                numOfUsers = argv.u;
+            }
+    
+            if (argv.c) {
+                numOfCats = argv.c;
+            }
 
-            //defaults to 1 post created by 1 user with only 'Fake' cat
-            let numOfPosts = 1, numOfUsers = 1, numOfCats = 0;
-
-            //set amt of data to create based on cmd line args
-            if (
-                process.argv[3] && process.argv[3] === "-p" &&
-                process.argv[4] && !isNaN(process.argv[4]) //if nxt arg is digit
-            ) {
-                numOfPosts = process.argv[4];
-            };
-            if (
-                process.argv[5] && process.argv[5] === "-u" &&
-                process.argv[6] && !isNaN(process.argv[6]) //if nxt arg is digit
-            ) {
-                numOfUsers = process.argv[6];
-            };
-            if (
-                process.argv[7] && process.argv[7] === "-c" &&
-                process.argv[8] && !isNaN(process.argv[8]) //if nxt arg is digit
-            ) {
-                numOfCats = process.argv[8];
-            };
-
-            seedDB(numOfPosts, numOfUsers, numOfCats).then(closeConnection);
-            break;
-        
-        case '-d':
-            console.log("Deleting all fake data.");
-            removeFakeData().then(closeConnection);
-            break;
-        
-        default:
-            console.log("Please pass a viable option to the script (-i or -d).");
-            closeConnection();
-            break;
+            if (argv.b) {
+                numOfBadges = argv.b;
+            }
+    
+            await seedDB(numOfPosts, numOfUsers, numOfCats, numOfBadges);
+        }
+        //if deleting data
+        else if (argv.d) {
+            await removeFakeData();
+        }
+        else {
+            console.log("Please pass a viable option to the script (-i for insertion or -d for deletion).");
+        }
+    
+    } catch (error) {
+        console.log(error); 
+    } finally {
+        closeConnection();
     }
-} catch (error) {
-    console.log(error);
-    closeConnection(); //close just incase not closed before (what if already closed?)
-} 
+}
+main(process);
+
+
 

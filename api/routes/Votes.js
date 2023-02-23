@@ -65,17 +65,12 @@ const updateUserRep = async (additionalScore, username) => {
 
             //if new score inserted at higher spot than old score, new badge must be inserted
             if (newScoreIndex > oldScoreIndex) {
-
-                //find new badge using insertion index 
-                const newBadge = await Badge.findOne({
-                    score: allBadges[newScoreIndex-1].score //can go one index above bounds
-                })
-
-                //should always work but just incase
-                if (newBadge) {
-                    updateFilter["badgeName"] = newBadge.name; 
-                    //console.log("update badge name to " + newBadge.name);
+                //take care of score index if not zero
+                if (newScoreIndex !== 0) {
+                    newScoreIndex -= 1;
                 }
+
+                updateFilter["badgeName"] = allBadges[newScoreIndex].name; 
             }
         }
 
