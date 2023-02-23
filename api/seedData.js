@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const Post = require('./models/Post');
 const Category = require('./models/Category');
 const User = require('./models/User');
+const Vote = require('./models/Vote');
 
 //load env file contents
 dotenv.config();
@@ -132,29 +133,39 @@ const removeFakeData = async () => {
         )); //can contain duplicates
     const fakeCategoryNames = fakeCategoryNamesUnflattened.flat(Infinity);
 
-    //delete all users w/ a fake username
-    await User.deleteMany({
+    const userFilter = {
         username: {
             $in: fakeUsernames
         }
-    }).then(console.log("Deleted all users with fake usernames."));
+    };
+
+    const deletedVotesCount = await Vote.deleteMany(userFilter);
+    console.log(`Deleted ${deletedVotesCount.deletedCount} votes with fake usernames.`);
+
+    //delete all users w/ a fake username
+    const deletedUsersCount = await User.deleteMany(userFilter);
+    console.log(`Deleted ${deletedUsersCount.deletedCount} users with fake usernames.`);
 
     //delete all categories connected to a fake category
-    await Category.deleteMany({
+    const deletedCatsCount = await Category.deleteMany({
         name: {
             $in: fakeCategoryNames
         }
-    }).then(console.log("Deleted all categories linked to fake category names."));
+    });
+    console.log(`Deleted ${deletedCatsCount.deletedCount} categories linked to fake category names.`);
 
     //delete all posts marked as "Fake"
-    await Post.deleteMany({
+    const deletedPostsCount = await Post.deleteMany({
         'categories.name': fakeCategoryName
-    }).then(console.log("Deleted all posts with a fake category."));
+    });
+    console.log(`Deleted ${deletedPostsCount.deletedCount} posts with a fake category.`);
 };
 
 const closeConnection = () => {
-    console.log("Connection closed.");
-    mongoose.connection.close();
+    mongoose.connection.close()
+        .then(console.log("Connection closed.")); 
+    
+    //mongoose.disconnect()
 }
 
 try {
