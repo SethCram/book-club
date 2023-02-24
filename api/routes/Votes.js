@@ -167,7 +167,7 @@ router.post("/vote", async (request, response) => {
     try {
 
         if (score !== 1 && score !== -1) {
-            console.log(score);
+            //console.log(score);
             throw new Error("Score must be +1 or -1.");
         }
 

@@ -204,6 +204,18 @@ export default function SinglePost({post}) {
                 changeInVoteScoring = voteObject.data.vote.score;
             }
 
+            console.log(voteObject);
+
+            //if linkedModel badgeName, update it locally (have to use context API ?)
+            if (voteObject.data.linkedModel.badgeName) {
+                post["badgeName"] = voteObject.data.linkedModel.badgeName;
+            }
+
+            if (voteObject.data.updatedAuthor) {
+                //need to update sidebar user reputation somehow 
+                console.log("Sidebar author rep should be updated");
+            }
+
             //set new vote properly
             setVote(voteObject.data.vote);
 
