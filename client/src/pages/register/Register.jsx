@@ -39,6 +39,7 @@ export default function Register() { //could use context API to register but not
                 type="text"
                 placeholder="Enter your username..." 
                 onChange={event=>setUsername(event.target.value)} 
+                required
               />
               <label>Email</label>
               <input
@@ -46,6 +47,7 @@ export default function Register() { //could use context API to register but not
                 type="text"
                 placeholder="Enter your email..." 
                 onChange={event=>setEmail(event.target.value)}
+                required
               />
               <label>Password</label>
               <input
@@ -53,6 +55,7 @@ export default function Register() { //could use context API to register but not
                 type="password"
                 placeholder="Enter your password..." 
                 onChange={event=>setPassword(event.target.value)}
+                required
               />
               <button className="registerRegisterButton" type="submit">Register</button>
           </form>

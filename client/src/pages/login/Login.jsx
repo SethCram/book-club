@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { Link } from "react-router-dom"
 import { LoginFailure, LoginStart, LoginSuccessful } from "../../context/Actions";
 import { Context } from "../../context/Context";
@@ -10,6 +10,7 @@ export default function Login() {
   const emailReference = useRef(); //could login using username too (email unique so can use)
   const passwordReference = useRef();
   const { dispatch, isFetching } = useContext(Context);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -31,6 +32,9 @@ export default function Login() {
       window.location.replace("/"); //window.location.assign("/") //window.open("/", "_self");
 
     } catch (error) {
+
+      setError(error.response.data);
+
       //tell user context of login failure
       dispatch(LoginFailure());
     }
@@ -46,14 +50,16 @@ export default function Login() {
             type="text"
             placeholder="Enter your email..." 
             ref={emailReference}
-            />
+            required
+          />
           <label>Password</label>
           <input
             className="loginInput"
             type="password"
             placeholder="Enter your password..." 
             ref={passwordReference}
-            />
+            required
+          />
           <button
             className="loginLoginButton"
             type="submit"
@@ -65,6 +71,7 @@ export default function Login() {
           <button className="loginRegisterButton">
             <Link to="/register" className="link">Register</Link>
           </button>
+      {error && <span style={{ color: "red", marginTop: "10px", fontWeight: "700" }}>{error}</span>}
       </div>
       
   )
