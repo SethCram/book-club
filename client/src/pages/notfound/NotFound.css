@@ -19,13 +19,16 @@
     padding: 50px;
 }
 
-.notFoundDetails {
+.notFoundItem {
     padding: 50px;
+}
+
+#light .notFoundError{
+    color: black;
 }
 
 .notFoundLink{
     color: black;
-    padding: 50px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
