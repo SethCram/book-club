@@ -27,6 +27,9 @@ export default function Login() {
       //tell user context of login success
       dispatch(LoginSuccessful(response.data));
 
+      //required to clear url, but have choppy transition: 
+      window.location.replace("/"); //window.location.assign("/") //window.open("/", "_self");
+
     } catch (error) {
       //tell user context of login failure
       dispatch(LoginFailure());
