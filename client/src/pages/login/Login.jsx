@@ -10,10 +10,12 @@ export default function Login() {
   const emailReference = useRef(); //could login using username too (email unique so can use)
   const passwordReference = useRef();
   const { dispatch, isFetching } = useContext(Context);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    setError("");
     
     //start login according to context
     dispatch(LoginStart());

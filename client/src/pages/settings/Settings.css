@@ -84,8 +84,18 @@
     cursor: pointer;
 }
 
-.settingsSubmitMessage{
-    color: green;
+.settingsMessages{
     text-align: center;
     margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.settingsSubmitMessage{
+    color: green;
+    font-weight: "700";
+}
+
+.settingsFailureMessage{
+    color: red;
+    font-weight: "700";
 }

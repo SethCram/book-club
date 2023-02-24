@@ -13,6 +13,7 @@ export default function Settings() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [success, setSuccess] = useState(false);
+    const [error, setError] = useState("");
     const [bio, setBio] = useState("");
     const [instagramLink, setInstagramLink] = useState("");
     const [twitterLink, setTwitterLink] = useState("");
@@ -40,6 +41,8 @@ export default function Settings() {
     
     const handleUpdate = async (event) => {
         event.preventDefault();
+
+        setError("");
 
         dispatch(UserUpdateStart());
 
@@ -70,7 +73,7 @@ export default function Settings() {
             try {
                 await axios.post("/upload", data);
             } catch (error) {
-                
+                console.log(error);
             }
         }
 
@@ -80,9 +83,12 @@ export default function Settings() {
 
             //window.location.reload(); //reload page
 
+            setPassword("");
+
             setSuccess(true);
             dispatch(UserUpdateSuccessful(response.data));
         } catch (error) {
+            setError(error.response.data);
             dispatch(UserUpdateFailure());
         }
         
@@ -185,11 +191,16 @@ export default function Settings() {
                   <label>Password</label>
                   <input
                       type="password"
-                      placeholder="Enter a new password..."
+                      placeholder="Verify your password..."
                       onChange={(event) => { setPassword(event.target.value) }}
+                      value={password}
+                      required
                   />
                   <button className="settingsSubmit" type="submit">Update</button>
-                  {success && <span className="settingsSubmitMessage">Your profile has been updated</span>}
+                  <div className="settingsMessages">
+                    {success && <span className="settingsSubmitMessage">Your profile has been updated</span>}
+                    {error && <span className="settingsFailureMessage">{error}</span>}
+                  </div>
               </form>
           </div>
           <SideBar user={user} />

@@ -6,59 +6,76 @@ const Vote = require("../models/Vote");
 
 //Update user
 router.put("/:userId", async (request, response) => { //async bc dont know how long it'll take
-    
+
     //can be safer through using JWT = Jason Web Token
-    if(request.body.userId === request.params.userId) //compare url id to body id
+    if (request.body.userId === request.params.userId) //compare url id to body id
     {
         //if password passed in, hash it
+        //if (request.body.password) {
+        //    const salt = await bcrypt.genSalt(10);
+        //    request.body.password = await bcrypt.hash(request.body.password, salt); //change requested password to hashed version
+        //}
+
+        //if password sent in
         if (request.body.password) {
-            const salt = await bcrypt.genSalt(10);
-            request.body.password = await bcrypt.hash(request.body.password, salt); //change requested password to hashed version
-        }
+            
+            //remove password from update params
+            const { password, ...updatedParams } = request.body;
 
-        try {
-
+            //find the user
             const user = await User.findById(request.params.userId);
 
-            if (user )
-            {
-                //if changing username
-                if (user.username != request.body?.username) {
+            //if user found
+            if (user) {
+                //if password is correct
+                if (await bcrypt.compare(password, user.password)) {
+                
+                    //if changing username
+                    if (user.username != request.body?.username) {
 
-                    //update posts and their usernames
+                        //update posts and their usernames
+                        try {
+                            await Post.updateMany(
+                                { username: user.username },
+                                { username: request.body.username }
+                            );
+                        } catch (error) {
+                            response.status(500).json("Failed to update their posts usernames, so user not updated.");
+                        }
+                    }
+
                     try {
-                        await Post.updateMany(
-                            { username: user.username },
-                            { username: request.body.username}
+                        //if can find user, update it
+                        const updatedUser = await User.findByIdAndUpdate(
+                            request.params.userId,
+                            {
+                                $set: updatedParams
+                            },
+                            { new: true } //want updated user
                         );
+
+                        const { password, email, ...publicUser } = updatedUser._doc;
+
+                        response.status(200).json(publicUser);
                     } catch (error) {
-                        response.status(500).json("Failed to update their posts usernames, so user not updated.");
+                        response.status(500).json(error);
                     }
                 }
-
-                //if can find user, update it
-                const updatedUser = await User.findByIdAndUpdate(
-                    request.params.userId,
-                    { //could use either userId since they're the same
-                        $set: request.body //sets entire req body
-                    },
-                    { new: true } //want updated user
-                ); 
-
-                response.status(200).json(updatedUser);
+                else {
+                    response.status(401).json("Password incorrect");
+                }
             }
-            else
-            {
+            else {
                 response.status(404).json("User not found");
             }
 
+            
         }
-        catch (error) {
-            response.status(500).json(error);
+        else {
+            response.status(400).json("Password is required to authenticate user update.");
         }
     }
-    else
-    {
+    else {
         response.status(401).json("You can only update your own account");
     }
 }); 
