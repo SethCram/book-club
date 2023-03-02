@@ -4,20 +4,60 @@ const bcrypt = require('bcrypt');
 
 //Register
 router.post("/register", async (request, response) => { //async bc dont know how long it'll take
+    
+    const username = request.body.username;
+    const postedEmail = request.body.email;
+
+    let user = null;
+
+    //Make sure username unique
     try {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(request.body.password, salt);
-        const newUser = new User({
-            username: request.body.username,
-            email: request.body.email,
-            password: hashedPassword
-        });
-        
-        const user = await newUser.save(); //save new user up in DB
-        response.status(200).json(user);
-    }
-    catch (error) {
+        user = await User.findOne({ username });
+    } catch (error) {
         response.status(500).json(error);
+    }
+
+    if (user) {
+        response.status(400).json("Username not unique.");
+    }
+    //if username unique
+    else
+    {   
+        //make sure email unique
+        try {
+            user = await User.findOne({ email: postedEmail });
+        } catch (error) {
+            response.status(500).json(error);
+        }
+
+        if (user) {
+            response.status(400).json("Can't reuse the same email.");
+        }
+        //if email unique
+        else
+        {
+            try {
+                //hash password
+                const salt = await bcrypt.genSalt(10);
+                const hashedPassword = await bcrypt.hash(request.body.password, salt);
+                
+                const newUser = new User({
+                    username: username,
+                    email: postedEmail,
+                    password: hashedPassword
+                });
+                
+                user = await newUser.save(); //save new user up in DB
+        
+                //remove password and email from response
+                const { password, email, ...publicUser } = user._doc;
+        
+                response.status(200).json(publicUser);
+            }
+            catch (error) {
+                response.status(500).json(error);
+            }
+        }
     }
 }); 
 
