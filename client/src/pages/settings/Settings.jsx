@@ -145,6 +145,7 @@ export default function Settings() {
                       placeholder="Enter a new username..."
                       value={username}
                       onChange={(event) => { setUsername(event.target.value) }}
+                      required
                   />
                   <label>Email</label>
                   <input
@@ -152,6 +153,7 @@ export default function Settings() {
                       placeholder="Enter a new email..."
                       value={email}
                       onChange={(event) => { setEmail(event.target.value) }} 
+                      required
                   />
                   <label>Bio</label>
                   <input
