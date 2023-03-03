@@ -129,6 +129,7 @@ router.get("/", async (request, response) => {
         //find posts by filter
         const posts = await Post.find(filter)
             .limit(PAGE_SIZE)
+            .sort({reputation: "descending", updatedAt: "descending"})
             .skip(PAGE_SIZE * page);
 
         //count documents by filter
