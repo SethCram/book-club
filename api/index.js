@@ -8,11 +8,14 @@ const postRoute = require("./routes/Posts");
 const categoryRoute = require("./routes/Categories");
 const voteRoute = require("./routes/Votes");
 const badgeRoute = require("./routes/Badges");
+const commentRoute = require("./routes/Comments");
 const multer = require("multer");
 const path = require("path");
 const fs = require('fs')
 const { promisify } = require('util')
 const unlinkAsync = promisify(fs.unlink)
+
+
 
 dotenv.config();
 app.use(express.json());
@@ -62,6 +65,7 @@ app.use("/api/posts", postRoute);
 app.use("/api/categories", categoryRoute);
 app.use("/api/votes", voteRoute);
 app.use("/api/badges", badgeRoute);
+app.use("/api/comments", commentRoute);
 
 app.listen("5000", () => {
     console.log("Backend running.");
