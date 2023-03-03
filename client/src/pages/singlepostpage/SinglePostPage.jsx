@@ -14,8 +14,8 @@ export default function SinglePostPage() {
   //retrieve post according to postId
   useEffect(() => {
     const getPost = async () => {
-        const response = await axios.get("/posts/" + postId);
-        setPost(response.data); 
+      const response = await axios.get("/posts/" + postId);
+      setPost(response.data);
     };
     getPost();   
 
