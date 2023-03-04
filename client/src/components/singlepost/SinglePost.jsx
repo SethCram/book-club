@@ -25,7 +25,6 @@ export default function SinglePost({post}) {
     const [replyIndex, setReplyIndex] = useState(-1); //init to outside arr bounds
     const [replyId, setReplyId] = useState("");
     const [feedback, setFeedback] = useState("");
-    const [localComments, setLocalComments] = useState([]);
 
     var clearThumbsUpScore;
     var solidThumbsUpScore;
@@ -187,7 +186,7 @@ export default function SinglePost({post}) {
         getCategories();
     }, [])
 
-    const handleCommment = async (event, replyId = null) => {
+    const handleCommment = async (event, replyId = "", replyUsername = "") => {
         event.preventDefault();
         
         const newComment = {
@@ -198,6 +197,10 @@ export default function SinglePost({post}) {
 
         if (replyId) {
             newComment["replyId"] = replyId;
+        }
+
+        if (replyUsername) {
+            newComment["replyUsername"] = replyUsername;
         }
 
         try {
@@ -568,6 +571,75 @@ export default function SinglePost({post}) {
 
                                 </input>
                             </form>
+                        }
+                        {comment.replies.length > 0 && comment.replies.map((reply, j) => (
+                            <div className="singlePostCommentContainer singlePostCommentReplyContainer" key = {reply._id}>
+                            {/* author profile pic? */}
+
+                            <div className="singlePostCommentIcons">
+                                <ReputationIcon
+                                    repScore={reply.reputation}
+                                    comment={reply}
+                                    numberClass="singlePostCommentRepNumbering"
+                                />
+                                <>
+                                    <div className="singlePostScoringIconCommentPairing lock">
+                                        <div className="singlePostScoringIconComment">
+                                        <i 
+                                            className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
+                                            onClick={() => {/*handleVote(clearThumbsUpScore) */}}
+                                        ></i>
+                                        </div>
+                                        <div className="singlePostScoringIconComment">
+                                            <i 
+                                                className={`${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
+                                                onClick={() => {/*handleVote(solidThumbsUpScore) */}}
+                                            ></i>
+                                        </div>
+                                    </div>
+                                    <div className="singlePostScoringIconCommentPairing lock">
+                                        <div className="singlePostScoringIconComment">
+                                        <i 
+                                            className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
+                                            onClick={() => {/*handleVote(clearThumbsDownScore) */}}
+                                        ></i>
+                                        </div>
+                                        <div className="singlePostScoringIconComment">
+                                            <i 
+                                                className={`${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
+                                                onClick={() => {/*handleVote(solidThumbsDownScore) */}}
+                                            ></i>
+                                        </div>
+                                    </div>
+                                </>
+                            </div>
+                            
+                            <div className="singlePostCommentContent">
+                                <span className="singlePostCommentTitleRow">
+                                    
+                                    <h3 className="singlePostCommentAuthor">
+                                        {reply.username}
+                                    </h3>
+                                    {new Date(reply.updatedAt).toDateString()}
+                                </span>
+                                <span className="singlePostCommentReplyTo">
+                                        @{ reply.replyUsername }
+                                </span>
+                                <p className="singlePostCommentDescription">
+                                    {reply.description}
+                                </p>
+                                <span className="singlePostCommentBottomRow">
+                                    <button
+                                        className="singlePostCommentReply"
+                                        onClick={() => { setReplyIndex(i); setReplyId(comment._id); }}
+                                    >
+                                        Reply
+                                    </button>
+                                </span>
+                            </div>
+                            
+                            </div>
+                        ))
                         }
                     </div>
                 ))

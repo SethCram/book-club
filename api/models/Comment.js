@@ -24,6 +24,12 @@ const CommentSchema = new mongoose.Schema(
         replyId: {
             type: mongoose.ObjectId,
         },
+        replyUsername: {
+            type: String
+        },
+        replies: {
+            type: Array
+        },
         description: {
             type: String,
             required: true

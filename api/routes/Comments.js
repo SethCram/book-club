@@ -11,21 +11,48 @@ router.post("/", async (request, response) => {
 
             let createComment = true;
 
-            //make sure replied to comment exists
-            if (request.body.replyId) {
-                const replyComment = await Comment.findById(request.body.replyId);
+            let currReplyId = request.body?.replyId;
 
+            let replyComment = null;
+
+            //find the root comment being replied to
+            while (currReplyId) {
+                //find replied to comment
+                replyComment = await Comment.findById(currReplyId);
+
+                //make sure replied to comment exists
                 if (!replyComment) {
                     createComment = false;
                     response.status(404).json("Replied to comment couldn't be found.");
+                    break;
                 }
-                
+
+                //look for next replied to comment
+                currReplyId = replyComment.replyId;
             }
+
+            //console.log(replyComment);
 
             if (createComment) {
                 const newComment = new Comment(request.body);
                 const savedComment = await newComment.save();
-                response.status(200).json(savedComment);
+
+                let rootComment = {}
+
+                //if found a root comment being replied to
+                if (replyComment) {
+                    //add the newly created comment to its root comment's replies arr
+                    rootComment = await Comment.findByIdAndUpdate(replyComment._id,
+                        {
+                            "$push": {
+                                "replies": savedComment
+                            }
+                        },
+                        { new: true }
+                    );
+                }
+
+                response.status(200).json({ savedComment, rootComment });
             }
         }
         else {
@@ -34,6 +61,7 @@ router.post("/", async (request, response) => {
 
         
     } catch (error) {
+        console.log(error)
         response.status(500).json(error);
     }
 });
@@ -104,18 +132,22 @@ router.delete("/:commentId", async (request, response) => { //async bc dont know
     }
 }); 
 
-//Get All post comments
+//Get All post root comments
 router.get("/all/:postId", async (request, response) => {
 
     const postId = request.params.postId;
 
     const filter = {
-        postId
+        postId,
+        replyId: { //dont want replies
+            $exists: false
+        }
     }
       
     try {
         //returns comments sorted by big -> small rep, if same rep than most recent -> oldest
-        const comments = await Comment.find(filter).sort({reputation: "descending", updatedAt: "descending" }); 
+        const comments = await Comment.find(filter)
+            .sort({ reputation: "descending", updatedAt: "descending" }); 
         response.status(200).json(comments);
     } catch (error) {
         response.status(500).json(error);
