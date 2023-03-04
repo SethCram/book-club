@@ -22,8 +22,10 @@ export default function SinglePost({post}) {
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
     const [comments, setComments] = useState([]);
-    const [replyIndex, setReplyIndex] = useState(0);
+    const [replyIndex, setReplyIndex] = useState(-1); //init to outside arr bounds
     const [replyId, setReplyId] = useState("");
+    const [feedback, setFeedback] = useState("");
+    const [localComments, setLocalComments] = useState([]);
 
     var clearThumbsUpScore;
     var solidThumbsUpScore;
@@ -63,6 +65,11 @@ export default function SinglePost({post}) {
 
 
     }, [post]) //rerun when postId changes
+
+    const getComments = async () => { //used both in UseEffect and w/ new comment
+        const response = await axios.get("/comments/all/" + post._id);
+        setComments(response.data); 
+    };
 
     useEffect(() => {
         const getVote = async () => {
@@ -179,6 +186,34 @@ export default function SinglePost({post}) {
         }
         getCategories();
     }, [])
+
+    const handleCommment = async (event, replyId = null) => {
+        event.preventDefault();
+        
+        const newComment = {
+            username: user.username,
+            postId: post._id,
+            description: feedback
+        };
+
+        if (replyId) {
+            newComment["replyId"] = replyId;
+        }
+
+        try {
+            const response = await axios.post("/comments/", newComment); 
+
+            //refetch all comments
+            await getComments();
+
+            //setLocalComments()
+
+            console.log(response);
+        } catch (error) {
+            
+        }
+        
+    };
 
     const handleVote = async (score) => {
 
@@ -412,6 +447,55 @@ export default function SinglePost({post}) {
                     Update
                 </button>
               }
+
+              <form>
+                <div className="singlePostCommentContainer">
+                    {/* author profile pic? */}
+
+                    <div className="singlePostCommentIcons">
+                        <ReputationIcon
+                            repScore={0}
+                            comment={{ badgeName: "" }}
+                            numberClass="singlePostCommentRepNumbering"
+                        />
+                    </div>
+                    
+                    <div className="singlePostCommentContent">
+                        <span className="singlePostCommentTitleRow">
+                            
+                            <h3 className="singlePostCommentAuthor">
+                                {user.username}
+                            </h3>
+                        </span>
+                        <textarea 
+                            className="singlePostCommentTextArea"
+                            placeholder="Enter your feedback..."
+                            value={feedback}
+                            onChange={text => setFeedback(text.target.value)}
+                            required
+                        >
+
+                        </textarea>
+                        <span className="singlePostCommentBottomRow">
+                            <button
+                                className="singlePostCommentReply"
+                                onClick={(event) => handleCommment(event)}
+                                type="submit"
+                            >
+                                Confirm
+                            </button>
+                            <button
+                                className="singlePostCommentReply"
+                                onClick={() => {setFeedback("")}}
+                            >
+                                Cancel
+                            </button>
+                        </span>
+                    </div>
+                    
+                </div>
+              </form>
+
               {comments.length > 0 && 
                   comments.map((comment, i) => (
                     <div key={comment._id}>
