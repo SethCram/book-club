@@ -7,6 +7,7 @@ import { imagesFolder } from "../../pages/settings/Settings";
 import Multiselect from "multiselect-react-dropdown";
 import { ThemeContext } from "../../App";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
+import Comment from "../comment/Comment";
 
 export default function SinglePost({post}) {
     const { user } = useContext(Context);
@@ -23,8 +24,6 @@ export default function SinglePost({post}) {
     const [repScore, setRepScore] = useState(0);
     const [comments, setComments] = useState([]);
     const [replyIndex, setReplyIndex] = useState(-1); //init to outside arr bounds
-    const [replyId, setReplyId] = useState("");
-    const [feedback, setFeedback] = useState("");
 
     var clearThumbsUpScore;
     var solidThumbsUpScore;
@@ -64,11 +63,6 @@ export default function SinglePost({post}) {
 
 
     }, [post]) //rerun when postId changes
-
-    const getComments = async () => { //used both in UseEffect and w/ new comment
-        const response = await axios.get("/comments/all/" + post._id);
-        setComments(response.data); 
-    };
 
     useEffect(() => {
         const getVote = async () => {
@@ -185,38 +179,6 @@ export default function SinglePost({post}) {
         }
         getCategories();
     }, [])
-
-    const handleCommment = async (event, replyId = "", replyUsername = "") => {
-        event.preventDefault();
-        
-        const newComment = {
-            username: user.username,
-            postId: post._id,
-            description: feedback
-        };
-
-        if (replyId) {
-            newComment["replyId"] = replyId;
-        }
-
-        if (replyUsername) {
-            newComment["replyUsername"] = replyUsername;
-        }
-
-        try {
-            const response = await axios.post("/comments/", newComment); 
-
-            //refetch all comments
-            await getComments();
-
-            //setLocalComments()
-
-            console.log(response);
-        } catch (error) {
-            
-        }
-        
-    };
 
     const handleVote = async (score) => {
 
@@ -451,193 +413,19 @@ export default function SinglePost({post}) {
                 </button>
               }
 
-              <form>
-                <div className="singlePostCommentContainer">
-                    {/* author profile pic? */}
-
-                    <div className="singlePostCommentIcons">
-                        <ReputationIcon
-                            repScore={0}
-                            comment={{ badgeName: "" }}
-                            numberClass="singlePostCommentRepNumbering"
-                        />
-                    </div>
-                    
-                    <div className="singlePostCommentContent">
-                        <span className="singlePostCommentTitleRow">
-                            
-                            <h3 className="singlePostCommentAuthor">
-                                {user.username}
-                            </h3>
-                        </span>
-                        <textarea 
-                            className="singlePostCommentTextArea"
-                            placeholder="Enter your feedback..."
-                            value={feedback}
-                            onChange={text => setFeedback(text.target.value)}
-                            required
-                        >
-
-                        </textarea>
-                        <span className="singlePostCommentBottomRow">
-                            <button
-                                className="singlePostCommentReply"
-                                onClick={(event) => handleCommment(event)}
-                                type="submit"
-                            >
-                                Confirm
-                            </button>
-                            <button
-                                className="singlePostCommentReply"
-                                onClick={() => {setFeedback("")}}
-                            >
-                                Cancel
-                            </button>
-                        </span>
-                    </div>
-                    
-                </div>
-              </form>
+              <Comment postId={post?._id} template={true} />
 
               {comments.length > 0 && 
                   comments.map((comment, i) => (
                     <div key={comment._id}>
-                        <div className="singlePostCommentContainer">
-                            {/* author profile pic? */}
-
-                            <div className="singlePostCommentIcons">
-                                <ReputationIcon
-                                    repScore={comment.reputation}
-                                    comment={comment}
-                                    numberClass="singlePostCommentRepNumbering"
-                                />
-                                <>
-                                    <div className="singlePostScoringIconCommentPairing lock">
-                                        <div className="singlePostScoringIconComment">
-                                        <i 
-                                            className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
-                                            onClick={() => {/*handleVote(clearThumbsUpScore) */}}
-                                        ></i>
-                                        </div>
-                                        <div className="singlePostScoringIconComment">
-                                            <i 
-                                                className={`${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
-                                                onClick={() => {/*handleVote(solidThumbsUpScore) */}}
-                                            ></i>
-                                        </div>
-                                    </div>
-                                    <div className="singlePostScoringIconCommentPairing lock">
-                                        <div className="singlePostScoringIconComment">
-                                        <i 
-                                            className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
-                                            onClick={() => {/*handleVote(clearThumbsDownScore) */}}
-                                        ></i>
-                                        </div>
-                                        <div className="singlePostScoringIconComment">
-                                            <i 
-                                                className={`${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
-                                                onClick={() => {/*handleVote(solidThumbsDownScore) */}}
-                                            ></i>
-                                        </div>
-                                    </div>
-                                </>
-                            </div>
-                            
-                            <div className="singlePostCommentContent">
-                                <span className="singlePostCommentTitleRow">
-                                    
-                                    <h3 className="singlePostCommentAuthor">
-                                        {comment.username}
-                                    </h3>
-                                    {new Date(comment.updatedAt).toDateString()}
-                                </span>
-                                <p className="singlePostCommentDescription">
-                                    {comment.description}
-                                </p>
-                                <span className="singlePostCommentBottomRow">
-                                    <button
-                                        className="singlePostCommentReply"
-                                        onClick={() => { setReplyIndex(i); setReplyId(comment._id); }}
-                                    >
-                                        Reply
-                                    </button>
-                                </span>
-                            </div>
-                            
-                        </div>
+                        <Comment postId={post._id} comment={comment}/>
+                        
                         {replyIndex === i && 
-                            <form>
-                                <input>
-
-                                </input>
-                            </form>
+                            <Comment postId={post._id} reply={true} template={true} />
                         }
-                        {comment.replies.length > 0 && comment.replies.map((reply, j) => (
-                            <div className="singlePostCommentContainer singlePostCommentReplyContainer" key = {reply._id}>
-                            {/* author profile pic? */}
-
-                            <div className="singlePostCommentIcons">
-                                <ReputationIcon
-                                    repScore={reply.reputation}
-                                    comment={reply}
-                                    numberClass="singlePostCommentRepNumbering"
-                                />
-                                <>
-                                    <div className="singlePostScoringIconCommentPairing lock">
-                                        <div className="singlePostScoringIconComment">
-                                        <i 
-                                            className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
-                                            onClick={() => {/*handleVote(clearThumbsUpScore) */}}
-                                        ></i>
-                                        </div>
-                                        <div className="singlePostScoringIconComment">
-                                            <i 
-                                                className={`${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
-                                                onClick={() => {/*handleVote(solidThumbsUpScore) */}}
-                                            ></i>
-                                        </div>
-                                    </div>
-                                    <div className="singlePostScoringIconCommentPairing lock">
-                                        <div className="singlePostScoringIconComment">
-                                        <i 
-                                            className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
-                                            onClick={() => {/*handleVote(clearThumbsDownScore) */}}
-                                        ></i>
-                                        </div>
-                                        <div className="singlePostScoringIconComment">
-                                            <i 
-                                                className={`${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
-                                                onClick={() => {/*handleVote(solidThumbsDownScore) */}}
-                                            ></i>
-                                        </div>
-                                    </div>
-                                </>
-                            </div>
-                            
-                            <div className="singlePostCommentContent">
-                                <span className="singlePostCommentTitleRow">
-                                    
-                                    <h3 className="singlePostCommentAuthor">
-                                        {reply.username}
-                                    </h3>
-                                    {new Date(reply.updatedAt).toDateString()}
-                                </span>
-                                <span className="singlePostCommentReplyTo">
-                                        @{ reply.replyUsername }
-                                </span>
-                                <p className="singlePostCommentDescription">
-                                    {reply.description}
-                                </p>
-                                <span className="singlePostCommentBottomRow">
-                                    <button
-                                        className="singlePostCommentReply"
-                                        onClick={() => { setReplyIndex(i); setReplyId(comment._id); }}
-                                    >
-                                        Reply
-                                    </button>
-                                </span>
-                            </div>
-                            
+                          {comment.replies.length > 0 && comment.replies.map((reply, j) => (
+                            <div key = {reply._id}>
+                                <Comment postId={post._id} comment={reply} reply={true} />                             
                             </div>
                         ))
                         }

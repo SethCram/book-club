@@ -1,0 +1,83 @@
+/* COMMENT SECTION */
+.commentContainer{
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    background-color: var(--color-bg-dark-tint);
+    border-radius: 1rem;
+    margin: 1rem 1rem 1rem 0rem;
+}
+
+#light .commentContainer{
+    background-color: var(--color-bg-light-tint);
+}
+
+.commentReplyContainer{
+    margin-left: 2rem;
+}
+
+.commentIcons{
+    margin-left: 0.5rem;
+}
+
+.singlePostScoringIconCommentPairing{
+    box-sizing: content-box;
+    width: 0px; /* Not sure why hover activated during this div*/
+}
+
+.singlePostScoringIconComment{
+    box-sizing: content-box;
+    width: 20px;
+    margin: 0.5rem;
+    cursor: pointer;
+}
+
+.commentRepNumbering{
+    margin-right: 29px;
+}
+
+.commentContent{
+    display: flex;
+    flex-direction: column;
+}
+
+.commentTitleRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0.65rem;
+}
+
+.commentAuthor{
+    margin-right: 1rem;
+}
+
+.commentDescription{
+    margin: 1rem;
+}
+
+.commentReplyTo{
+    margin-left: 1rem;
+}
+
+.commentTextArea{
+    background-color: transparent;
+    border: none;
+    margin: 1rem;
+}
+
+.commentTextArea:focus{
+    outline: none;
+}
+
+.commentBottomRow{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.commentReply{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
