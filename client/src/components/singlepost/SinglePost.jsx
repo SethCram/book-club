@@ -7,7 +7,7 @@ import { imagesFolder } from "../../pages/settings/Settings";
 import Multiselect from "multiselect-react-dropdown";
 import { ThemeContext } from "../../App";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
-import Comment from "../comment/Comment";
+import CommentSection from "../commentSection/CommentSection";
 
 export default function SinglePost({post}) {
     const { user } = useContext(Context);
@@ -22,8 +22,6 @@ export default function SinglePost({post}) {
     const { theme } = useContext(ThemeContext);
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
-    const [comments, setComments] = useState([]);
-    const [replyIndex, setReplyIndex] = useState(-1); //init to outside arr bounds
 
     var clearThumbsUpScore;
     var solidThumbsUpScore;
@@ -52,13 +50,8 @@ export default function SinglePost({post}) {
             setCategories(post.categories);
             setRepScore(post.reputation);
         };
-        const getComments = async () => {
-            const response = await axios.get("/comments/all/" + post._id);
-            setComments(response.data); 
-        };
         if (post) {
             updateLocalPostFields(); 
-            getComments();
         }
 
 
@@ -413,25 +406,8 @@ export default function SinglePost({post}) {
                 </button>
               }
 
-              <Comment postId={post?._id} template={true} />
+              <CommentSection postId={post?._id} />
 
-              {comments.length > 0 && 
-                  comments.map((comment, i) => (
-                    <div key={comment._id}>
-                        <Comment postId={post._id} comment={comment}/>
-                        
-                        {replyIndex === i && 
-                            <Comment postId={post._id} reply={true} template={true} />
-                        }
-                          {comment.replies.length > 0 && comment.replies.map((reply, j) => (
-                            <div key = {reply._id}>
-                                <Comment postId={post._id} comment={reply} reply={true} />                             
-                            </div>
-                        ))
-                        }
-                    </div>
-                ))
-              }
           </div>
       </div>
   )
