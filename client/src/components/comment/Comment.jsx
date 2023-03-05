@@ -122,7 +122,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                         <>
                             <button
                                 className="commentReply"
-                                onClick={(event) => handleComment(event, feedback, replyId, replyUsername)}
+                                onClick={(event) => { handleComment(event, feedback, replyId, replyUsername); setFeedback(""); }}
                                 type="submit"
                             >
                                 Confirm
