@@ -330,7 +330,7 @@ export default function SinglePost({post}) {
                 <div className="singlePostScoringIcons">
                     {!updateMode && user && post?.username !== user?.username &&
                         <>
-                            <div className="singlePostScoringIconPairing lock">
+                            <div className="singlePostScoringIconPairing">
                                 <i 
                                     className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
                                     onClick={() => {handleVote(clearThumbsUpScore) }}
@@ -340,7 +340,7 @@ export default function SinglePost({post}) {
                                 onClick={() => {handleVote(solidThumbsUpScore) }}
                                 ></i>
                             </div>
-                            <div className="singlePostScoringIconPairing lock">
+                            <div className="singlePostScoringIconPairing">
                                 <i 
                                 className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
                                 onClick={() => {handleVote(clearThumbsDownScore) }}

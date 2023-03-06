@@ -3,6 +3,7 @@ const Badge = require("../models/Badge");
 const Post = require("../models/Post");
 const User = require("../models/User");
 const Vote = require("../models/Vote");
+const Comment = require("../models/Comment");
 
 function sortedIndex(array, value) {
 
@@ -91,67 +92,88 @@ const updateUserRep = async (additionalScore, username) => {
 
 //Update linked model always and author user if necessary
 const updateLinkedModel = async (linkedId, score) => {
-    //update linked post or comment
+    //update linked post
     const post = await Post.findById(linkedId);
+
+    let linkedModel;
+
+    //set linked model to post or comment depending on which can be found
+    if (post) {
+        linkedModel = post;
+    }
+    else
+    {
+        const comment = await Comment.findById(linkedId);
+
+        if (comment) {
+            linkedModel = comment;
+        }
+        else
+        {
+            throw new Error("Couldn't find linked Object by their id.");
+        }
+    }
 
     let updatedModel = {};
     let updatedAuthor = {};
 
-    if (post)
-    {
-        //calc new score by adding to post rep
-        const newScore = post.reputation + score;
+    //calc new score by adding to post rep
+    const newScore = linkedModel.reputation + score;
 
-        //find badge if new score matches
-        const newBadge = await Badge.findOne({
-            score: newScore
-        })
+    //find badge if new score matches
+    const newBadge = await Badge.findOne({
+        score: newScore
+    })
 
-        let postUpdateFilter = {
-            reputation: newScore
-        };
+    let updateFilter = {
+        reputation: newScore
+    };
 
-        //if badge found to update
-        if (newBadge) {
-            //if no current badge on post, update post w/ new badge
-            if (!post.badgeName)
-            {
-                postUpdateFilter["badgeName"] = newBadge.name;
+    //if badge found to update
+    if (newBadge) {
+        //if no current badge, update w/ new badge
+        if (!linkedModel.badgeName)
+        {
+            updateFilter["badgeName"] = newBadge.name;
+            //update linked model's author thru increasing score by half the new badge's
+            updatedAuthor = await updateUserRep(Math.round(newBadge.score / 2), username=linkedModel.username)
+        }
+        //if has badge name and trying to update it to a diff badge
+        else if (linkedModel.badgeName != newBadge.name)
+        {
+            //retrieve post badge
+            const currBadge = await Badge.findOne({
+                name: linkedModel.badgeName
+            })
+
+            //if updating too a higher badge score, allow it
+            if (currBadge.score < newBadge.score) {
+                updateFilter["badgeName"] = newBadge.name;
                 //update linked model's author thru increasing score by half the new badge's
-                updatedAuthor = await updateUserRep(Math.round(newBadge.score / 2), username=post.username)
-            }
-            //if post has badge name and trying to update it to a diff badge
-            else if (post.badgeName != newBadge.name)
-            {
-                //retrieve post badge
-                const currPostBadge = await Badge.findOne({
-                    name: post.badgeName
-                })
-
-                //if updating too a higher badge score, allow it
-                if (currPostBadge.score < newBadge.score) {
-                    postUpdateFilter["badgeName"] = newBadge.name;
-                    //update linked model's author thru increasing score by half the new badge's
-                    updatedAuthor = await updateUserRep(Math.round(newBadge.score / 2), username=post.username)
-                }
+                updatedAuthor = await updateUserRep(Math.round(newBadge.score / 2), username=linkedModel.username)
             }
         }
+    }
 
+    if (post) {
         updatedModel = await Post.findByIdAndUpdate(
             linkedId,
             {
-                $set: postUpdateFilter
+                $set: updateFilter
             },
             { new: true }
         );
     }
-    else
-    {
-        //UPDATE LINKED COMMENT LATER
-        //const comment = await Comment.findById
-
-        throw new Error("Couldn't find linked Object by their id.");
+    else {
+        updatedModel = await Comment.findByIdAndUpdate(
+            linkedId,
+            {
+                $set: updateFilter
+            },
+            { new: true }
+        );
     }
+    
 
     return [updatedModel, updatedAuthor];
     
@@ -194,9 +216,7 @@ router.post("/vote", async (request, response) => {
             }
 
             //update linked post or comment rep and possibly author rep
-            const updatedModels = await updateLinkedModel(linkedId, score);
-            const updatedLinkedModel = updatedModels[0];
-            const updatedAuthor = updatedModels[1];
+            const [updatedLinkedModel, updatedAuthor] = await updateLinkedModel(linkedId, score);
 
             //create and save new vote
             const newVote = new Vote({

@@ -8,6 +8,96 @@ export default function Comment({ handleComment = null, handleReply = null, comm
     const [feedback, setFeedback] = useState("");
     const { user } = useContext(Context);
     const [vote, setVote] = useState(null);
+    const [repScore, setRepScore] = useState(0);
+
+    const clearThumbsUpScore = 1;
+    const solidThumbsUpScore = 0;
+    const clearThumbsDownScore = -1;
+    const solidThumbsDownScore = 0;
+
+    useEffect(() => {
+        const getVote = async () => {
+            try {
+               //get vote
+                const vote = await axios.get(`/votes/get/`, {
+                    params: {
+                        username: user.username,
+                        linkedId: comment._id
+                    }
+                });
+
+                setVote(vote.data); 
+            } 
+            catch (error) {
+                //console.log(error);
+            }
+        };
+        if (user && comment) {
+            getVote();
+        }
+    }, [comment, user])
+
+    useEffect(() => {
+        if (comment) {
+           setRepScore(comment.reputation); 
+        }
+        
+    }, [comment]);
+
+    const handleVote = async (score) => {
+
+        //console.log(score);
+
+        let voteObject;
+
+        let changeInVoteScoring;
+
+        try {
+
+            if (vote) {
+                //update vote w/ new score
+                voteObject = await axios.put(`/votes/update/${vote._id}`, {
+                    score,
+                    linkedId: comment._id,
+                    voteId: vote._id,
+                    username: user.username
+                });
+
+                changeInVoteScoring = voteObject.data.vote.score - vote.score
+            }
+            else
+            {
+                //create new vote
+                voteObject = await axios.post("/votes/vote", {
+                    score,
+                    linkedId: comment._id,
+                    username: user.username
+                }); 
+
+                changeInVoteScoring = voteObject.data.vote.score;
+            }
+
+            //if linkedModel badgeName, update it locally 
+            if (voteObject.data.linkedModel.badgeName) {
+                comment["badgeName"] = voteObject.data.linkedModel.badgeName;
+            }
+
+            if (Object.keys(voteObject.data.updatedAuthor).length > 0) {
+                //need to update sidebar user reputation somehow 
+                console.log("Sidebar author rep should be updated");
+                console.log(voteObject.data.updatedAuthor);
+            }
+
+            //set new vote properly
+            setVote(voteObject.data.vote);
+
+            //change local post rep score
+            setRepScore(repScore + changeInVoteScoring);
+
+        } catch (error) {
+            console.log(error);
+        } 
+    };
 
     const chooseVoteIconClass = (desiredNumber, clearIcon) => {
 
@@ -15,11 +105,11 @@ export default function Comment({ handleComment = null, handleReply = null, comm
         if (vote) {
             //if vote cast is equal to desired number
             if (vote.score === desiredNumber) {
-                return "icon-unlock";
+                return "icon-lock";
             }
             else
             {
-                return "icon-lock";
+                return "icon-unlock";
             }
         }
         //if no vote cast
@@ -27,11 +117,11 @@ export default function Comment({ handleComment = null, handleReply = null, comm
         {
             //display icon only if clear
            if (clearIcon) {
-                return "icon-unlock";
+                return "icon-lock";
             }
             else
             {
-                return "icon-lock";
+                return "icon-unlock";
             } 
         }
     };
@@ -43,39 +133,35 @@ export default function Comment({ handleComment = null, handleReply = null, comm
 
             <div className="commentIcons">
                 <ReputationIcon
-                    repScore={comment ? comment.reputation : 0}
+                    repScore={comment ? repScore : 0}
                     comment={comment ? comment : { badgeName: ""}}
                     numberClass="commentRepNumbering"
                 />
                 {comment && //display icons if a pre-existing comment
                     <>
-                        <div className="singlePostScoringIconCommentPairing lock">
-                            <div className="singlePostScoringIconComment">
-                                <i
-                                    className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
-                                    onClick={() => {/*handleVote(clearThumbsUpScore) */ }}
-                                ></i>
-                            </div>
-                            <div className="singlePostScoringIconComment">
-                                <i
-                                    className={`${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
-                                    onClick={() => {/*handleVote(solidThumbsUpScore) */ }}
-                                ></i>
-                            </div>
+                        <div className="commentVoteIcon">
+                            <i
+                                className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
+                                onClick={() => {handleVote(clearThumbsUpScore)}}
+                            ></i>
                         </div>
-                        <div className="singlePostScoringIconCommentPairing lock">
-                            <div className="singlePostScoringIconComment">
-                                <i
-                                    className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
-                                    onClick={() => {/*handleVote(clearThumbsDownScore) */ }}
-                                ></i>
-                            </div>
-                            <div className="singlePostScoringIconComment">
-                                <i
-                                    className={`${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
-                                    onClick={() => {/*handleVote(solidThumbsDownScore) */ }}
-                                ></i>
-                            </div>
+                        <div className="commentVoteIcon">
+                            <i
+                                className={`${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
+                                onClick={() => {handleVote(solidThumbsUpScore)}}
+                            ></i>
+                        </div>
+                        <div className="commentVoteIcon">
+                            <i
+                                className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
+                                onClick={() => {handleVote(clearThumbsDownScore)}}
+                            ></i>
+                        </div>
+                        <div className="commentVoteIcon">
+                            <i
+                                className={`${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
+                                onClick={() => {handleVote(solidThumbsDownScore)}}
+                            ></i>
                         </div>
                     </>
                 }

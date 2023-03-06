@@ -20,12 +20,7 @@
     margin-left: 0.5rem;
 }
 
-.singlePostScoringIconCommentPairing{
-    box-sizing: content-box;
-    width: 0px; /* Not sure why hover activated during this div*/
-}
-
-.singlePostScoringIconComment{
+.commentVoteIcon{
     box-sizing: content-box;
     width: 20px;
     margin: 0.5rem;
