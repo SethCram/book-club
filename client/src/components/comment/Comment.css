@@ -47,6 +47,10 @@
     margin-right: 1rem;
 }
 
+.commentUpdate{
+    margin-left: 1rem;
+}
+
 .commentDescription{
     margin: 1rem;
 }
@@ -71,7 +75,7 @@
     justify-content: center;
 }
 
-.commentReply{
+.commentButton{
     border: none;
     background-color: transparent;
     cursor: pointer;

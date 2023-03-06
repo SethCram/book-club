@@ -9,6 +9,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
     const { user } = useContext(Context);
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
+    const [writeMode, setWriteMode] = useState(false);
 
     const clearThumbsUpScore = 1;
     const solidThumbsUpScore = 0;
@@ -99,6 +100,44 @@ export default function Comment({ handleComment = null, handleReply = null, comm
         } 
     };
 
+    const handleUpdate = async () => {
+
+        try {
+            //update comment in DB
+            await axios.put(`/comments/${comment._id}`, {
+                username: user.username,
+                description: feedback
+            }); 
+
+            //update comment locally
+            comment.description = feedback;
+
+            //disable editing mode
+            setWriteMode(false);
+        } catch (error) {
+            
+        }
+    }
+
+    const handleConfirm = (event) => {
+
+        if (!feedback) {
+            return;
+        }
+
+        //if confirming an edit
+        if (writeMode) {
+            handleUpdate();
+        }
+        //confirming a new comment
+        else
+        {
+            handleComment(event, feedback, replyId, replyUsername);
+        }
+
+        setFeedback("");
+    };
+
     const chooseVoteIconClass = (desiredNumber, clearIcon) => {
 
         //if any vote cast
@@ -174,13 +213,21 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                         {comment ? comment.username: user.username}
                     </h3>
                     {comment && new Date(comment.updatedAt).toDateString()}
+                    {comment?.username === user.username && !writeMode &&
+                        <button
+                            className="commentButton commentUpdate"
+                            onClick={() => { setWriteMode(true); setFeedback(comment.description); }}
+                        >
+                            Update
+                        </button>
+                    }
                 </span>
                 {replyUsername &&
                     <span className="commentReplyTo">
                         @{replyUsername}
                     </span>
                 }
-                {comment ? (
+                {(comment && !writeMode) ? (
                     <p className="commentDescription">
                         {comment.description}
                     </p>
@@ -197,9 +244,9 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                     )
                 }
                 <span className="commentBottomRow">
-                    {comment ? (
+                    {(comment && !writeMode) ? (
                         <button
-                            className="commentReply"
+                            className="commentButton"
                               onClick={() => { handleReply(comment._id); }}
                         >
                             Reply
@@ -207,14 +254,14 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                     ) : (
                         <>
                             <button
-                                className="commentReply"
-                                onClick={(event) => { handleComment(event, feedback, replyId, replyUsername); setFeedback(""); }}
+                                className="commentButton"
+                                onClick={handleConfirm}
                                 type="submit"
                             >
                                 Confirm
                             </button>
                             <button
-                                className="commentReply"
+                                className="commentButton"
                                 onClick={() => {setFeedback("")}}
                             >
                                 Clear
