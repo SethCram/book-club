@@ -160,27 +160,9 @@
     margin-right: 10px;
 }
 
-/* For switching icons on-hover */
-.lock:hover .icon-unlock, /* needa be hovering over unlock icon */
-.lock .icon-lock {
+.icon-unlock {
     display: none;
 }
-.lock:hover .icon-lock { /* needa be hovering over lock icon */
+.icon-lock { /* needa be hovering over lock icon */
     display: inline;
-}
-
-/* MEDIA QUERIES */
-
-/* For tablets */
-@media screen and (max-width: 1024px) {
-    .lock:hover .icon-lock{ /*glitchy*/
-        display: none;
-    }
-}
-
-/* For phones */
-@media screen and (max-width: 600px) {
-    .lock:hover .icon-lock{ /*glitchy*/
-        display: none;
-    }
 }

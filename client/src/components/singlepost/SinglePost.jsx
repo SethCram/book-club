@@ -23,23 +23,10 @@ export default function SinglePost({post}) {
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
 
-    var clearThumbsUpScore;
-    var solidThumbsUpScore;
-    var clearThumbsDownScore;
-    var solidThumbsDownScore;
-    //if tablet or 
-    if (window.matchMedia("(max-width: 600px)").matches ||
-        window.matchMedia("(max-width: 1024px)").matches) {
-        clearThumbsUpScore = 1;
-        solidThumbsUpScore = 0;
-        clearThumbsDownScore = -1;
-        solidThumbsDownScore = 0;
-    } else {
-        clearThumbsUpScore = 0;
-        solidThumbsUpScore = 1;
-        clearThumbsDownScore = 0;
-        solidThumbsDownScore = -1;
-    }
+    const clearThumbsUpScore = 1;
+    const solidThumbsUpScore = 0;
+    const clearThumbsDownScore = -1;
+    const solidThumbsDownScore = 0;
 
     //retrieve post according to postId
     useEffect(() => {
@@ -206,14 +193,12 @@ export default function SinglePost({post}) {
                 changeInVoteScoring = voteObject.data.vote.score;
             }
 
-            console.log(voteObject);
-
             //if linkedModel badgeName, update it locally (have to use context API ?)
             if (voteObject.data.linkedModel.badgeName) {
                 post["badgeName"] = voteObject.data.linkedModel.badgeName;
             }
 
-            if (voteObject.data.updatedAuthor) {
+            if (Object.keys(voteObject.data.updatedAuthor).length > 0) {
                 //need to update sidebar user reputation somehow 
                 console.log("Sidebar author rep should be updated");
             }
@@ -235,11 +220,11 @@ export default function SinglePost({post}) {
         if (vote) {
             //if vote cast is equal to desired number
             if (vote.score === desiredNumber) {
-                return "icon-unlock";
+                return "icon-lock";
             }
             else
             {
-                return "icon-lock";
+                return "icon-unlock";
             }
         }
         //if no vote cast
@@ -247,11 +232,11 @@ export default function SinglePost({post}) {
         {
             //display icon only if clear
            if (clearIcon) {
-                return "icon-unlock";
+                return "icon-lock";
             }
             else
             {
-                return "icon-lock";
+                return "icon-unlock";
             } 
         }
     };
