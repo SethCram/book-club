@@ -8,6 +8,7 @@ const Category = require('./models/Category');
 const User = require('./models/User');
 const Vote = require('./models/Vote');
 const Badge = require('./models/Badge');
+const Comment = require('./models/Comment');
 
 //load env file contents
 dotenv.config();
@@ -195,7 +196,7 @@ const createFakeVotes = (posts, users) => {
             if (posts[j].username !== users[i].username) {
                 votes.push({
                     score: faker.helpers.arrayElement([-1,1]),
-                    linkedId: mongoose.Types.ObjectId(posts[j]._id), //check if object id or str and whether it matters
+                    linkedId: posts[j]._id, //check if object id or str and whether it matters
                     username: users[i].username
                 });
             }
@@ -251,6 +252,180 @@ const createFakeVotes = (posts, users) => {
     */
 };
 
+const createFakeComment = (postId, username, badges, replyId = "", replyUsername = "") => {
+    
+    let tmpComment = {
+        postId: postId,
+        username,
+        description: faker.lorem.lines() /* could use sentences instead */
+    };
+
+    if (replyId) {
+        tmpComment["replyId"] = replyId;
+    }
+
+    if (replyUsername) {
+        tmpComment["replyUsername"] = replyUsername;
+    }
+
+    //create a fake reputation
+    const repObj = createFakeReputation(badges);
+
+    //combine rep obj fields, overwriting + adding to tmp
+    const comment = { ...repObj, ...tmpComment };
+
+    return comment;
+};
+
+//replyRate must be a number from 0-1
+const createFakeComments = (posts, users, badges, replyRate = 0.5) => {
+    let comments = [];
+
+    //for each post
+    for (let j = 0; j < posts.length; j++) {
+        //have each user comment on it
+        for (let i = 0; i < users.length; i++) {
+
+            const comment = createFakeComment(posts[j]._id, users[i].username, badges)
+            comments.push( comment );
+
+            console.log(comment);
+
+            /*
+            //reply to a comment replyRate % of the time
+            if (Math.random() < replyRate) {
+                //pick random comment to reply to
+                const randomCommentIndex = getRndInteger(0, comments.length - 1);
+                const commentToReplyTo = comments[randomCommentIndex];
+
+                //create a reply to a comment
+                const reply = createFakeComment(
+                    commentToReplyTo.postId,
+                    users[i].username,
+                    badges,
+                    commentToReplyTo._id,
+                    commentToReplyTo.username
+                );
+
+                console.log("Replying to " + commentToReplyTo._id);
+                console.log(reply);
+
+                let currReplyId = commentToReplyTo._id;
+                let replyCommentIndex = -1;
+
+                //find the root comment being replied to
+                while (currReplyId) {
+                    //find replied to comment
+                    replyCommentIndex = comments.findIndex(comment => {
+                        return comment._id === currReplyId
+                    });
+
+                    //make sure replied to comment exists
+                    if (replyCommentIndex === -1) {
+                        console.log("Couldn't find a comment's replied to comment.");
+                        break;
+                    }
+
+                    //look for next replied to comment
+                    currReplyId = comments[replyCommentIndex].replyId;
+                }
+
+                if (replyCommentIndex !== -1) {
+                    //add reply to root comment
+                    comments[replyCommentIndex].replies.push(reply);
+                }
+
+                //add reply to list of comments
+                comments.push(reply);
+            }
+            */
+        }    
+    }
+
+    return comments
+}
+
+//replyRate must be a number from 0-1
+const createFakeReplyComments = (posts, users, comments, badges, replyRate = 0.5) => {
+    let replyComments = [];
+    let updatedComments = comments;
+
+    //for each post
+    for (let j = 0; j < posts.length; j++) {
+        //have each user comment on it
+        for (let i = 0; i < users.length; i++) {
+            //reply to a comment replyRate % of the time
+            const rando = Math.random();
+            if ( rando < replyRate) {
+
+                //set what comment section to reply to
+                let commentsChoosingFrom;
+                if (rando < replyRate / 2 && replyComments.length > 0) {
+                    commentsChoosingFrom = replyComments;
+                }
+                else
+                {
+                    commentsChoosingFrom = updatedComments;
+                }
+
+                //pick random comment to reply to
+                const randomCommentIndex = getRndInteger(0, commentsChoosingFrom.length - 1);
+                const commentToReplyTo = commentsChoosingFrom[randomCommentIndex];
+
+                //create a reply to a comment
+                const reply = createFakeComment(
+                    commentToReplyTo.postId,
+                    users[i].username,
+                    badges,
+                    commentToReplyTo._id,
+                    commentToReplyTo.username
+                );
+
+                console.log("Replying to " + commentToReplyTo._id);
+                console.log(reply);
+
+                let currReplyId = commentToReplyTo._id;
+                let replyCommentIndex = -1;
+
+                const allComments = replyComments.concat(updatedComments);
+
+                //find the root comment being replied to
+                while (currReplyId) {
+                    //find replied to comment
+                    replyCommentIndex = allComments.findIndex(comment => {
+                        return comment._id === currReplyId
+                    });
+
+                    //make sure replied to comment exists
+                    if (replyCommentIndex === -1) {
+                        //find replied to comment
+                        replyCommentIndex = updatedComments.findIndex(comment => {
+                            return comment._id === currReplyId
+                        });
+
+
+                        console.log("Couldn't find a comment's replied to comment.");
+                        break;
+                    }
+
+                    //look for next replied to comment
+                    currReplyId = allComments[replyCommentIndex].replyId;
+                }
+
+                if (replyCommentIndex !== -1) {
+                    //add reply to root comment
+                    commen[replyCommentIndex].replies.push(reply);
+                }
+
+                //add reply to list of comments
+                allComments.push(reply);
+            }
+        }    
+    }
+
+    return allComments
+}
+
 const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
 
     //find all badges in DB
@@ -281,15 +456,24 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
         badges,
     );
 
+    //insert new posts, users, cats, and votes to DB
+    const insertedPosts = await Post.insertMany(newPosts);
+    console.log(`${insertedPosts.length} posts inserted.`)
+
     //create new fake votes
-    const newVotes = createFakeVotes(newPosts, newUsers);
+    const newVotes = createFakeVotes(insertedPosts, newUsers);
+
+    const newComments = createFakeComments(insertedPosts, newUsers, badges);
+    const insertedComments = await Comment.insertMany(newComments);
+    console.log(`${insertedComments.length} comments inserted.`);
+
+    const [newReplyComments, updatedComments] = createFakeReplyComments(insertedPosts, newUsers, badges);
+    const insertedReplyComments = await Comment.insertMany(newReplyComments);
+    console.log(`${insertedReplyComments.length} reply comments inserted.`);
 
     //add fake category to posting bc mandatory for each new post
     newCatNames.push(fakeCategoryName); 
 
-    //insert new posts, users, cats, and votes to DB
-    const insertedPosts = await Post.insertMany(newPosts);
-    console.log(`${insertedPosts.length} posts inserted.`)
     const insertedUsers = await User.insertMany(newUsers);
     console.log(`${insertedUsers.length} users inserted.`);
     const insertedCats = await Category.insertMany(newCats);
@@ -337,6 +521,9 @@ const removeFakeData = async () => {
 
     const deletedVotesCount = await Vote.deleteMany(userFilter);
     console.log(`Deleted ${deletedVotesCount.deletedCount} votes with fake usernames.`);
+
+    const deletedCommentsCount = await Comment.deleteMany(userFilter);
+    console.log(`Deleted ${deletedCommentsCount.deletedCount} comments with fake usernames.`);
 };
 
 const closeConnection = () => {

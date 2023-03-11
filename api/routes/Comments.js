@@ -161,7 +161,12 @@ router.get("/one/:commentId", async (request, response) => {
       
     try {
         const comment = await Comment.findById(commentId); 
-        response.status(200).json(comment);
+        if (comment) {
+            response.status(200).json(comment);
+        }
+        else {
+            response.status(404).json("Couldn't find comment");
+        }
     } catch (error) {
         response.status(500).json(error);
     }
