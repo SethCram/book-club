@@ -4,7 +4,7 @@ import axios from "axios"
 import { Context } from "../../context/Context";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 
-export default function Comment({ handleComment = null, handleReply = null, comment = null, replyId = "", replyUsername = ""}) {
+export default function Comment({ handleComment = null, handleReply = null, comment = null, replyId = "", replyUsername = "" }) {
     const [feedback, setFeedback] = useState("");
     const { user } = useContext(Context);
     const [vote, setVote] = useState(null);
@@ -19,7 +19,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
     useEffect(() => {
         const getVote = async () => {
             try {
-               //get vote
+                //get vote
                 const vote = await axios.get(`/votes/get/`, {
                     params: {
                         username: user.username,
@@ -27,8 +27,8 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                     }
                 });
 
-                setVote(vote.data); 
-            } 
+                setVote(vote.data);
+            }
             catch (error) {
                 //console.log(error);
             }
@@ -40,7 +40,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
 
     useEffect(() => {
         if (comment) {
-           setRepScore(comment.reputation); 
+            setRepScore(comment.reputation);
         }
         
     }, [comment]);
@@ -66,14 +66,13 @@ export default function Comment({ handleComment = null, handleReply = null, comm
 
                 changeInVoteScoring = voteObject.data.vote.score - vote.score
             }
-            else
-            {
+            else {
                 //create new vote
                 voteObject = await axios.post("/votes/vote", {
                     score,
                     linkedId: comment._id,
                     username: user.username
-                }); 
+                });
 
                 changeInVoteScoring = voteObject.data.vote.score;
             }
@@ -97,7 +96,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
 
         } catch (error) {
             console.log(error);
-        } 
+        }
     };
 
     const handleUpdate = async () => {
@@ -107,7 +106,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
             await axios.put(`/comments/${comment._id}`, {
                 username: user.username,
                 description: feedback
-            }); 
+            });
 
             //update comment locally
             comment.description = feedback;
@@ -130,8 +129,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
             handleUpdate();
         }
         //confirming a new comment
-        else
-        {
+        else {
             handleComment(event, feedback, replyId, replyUsername);
         }
 
@@ -146,133 +144,130 @@ export default function Comment({ handleComment = null, handleReply = null, comm
             if (vote.score === desiredNumber) {
                 return "icon-lock";
             }
-            else
-            {
+            else {
                 return "icon-unlock";
             }
         }
         //if no vote cast
-        else
-        {
+        else {
             //display icon only if clear
-           if (clearIcon) {
+            if (clearIcon) {
                 return "icon-lock";
             }
-            else
-            {
+            else {
                 return "icon-unlock";
-            } 
+            }
         }
     };
 
-  return (
-    <div className="comment">
-        <div className={`commentContainer ${replyUsername ? "commentReplyContainer" : ""}`}>
-            {/* author profile pic? */}
+    return (
+        <div className="comment">
+            <div className={`commentContainer ${replyUsername ? "commentReplyContainer" : ""}`}>
+                {/* author profile pic? */}
 
-            <div className="commentIcons">
-                <ReputationIcon
-                    repScore={comment ? repScore : 0}
-                    comment={comment ? comment : { badgeName: ""}}
-                    numberClass="commentRepNumbering"
-                />
-                {comment && //display icons if a pre-existing comment
-                    <>
-                        <div className="commentVoteIcon">
-                            <i
-                                className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
-                                onClick={() => {handleVote(clearThumbsUpScore)}}
-                            ></i>
-                        </div>
-                        <div className="commentVoteIcon">
-                            <i
-                                className={`${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
-                                onClick={() => {handleVote(solidThumbsUpScore)}}
-                            ></i>
-                        </div>
-                        <div className="commentVoteIcon">
-                            <i
-                                className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
-                                onClick={() => {handleVote(clearThumbsDownScore)}}
-                            ></i>
-                        </div>
-                        <div className="commentVoteIcon">
-                            <i
-                                className={`${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
-                                onClick={() => {handleVote(solidThumbsDownScore)}}
-                            ></i>
-                        </div>
-                    </>
-                }
-            </div>
-            
-            <div className="commentContent">
-                <span className="commentTitleRow">
-                    
-                    <h3 className="commentAuthor">
-                        {comment ? comment.username: user.username}
-                    </h3>
-                    {comment && new Date(comment.updatedAt).toDateString()}
-                    {comment?.username === user.username && !writeMode &&
-                        <button
-                            className="commentButton commentUpdate"
-                            onClick={() => { setWriteMode(true); setFeedback(comment.description); }}
-                        >
-                            Update
-                        </button>
-                    }
-                </span>
-                {replyUsername &&
-                    <span className="commentReplyTo">
-                        @{replyUsername}
-                    </span>
-                }
-                {(comment && !writeMode) ? (
-                    <p className="commentDescription">
-                        {comment.description}
-                    </p>
-                )
-                    :
-                    (
-                        <textarea 
-                            className="commentTextArea"
-                            placeholder="Enter your feedback..."
-                            value={feedback}
-                            onChange={text => setFeedback(text.target.value)}
-                            required
-                        />    
-                    )
-                }
-                <span className="commentBottomRow">
-                    {(comment && !writeMode) ? (
-                        <button
-                            className="commentButton"
-                              onClick={() => { handleReply(comment._id); }}
-                        >
-                            Reply
-                        </button>
-                    ) : (
+                <div className="commentIcons">
+                    <ReputationIcon
+                        repScore={comment ? repScore : 0}
+                        comment={comment ? comment : { badgeName: "" }}
+                        numberClass="commentRepNumbering"
+                    />
+                    {comment && user && //display icons if a pre-existing comment
                         <>
-                            <button
-                                className="commentButton"
-                                onClick={handleConfirm}
-                                type="submit"
-                            >
-                                Confirm
-                            </button>
-                            <button
-                                className="commentButton"
-                                onClick={() => {setFeedback("")}}
-                            >
-                                Clear
-                            </button>  
-                        </>          
-                    )
+                            <div className="commentVoteIcon">
+                                <i
+                                    className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
+                                    onClick={() => { handleVote(clearThumbsUpScore) }}
+                                ></i>
+                            </div>
+                            <div className="commentVoteIcon">
+                                <i
+                                    className={`${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
+                                    onClick={() => { handleVote(solidThumbsUpScore) }}
+                                ></i>
+                            </div>
+                            <div className="commentVoteIcon">
+                                <i
+                                    className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
+                                    onClick={() => { handleVote(clearThumbsDownScore) }}
+                                ></i>
+                            </div>
+                            <div className="commentVoteIcon">
+                                <i
+                                    className={`${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
+                                    onClick={() => { handleVote(solidThumbsDownScore) }}
+                                ></i>
+                            </div>
+                        </>
                     }
-                </span>
-            </div>
+                </div>
             
+                <div className="commentContent">
+                    <span className="commentTitleRow">
+                    
+                        <h3 className="commentAuthor">
+                            {comment ? comment.username : user.username}
+                        </h3>
+                        {comment && new Date(comment.updatedAt).toDateString()}
+                        {comment?.username === user?.username && !writeMode &&
+                            <button
+                                className="commentButton commentUpdate"
+                                onClick={() => { setWriteMode(true); setFeedback(comment.description); }}
+                            >
+                                Update
+                            </button>
+                        }
+                    </span>
+                    {replyUsername &&
+                        <span className="commentReplyTo">
+                            @{replyUsername}
+                        </span>
+                    }
+                    {(comment && !writeMode) ? (
+                        <p className="commentDescription">
+                            {comment.description}
+                        </p>
+                    )
+                        :
+                        (
+                            <textarea
+                                className="commentTextArea"
+                                placeholder="Enter your feedback..."
+                                value={feedback}
+                                onChange={text => setFeedback(text.target.value)}
+                                required
+                            />
+                        )
+                    }
+                    <span className="commentBottomRow">
+                        {(comment && !writeMode) ? (
+                            <button
+                                className="commentButton"
+                                onClick={() => { handleReply(comment._id); }}
+                            >
+                                Reply
+                            </button>
+                        ) : (
+                            <>
+                                <button
+                                    className="commentButton"
+                                    onClick={handleConfirm}
+                                    type="submit"
+                                >
+                                    Confirm
+                                </button>
+                                <button
+                                    className="commentButton"
+                                    onClick={() => { setFeedback("") }}
+                                >
+                                    Clear
+                                </button>
+                            </>
+                        )
+                        }
+                    </span>
+                </div>
+            
+            </div>
         </div>
-    </div>
-  )
+    )
 }
