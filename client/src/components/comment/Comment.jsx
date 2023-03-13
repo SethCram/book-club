@@ -171,7 +171,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                         comment={comment ? comment : { badgeName: "" }}
                         numberClass="commentRepNumbering"
                     />
-                    {comment && user && //display icons if a pre-existing comment
+                    {comment && //display icons if a pre-existing comment
                         <>
                             <div className="commentVoteIcon">
                                 <i

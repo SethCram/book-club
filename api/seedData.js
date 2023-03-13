@@ -257,22 +257,20 @@ const createFakeVotes = (posts, users) => {
     */
 };
 
-const createFakeComment = (post, username, badges, replyId = undefined, replyUsername = "") => {
+const createFakeComment = (postId, username, badges, minDate, replyId = undefined, replyUsername = "") => {
     
-    const creationDate = faker.date.between(post.createdAt, new Date().toLocaleDateString().replace("/", ":"));
+    const creationDate = faker.date.between(
+        minDate,
+        new Date().toLocaleDateString().replace("/", ":")
+    );
 
     let tmpComment = {
-        postId: post._id,
+        postId,
         username,
         description: faker.lorem.lines(), /* could use sentences instead */
         createdAt: creationDate,
         updatedAt: creationDate,
     };
-
-    if (!post?._id) {
-        console.log(post);
-        throw new Error("Post id not passed in to comment creation.")
-    }
 
     if (replyId) {
         tmpComment["replyId"] = replyId;
@@ -300,7 +298,7 @@ const createFakeComments = (posts, users, badges, replyRate = 0.5) => {
         //have each user comment on it
         for (let i = 0; i < users.length; i++) {
 
-            const comment = createFakeComment(posts[j], users[i].username, badges)
+            const comment = createFakeComment(posts[j]._id, users[i].username, badges, posts[j].createdAt)
             comments.push( comment );
             
         }    
@@ -328,19 +326,16 @@ const createFakeReplyComments = (posts, users, rootComments, commentsToReplyTo, 
 
                 //console.log(comments.length);
 
-                const post = posts.find(post => {
-                    return post._id.equals(commentToReplyTo.postId)
-                });
-
-                if (!post) {
-                    throw new Error("Post not found");
-                }
+                //const post = posts.find(post => {
+                //    return post._id.equals(commentToReplyTo.postId)
+                //});
 
                 //create a reply to a comment
                 const reply = createFakeComment(
-                    post,
+                    commentToReplyTo.postId,
                     users[i].username,
                     badges,
+                    commentToReplyTo.createdAt,
                     commentToReplyTo._id,
                     commentToReplyTo.username
                 );
