@@ -369,8 +369,6 @@ const createFakeReplyComments = (posts, users, comments, badges, replyRate = 0.5
                     commentToReplyTo.username
                 );
 
-                console.log("Replying to " + commentToReplyTo._id);
-                console.log(reply);
 
                 let currReplyId = commentToReplyTo._id;
                 let replyCommentIndex = -1;
