@@ -97,13 +97,18 @@ const createFakePosts = (numOf, authorsUsernames, categories, badges) => {
     let posts = [];
 
     for (let i = 0; i < numOf; i++) {
+
+        //create dates within the past year
+        const creationDate = faker.date.recent(365)
+
         //create baseline post
         let tmpPost = {
             title: faker.helpers.unique(createFakeTitle), 
             description: faker.commerce.productDescription() + " " + faker.lorem.paragraphs(3),
             photo: createRandomPhotoUrl(1234, 1234),
             categories: [],
-            createdAt: faker.date.recent(365) //create dates within the past year
+            createdAt: creationDate,
+            updatedAt: creationDate
         }
 
         //ensure every author used atleast once in a fake post
@@ -252,13 +257,22 @@ const createFakeVotes = (posts, users) => {
     */
 };
 
-const createFakeComment = (postId, username, badges, replyId = undefined, replyUsername = "") => {
+const createFakeComment = (post, username, badges, replyId = undefined, replyUsername = "") => {
     
+    const creationDate = faker.date.between(post.createdAt, new Date().toLocaleDateString().replace("/", ":"));
+
     let tmpComment = {
-        postId: postId,
+        postId: post._id,
         username,
-        description: faker.lorem.lines() /* could use sentences instead */
+        description: faker.lorem.lines(), /* could use sentences instead */
+        createdAt: creationDate,
+        updatedAt: creationDate,
     };
+
+    if (!post?._id) {
+        console.log(post);
+        throw new Error("Post id not passed in to comment creation.")
+    }
 
     if (replyId) {
         tmpComment["replyId"] = replyId;
@@ -286,9 +300,8 @@ const createFakeComments = (posts, users, badges, replyRate = 0.5) => {
         //have each user comment on it
         for (let i = 0; i < users.length; i++) {
 
-            const comment = createFakeComment(posts[j]._id, users[i].username, badges)
+            const comment = createFakeComment(posts[j], users[i].username, badges)
             comments.push( comment );
-
             
         }    
     }
@@ -315,9 +328,17 @@ const createFakeReplyComments = (posts, users, rootComments, commentsToReplyTo, 
 
                 //console.log(comments.length);
 
+                const post = posts.find(post => {
+                    return post._id.equals(commentToReplyTo.postId)
+                });
+
+                if (!post) {
+                    throw new Error("Post not found");
+                }
+
                 //create a reply to a comment
                 const reply = createFakeComment(
-                    commentToReplyTo.postId,
+                    post,
                     users[i].username,
                     badges,
                     commentToReplyTo._id,
@@ -437,7 +458,7 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
     }
     console.log(`   Updated ${updatedRootComments.length} root comments.`);
 
-    console.log(`Inserted ${updatedRootComments.length+insertedRootReplyComments.length+insertedReplyReplyComments.length} comments in total.`);
+    console.log(`${updatedRootComments.length+insertedRootReplyComments.length+insertedReplyReplyComments.length} comments inserted in total.`);
 
     //INSERT USERS, CATS, VOTES
     const insertedUsers = await User.insertMany(newUsers);
