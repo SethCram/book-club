@@ -27,6 +27,10 @@
     cursor: pointer;
 }
 
+#dark .commentVoteIcon{
+    color: var(--color-gold);
+}
+
 .commentRepNumbering{
     margin-right: 29px;
 }
@@ -63,6 +67,10 @@
     background-color: transparent;
     border: none;
     margin: 1rem;
+}
+
+#dark .commentTextArea{
+    color: white;
 }
 
 .commentTextArea:focus{

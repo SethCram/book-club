@@ -47,6 +47,10 @@
     cursor: pointer;
 }
 
+#dark .singlePostScoringIcon{
+    color: var(--color-gold);
+}
+
 .singlePostTitleInput{ /* should be centered under image */
     text-align: center;
     margin: 10px;

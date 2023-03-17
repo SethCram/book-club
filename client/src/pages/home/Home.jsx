@@ -93,7 +93,9 @@ export default function Home() {
 
   return (
     <>
+      {!search &&
         <Header />
+      }
         <div className='home'>
           <div className="homeColumnAligned">
             <Posts posts={ posts } />

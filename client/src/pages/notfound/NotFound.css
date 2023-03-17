@@ -31,6 +31,10 @@
     color: black;
 }
 
+#dark .notFoundLink{
+    color: var(--color-light-text);
+}
+
 @media (prefers-reduced-motion: no-preference) {
     .notFoundLogo {
         animation: logoSpin infinite 15s linear;

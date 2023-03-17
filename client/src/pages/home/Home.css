@@ -1,6 +1,6 @@
 .home{
     display: flex;
-    min-height: 19vh;
+    min-height: 92.5vh;
     flex-direction: column;
     margin: 0 auto -100px; /* margin must be same as homePush + homePagination height */
 }
