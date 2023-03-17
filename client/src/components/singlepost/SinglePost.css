@@ -94,16 +94,16 @@
     display: flex;
     justify-content: space-between; /* forces children as far apart as possible */
     font-size: 16px;
-    color: #b39656;
+    color: var(--color-text-light-variant);
 }
 
 .singlePostDescription{
-    color: #666;
+    color: var(--color-text-light-variant);
     font-size: 18px;
     line-height: 25px;
 }
 .singlePostDescriptionInput{
-    color: #666;
+    color: var(--color-text-light-variant);
     font-size: 18px;
     line-height: 25px;
     border: none;

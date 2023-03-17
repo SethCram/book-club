@@ -8,10 +8,12 @@
     --color-bg-light: white;
     --color-bg-light-tint: #f3f2f2;
     --color-text-light: white;
+    --color-text-light-variant: #666;
 
     --color-bg-dark: #181a1b;
     --color-bg-dark-tint: #1b1e1f;
     --color-text-dark: black;
+    --color-text-dark-variant: #444;
 
     --color-bg-variant: #444; /*#2c2c6c;*/
     --color-primary: #4db5ff;

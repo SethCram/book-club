@@ -373,7 +373,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                   <span className="singlePostDate">Published: <b>{new Date(post?.createdAt).toDateString()}</b></span>
               </div>
               {updateMode ?
-                <input
+                <textarea
                     type="text"
                     value={description}
                     className="singlePostDescriptionInput singlePostInputField" 
