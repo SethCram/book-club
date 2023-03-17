@@ -5,7 +5,7 @@ import ReputationIcon from '../reputationIcon/ReputationIcon';
 import SocialMediaIcons from '../socialmediaicons/SocialMediaIcons';
 import './Sidebar.css'
 
-export default function Sidebar({ user }) {
+export default function Sidebar({ user, updatedPostAuthor = null }) {
   const [categoriesCount, setCategoriesCount] = useState([]);
   const anyUserLinksSet = user && (user.instagramLink ||
     user.twitterLink ||
@@ -35,7 +35,11 @@ export default function Sidebar({ user }) {
         <div className='sidebarItem' >
           <span className='sidebarTitle'>ABOUT ME</span>
           <span className='sidebarReputation'> 
-          <ReputationIcon repScore={user?.reputation} user={user} fromSideBar={true} />
+          <ReputationIcon
+            repScore={updatedPostAuthor ? updatedPostAuthor.reputation : user?.reputation}
+            user={updatedPostAuthor ? updatedPostAuthor : user}
+            fromSideBar={true}
+          />
             {user ? user.username : "No user found"}
           </span> 
           <img

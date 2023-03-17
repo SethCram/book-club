@@ -4,7 +4,7 @@ import axios from "axios"
 import { Context } from "../../context/Context";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 
-export default function Comment({ handleComment = null, handleReply = null, comment = null, replyId = "", replyUsername = "" }) {
+export default function Comment({ handleComment = null, handleReply = null, comment = null, replyId = "", replyUsername = "", setUpdatedCommentAuthor = null }) {
     const [feedback, setFeedback] = useState("");
     const { user } = useContext(Context);
     const [vote, setVote] = useState(null);
@@ -85,7 +85,8 @@ export default function Comment({ handleComment = null, handleReply = null, comm
             if (Object.keys(voteObject.data.updatedAuthor).length > 0) {
                 //need to update sidebar user reputation somehow 
                 console.log("Sidebar author rep should be updated");
-                console.log(voteObject.data.updatedAuthor);
+
+                setUpdatedCommentAuthor(voteObject.data.updatedAuthor);
             }
 
             //set new vote properly

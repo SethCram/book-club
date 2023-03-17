@@ -9,7 +9,7 @@ import { ThemeContext } from "../../App";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 import CommentSection from "../commentSection/CommentSection";
 
-export default function SinglePost({post}) {
+export default function SinglePost({post, setUpdatedPostAuthor}) {
     const { user } = useContext(Context);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -199,8 +199,9 @@ export default function SinglePost({post}) {
             }
 
             if (Object.keys(voteObject.data.updatedAuthor).length > 0) {
-                //need to update sidebar user reputation somehow 
+                //need to update sidebar user reputation
                 console.log("Sidebar author rep should be updated");
+                setUpdatedPostAuthor(voteObject.data.updatedAuthor);
             }
 
             //set new vote properly
@@ -391,7 +392,7 @@ export default function SinglePost({post}) {
                 </button>
               }
 
-              <CommentSection postId={post?._id} />
+              <CommentSection post={post} setUpdatedPostAuthor={setUpdatedPostAuthor} />
 
           </div>
       </div>

@@ -8,6 +8,7 @@ import "./SinglePostPage.css"
 export default function SinglePostPage() {
   const [post, setPost] = useState(null);
   const [user, setUser] = useState(null);
+  const [updatedPostAuthor, setUpdatedPostAuthor] = useState(null);
   const location = useLocation();
   const postId = location.pathname.split("/")[2];
 
@@ -28,6 +29,7 @@ export default function SinglePostPage() {
         try {
           const response = await axios.get("/users/username/" + post.username);
           setUser(response.data);
+          //setUpdatedPostAuthor(response.data.reputation);
         } catch (error) {
           //couldnt find user
         }
@@ -38,8 +40,8 @@ export default function SinglePostPage() {
 
   return (
     <div className='singlepostpage'>
-      <SinglePost post={ post } />
-      <Sidebar user={ user } />
+      <SinglePost post={ post } setUpdatedPostAuthor={setUpdatedPostAuthor} />
+      <Sidebar user={ user } updatedPostAuthor={updatedPostAuthor} />
     </div>
   )
 }

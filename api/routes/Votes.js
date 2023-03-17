@@ -57,7 +57,7 @@ const updateUserRep = async (additionalScore, username) => {
             //console.log(user.reputation);
 
             //find where old+new scores would be inserted in ASC order arr
-            const newScoreIndex = sortedIndex(allBadges, newScore);
+            let newScoreIndex = sortedIndex(allBadges, newScore);
             const oldScoreIndex = sortedIndex(allBadges, user.reputation);
 
             //console.log(newScoreIndex);
