@@ -79,4 +79,9 @@
     border: none;
     background-color: transparent;
     cursor: pointer;
+    color: var(--color-dark-text);
+}
+
+#dark .commentButton{
+    color: var(--color-light-text);
 }
