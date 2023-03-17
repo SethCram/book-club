@@ -21,6 +21,10 @@
     align-items: center;
 }
 
+.writeIconWrapper{
+    padding: 1rem 0rem 1rem 2rem;
+}
+
 .writeIcon{
     width: 25px;
     height: 25px;
@@ -32,18 +36,18 @@
     font-size: 20px;
     color: rgb(120, 120, 120);
     cursor: pointer;
-    margin-left: 100px;
 }
 
 .writeInput{
     font-size: 30px;
     border: none;
     padding: 20px;
-    width: 70vw;
+    width: 60vw;
 }
 
 #dark .writeInput{
     background-color: var(--color-bg-dark);
+    color: var(--color-light-text);
 }
 
 .writeInput:focus {

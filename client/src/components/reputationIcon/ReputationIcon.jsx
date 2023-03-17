@@ -26,7 +26,7 @@ export default function ReputationIcon({repScore, user = null, post = null, comm
             case "platinum":
                 return "platinum";
             default:
-                return "";
+                return "black";
         }
     }
 

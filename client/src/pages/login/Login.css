@@ -12,6 +12,7 @@
 .loginTitle{
     font-size: 50px;
     cursor: default;
+    color: var(--color-text-dark);
 }
 
 .loginForm{
@@ -22,6 +23,7 @@
 
 .loginForm > label{
     margin: 10px 0;
+    color: var(--color-text-dark);
 }
 
 .loginInput{

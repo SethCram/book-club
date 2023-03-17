@@ -1,7 +1,13 @@
 #light { /* Access id's through # */
     background-color: white;
+    color: black;
 }
 
 #dark{
     background-color: var(--color-bg-dark);
+    color: white;
+}
+
+#dark{
+    color: white;
 }

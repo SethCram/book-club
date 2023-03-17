@@ -69,6 +69,10 @@
     border-bottom: 1px solid lightgrey;
 }
 
+.settingsForm > input:focus{
+    outline: none;
+}
+
 #dark .settingsForm > input {
     background-color: var(--color-bg-dark);
 }

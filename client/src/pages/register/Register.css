@@ -12,6 +12,7 @@
 .registerTitle{
     font-size: 50px;
     cursor: default;
+    color: var(--color-text-dark);
 }
 
 .registerForm{
@@ -22,12 +23,17 @@
 
 .registerForm > label{
     margin: 10px 0;
+    color: var(--color-text-dark);
 }
 
 .registerInput{
     padding: 10px;
     background-color: var(--color-white);
     border: none;
+}
+
+.registerInput:focus{
+    outline: none;
 }
 
 .registerPasswordValidation{

@@ -68,16 +68,16 @@ export default function WritePage() {
     
     return (
       <div className='writePage'>
-          {picture && 
-            <img 
-              className="writeImg"
-              src={URL.createObjectURL(picture)}
-              alt=""
-            />
-          }
+        {picture && 
+          <img 
+            className="writeImg"
+            src={URL.createObjectURL(picture)}
+            alt=""
+          />
+        }
         <form className='writeForm' onSubmit={handleSubmit}>
           <div className='writeFormGroup'>
-          <div className="writeMultiSelectContainer">
+            <div className="writeMultiSelectContainer">
             <Multiselect
               isObject={true}
               displayValue="name" // Property name to display in the dropdown options
@@ -114,34 +114,36 @@ export default function WritePage() {
               }}
             />
             </div>
-                  <label htmlFor='fileInput'>
-                    <i className="writeIcon fa-solid fa-plus"></i>
-                  </label>
-                  <input
-                      type='file'
-                      id='fileInput'
-                      style={{ display: "none" }}
-                      onChange={(event)=>setPicture(event.target.files[0])} //set picture to file uploaded
-                  />
-                  <input
-                      className='writeInput'
-                      type='text'
-                      placeholder='Title'
-                      autoFocus={true}
-                      onChange={(event)=>setTitle(event.target.value)} //needa use event's curr txt box val
-                  />
-              </div>
-              <div className="writeFormGroup">
-                <textarea 
-                    className="writeInput writeText" 
-                    placeholder="Tell your story..." 
-                    type="text"
-                    onChange={(event)=>setDescription(event.target.value)}
-                >
-                </textarea>
-              </div>
-              <button className="writeSubmit" type="submit">Publish</button>
-          </form>
+            <div className="writeIconWrapper">
+              <label htmlFor='fileInput'>
+                <i className="writeIcon fa-solid fa-plus"></i>
+              </label>
+            </div>
+            <input
+                type='file'
+                id='fileInput'
+                style={{ display: "none" }}
+                onChange={(event)=>setPicture(event.target.files[0])} //set picture to file uploaded
+            />
+            <input
+                className='writeInput'
+                type='text'
+                placeholder='Title'
+                autoFocus={true}
+                onChange={(event)=>setTitle(event.target.value)} //needa use event's curr txt box val
+            />
+          </div>
+          <div className="writeFormGroup">
+            <textarea 
+                className="writeInput writeText" 
+                placeholder="Tell your story..." 
+                type="text"
+                onChange={(event)=>setDescription(event.target.value)}
+            >
+            </textarea>
+          </div>
+          <button className="writeSubmit" type="submit">Publish</button>
+        </form>
     </div>
   )
 }
