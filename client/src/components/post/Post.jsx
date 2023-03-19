@@ -5,7 +5,7 @@ import "./Post.css"
 export default function post({ post }) {
 
   return (
-      <div className="post">
+      <div className="post container">
         {post.photo && ( //shows post's image if provided
           <img
             className="postImg"

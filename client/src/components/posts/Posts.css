@@ -1,8 +1,32 @@
 .posts{
     flex: 100%;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     /* use as much horizontal space as possible*/
-    flex-wrap: wrap;
     margin: 20px; /* surrounding border */
     justify-content: center;
+    padding: 1rem;
+}
+
+/* MEDIA QUERIES  */
+
+/* For tablets */
+@media screen and (max-width: 1024px) {
+    .posts {
+        grid-template-columns: 1fr 1fr;
+    }
+
+}
+
+/* For phones */
+@media screen and (max-width: 600px) {
+    .posts {
+        gap: 1rem;
+        grid-template-columns: 1fr;
+        margin: 0 auto;
+    }
+
+    .posts > div {
+        width: 100%;
+    }
 }
