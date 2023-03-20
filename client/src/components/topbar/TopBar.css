@@ -34,6 +34,20 @@
     justify-content: center;
 }
 
+.topBurgerMenuIList{
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+}
+
+.topBurgerMenuItem{
+    margin: 1rem;
+}
+
+.topBurgerMenuItem:hover{
+    color: var(--color-text-light-variant);
+}
+
 .topTitleImage{
     max-width: 20px;
     max-height: 20px;
@@ -44,6 +58,7 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
+    margin-top: 0.3rem;
 }
 
 .topCenter {
@@ -73,7 +88,7 @@
     font-size: var(--medium-font-size);
     color: var(--color-bg-variant);
     cursor: pointer;
-    margin-left: 15px;
+    margin: 15px;
 }
 
 #dark .topSearchIcon {
@@ -83,3 +98,20 @@
 .topSwitch{
     margin-left: 20px;
 }
+
+.topSideSwitch{
+    margin: 1rem;
+    margin-top: 40%;
+}
+
+/* MEDIA QUERIES */
+
+/* For tablets */
+@media screen and (max-width: 1024px) {
+
+  }
+  
+  /* For phones */
+  @media screen and (max-width: 600px) {
+  
+  }

@@ -9,6 +9,7 @@
     "axios": "^1.2.5",
     "multiselect-react-dropdown": "^2.0.25",
     "react": "^18.2.0",
+    "react-burger-menu": "^3.0.9",
     "react-dom": "^18.2.0",
     "react-password-checklist": "^1.4.3",
     "react-router-dom": "^6.7.0",
