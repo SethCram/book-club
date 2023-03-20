@@ -28,3 +28,17 @@
 .homePaginationButton{
 
 }
+
+/* MEDIA QUERIES */
+
+/* For tablets */
+@media screen and (max-width: 1024px) {
+
+}
+
+/* For phones */
+@media screen and (max-width: 600px) {
+    .homeColumnAligned {
+        flex-direction: column;
+    }
+}

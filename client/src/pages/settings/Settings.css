@@ -103,3 +103,17 @@
     color: red;
     font-weight: "700";
 }
+
+/* MEDIA QUERIES */
+
+/* For tablets */
+@media screen and (max-width: 1024px) {
+
+}
+
+/* For phones */
+@media screen and (max-width: 600px) {
+    .settings {
+        flex-direction: column;
+    }
+}

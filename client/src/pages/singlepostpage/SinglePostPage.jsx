@@ -29,7 +29,6 @@ export default function SinglePostPage() {
         try {
           const response = await axios.get("/users/username/" + post.username);
           setUser(response.data);
-          //setUpdatedPostAuthor(response.data.reputation);
         } catch (error) {
           //couldnt find user
         }
