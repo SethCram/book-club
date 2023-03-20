@@ -10,17 +10,37 @@ import BC from "../../assets/favicon_io/android-chrome-512x512.png"
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 import { fallDown as Menu } from 'react-burger-menu'
 
+export const DeviceType = {
+    DESKTOP: 1,
+    TABLET: 2,
+    PHONE: 3
+}
+
+export const GetDeviceType = () => {
+    let currDeviceType;
+
+    // Viewport is less or equal to 600 pixels wide
+    if (window.matchMedia("(max-width: 600px)").matches) {
+        currDeviceType = DeviceType.PHONE;
+    }
+    // Viewport is less or equal to 1024 pixels wide
+    else if (window.matchMedia("(max-width: 1024px)").matches) {
+        currDeviceType = DeviceType.TABLET;
+    }
+    // Viewport is greater than 1024 pixels wide
+    else {
+        currDeviceType = DeviceType.DESKTOP;
+    }
+
+    return currDeviceType;
+}
+
 export default function TopBar() {
     const { user, dispatch } = useContext(Context);
 
     const { theme, toggleTheme } = useContext(ThemeContext);
 
-    const DeviceType = {
-        DESKTOP: 1,
-        TABLET: 2,
-        PHONE: 3
-    }
-    let currDeviceType = 1;
+    let currDeviceType = GetDeviceType();
 
     const handleLogout = () => {
         dispatch(LoginFailure());
@@ -72,19 +92,6 @@ export default function TopBar() {
         }
     }
 
-    // Viewport is less or equal to 600 pixels wide
-    if (window.matchMedia("(max-width: 600px)").matches) {
-        currDeviceType = DeviceType.PHONE;
-    }
-    // Viewport is less or equal to 1024 pixels wide
-    else if (window.matchMedia("(max-width: 1024px)").matches) {
-        currDeviceType = DeviceType.TABLET;
-    }
-    // Viewport is greater than 1024 pixels wide
-    else {
-        currDeviceType = DeviceType.DESKTOP;
-    }
-
     return (
         <>
             {(currDeviceType === DeviceType.PHONE ||
@@ -104,12 +111,23 @@ export default function TopBar() {
                             </li>
                             <li className="topBurgerMenuItem">
                                 <Link to="/about" className="link">ABOUT</Link>
-                            </li>
-                            {user &&
+                        </li>
+                        <>
+                            {user ?
                                 <li className="topBurgerMenuItem">
                                     <Link to="/" onClick={handleLogout} className="link">LOGOUT</Link>
                                 </li>
+                                :
+                                <>
+                                    <li className="topBurgerMenuItem">
+                                        <Link to="/login" className="link">LOGIN</Link>
+                                    </li>
+                                    <li className="topBurgerMenuItem">
+                                        <Link to="/register" className="link">REGISTER</Link>
+                                    </li>
+                                </>
                             }
+                            </>
                             <div className="topSideSwitch">
                                 <ReactSwitch
                                     onChange={toggleTheme}
@@ -134,7 +152,11 @@ export default function TopBar() {
                         <>
                             <div className="topTitle">
                                 <img className="topTitleImage" src={BC} alt=""/>
-                                <h2>Book Club</h2>
+                                <h2>
+                                    <Link to="/" className="link">
+                                        Book Club
+                                    </Link>
+                                </h2>
                             </div>
                             <SocialMediaIcons user={user} barPosition="top" />
                         </>
@@ -173,30 +195,34 @@ export default function TopBar() {
                     </ul>
                 </div>
                     <div className="topRight">
-                        {
-                            user ? (
-                                <>
-                                    {currDeviceType === DeviceType.DESKTOP &&
-                                        <ReputationIcon repScore={user.reputation} user={user} />
-                                    }
-                                    <Link to="/settings" className="link">
-                                        <img
-                                            className="topImg"
-                                            src={user.profilePicture}
-                                            alt=""
-                                        />
-                                    </Link>
-                                </>
-                            ) : (
-                                <ul className="topList">
-                                    <li className="topListItem">
-                                        <Link to="/login" className="link">LOGIN</Link>
-                                    </li>
-                                    <li className="topListItem">
-                                        <Link to="/register" className="link">REGISTER</Link>
-                                    </li>
-                                </ul>
-                            )
+                    {
+                        user ? (
+                            <>
+                                {currDeviceType === DeviceType.DESKTOP &&
+                                    <ReputationIcon repScore={user.reputation} user={user} />
+                                }
+                                <Link to="/settings" className="link">
+                                    <img
+                                        className="topImg"
+                                        src={user.profilePicture}
+                                        alt=""
+                                    />
+                                </Link>
+                            </>
+                        ) : (
+                            <>
+                                {currDeviceType === DeviceType.DESKTOP &&
+                                    <ul className="topList">
+                                        <li className="topListItem">
+                                            <Link to="/login" className="link">LOGIN</Link>
+                                        </li>
+                                        <li className="topListItem">
+                                            <Link to="/register" className="link">REGISTER</Link>
+                                        </li>
+                                    </ul>
+                                }
+                            </>
+                        )
                         }
                     <i className="topSearchIcon fa-solid fa-magnifying-glass"></i>
                     {currDeviceType === DeviceType.DESKTOP &&
