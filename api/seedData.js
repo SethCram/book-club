@@ -394,9 +394,6 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
         newUsernames.push(newUsers[i].username);
     }
 
-    //add fake category to posting bc mandatory for each new post
-    newCatNames.push(fakeCategoryName); 
-
     //create new posts according to created users and cats
     const newPosts = createFakePosts(
         numOf = numOfPosts,
@@ -425,17 +422,6 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
     const insertedRootReplyComments = await Comment.insertMany(replyComments );
     console.log(`   ${insertedRootReplyComments.length} root reply comments inserted.`);
     
-    //UPDATE ROOT COMMENTS
-    /*
-    for (let i = 0; i < updatedRootComments.length; i++){
-        await Comment.findByIdAndUpdate(
-            updatedRootComments[i]._id,
-            updatedRootComments[i]
-        );
-    }
-    console.log(`Updated ${updatedRootComments.length} root comments.`);
-    */
-    
     //INSERT REPLIES TO REPLY COMMENTS
     const [updatedRootCommentsV2, replyReplyComments] = createFakeReplyComments(
         insertedPosts, newUsers, updatedRootComments,
@@ -462,6 +448,10 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
     console.log(`${insertedCats.length} categories inserted.`);
     const insertedVotes = await Vote.insertMany(newVotes);
     console.log(`${insertedVotes.length} votes inserted.`);
+
+    //add fake category to posting bc mandatory for each new post 
+    // (unnecessary but may be useful in the future)
+    //newCatNames.push(fakeCategoryName); 
 };
 
 const removeFakeData = async () => {
