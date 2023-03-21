@@ -1,9 +1,9 @@
 import "./About.css"
-import { DeviceType, GetDeviceType } from "../../components/topbar/TopBar";
+import { DeviceType, GetDeviceType } from "../../App";
 
 export default function About() {
 
-    let currDeviceType = GetDeviceType();
+    const currDeviceType = GetDeviceType();
 
     return (
         <div className="about">

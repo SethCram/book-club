@@ -5,42 +5,15 @@ import { Context } from "../../context/Context";
 import SocialMediaIcons from "../socialmediaicons/SocialMediaIcons";
 import ReactSwitch from 'react-switch'
 import "./TopBar.css"
-import { ThemeContext } from "../../App";
+import { DeviceType, GetDeviceType, ThemeContext } from "../../App";
 import BC from "../../assets/favicon_io/android-chrome-512x512.png"
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 import { fallDown as Menu } from 'react-burger-menu'
 
-export const DeviceType = {
-    DESKTOP: 1,
-    TABLET: 2,
-    PHONE: 3
-}
-
-export const GetDeviceType = () => {
-    let currDeviceType;
-
-    // Viewport is less or equal to 600 pixels wide
-    if (window.matchMedia("(max-width: 600px)").matches) {
-        currDeviceType = DeviceType.PHONE;
-    }
-    // Viewport is less or equal to 1024 pixels wide
-    else if (window.matchMedia("(max-width: 1024px)").matches) {
-        currDeviceType = DeviceType.TABLET;
-    }
-    // Viewport is greater than 1024 pixels wide
-    else {
-        currDeviceType = DeviceType.DESKTOP;
-    }
-
-    return currDeviceType;
-}
-
 export default function TopBar() {
     const { user, dispatch } = useContext(Context);
-
     const { theme, toggleTheme } = useContext(ThemeContext);
-
-    let currDeviceType = GetDeviceType();
+    const currDeviceType = GetDeviceType();
 
     const handleLogout = () => {
         dispatch(LoginFailure());

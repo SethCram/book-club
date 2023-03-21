@@ -8,6 +8,7 @@ import Register from "./pages/register/Register";
 import { Context } from "./context/Context";
 import About from "./pages/about/About";
 import "./App.css"
+import { useLayoutEffect } from 'react'
 
 // Need the following to setup dynamic routing:
 import { createContext, useContext, useState } from "react";
@@ -19,6 +20,46 @@ import {
 import NotFound from "./pages/notfound/NotFound";
 
 export const ThemeContext = createContext(null);
+
+function useWindowSize() {
+  const [size, setSize] = useState([0, 0]);
+  useLayoutEffect(() => {
+    function updateSize() {
+      setSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+  return size;
+}
+
+export const DeviceType = {
+  DESKTOP: 1,
+  TABLET: 2,
+  PHONE: 3
+}
+
+export const GetDeviceType = () => {
+  const [width, height] = useWindowSize();
+
+  let currDeviceType;
+
+  // Viewport is less or equal to 600 pixels wide
+  if (width <= 600) {
+      currDeviceType = DeviceType.PHONE;
+  }
+  // Viewport is less or equal to 1024 pixels wide
+  else if (width <= 1024) {
+      currDeviceType = DeviceType.TABLET;
+  }
+  // Viewport is greater than 1024 pixels wide
+  else {
+      currDeviceType = DeviceType.DESKTOP;
+  }
+
+  return currDeviceType;
+}
 
 function App() {
   const { user } = useContext(Context);
