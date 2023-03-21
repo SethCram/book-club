@@ -162,7 +162,11 @@ export default function TopBar() {
                             :
                             <>
                                 <img className="topTitleImage" src={BC} alt=""/>
-                                <h2>Book Club</h2>
+                                <h2>
+                                    <Link to="/" className="link">
+                                        Book Club
+                                    </Link>
+                                </h2>
                             </>
                         }
                     </ul>
