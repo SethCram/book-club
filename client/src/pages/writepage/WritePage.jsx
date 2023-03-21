@@ -114,24 +114,26 @@ export default function WritePage() {
               }}
             />
             </div>
-            <div className="writeIconWrapper">
-              <label htmlFor='fileInput'>
-                <i className="writeIcon fa-solid fa-plus"></i>
-              </label>
+            <div className="writeFormRow">
+              <div className="writeIconWrapper">
+                <label htmlFor='fileInput'>
+                  <i className="writeIcon fa-solid fa-plus"></i>
+                </label>
+              </div>
+              <input
+                  type='file'
+                  id='fileInput'
+                  style={{ display: "none" }}
+                  onChange={(event)=>setPicture(event.target.files[0])} //set picture to file uploaded
+              />
+              <input
+                  className='writeInput'
+                  type='text'
+                  placeholder='Title'
+                  autoFocus={true}
+                  onChange={(event)=>setTitle(event.target.value)} //needa use event's curr txt box val
+                />
             </div>
-            <input
-                type='file'
-                id='fileInput'
-                style={{ display: "none" }}
-                onChange={(event)=>setPicture(event.target.files[0])} //set picture to file uploaded
-            />
-            <input
-                className='writeInput'
-                type='text'
-                placeholder='Title'
-                autoFocus={true}
-                onChange={(event)=>setTitle(event.target.value)} //needa use event's curr txt box val
-            />
           </div>
           <div className="writeFormGroup">
             <textarea 

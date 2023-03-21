@@ -21,8 +21,14 @@
     align-items: center;
 }
 
+.writeFormRow{
+    display: flex;
+    flex-direction: row;
+}
+
 .writeIconWrapper{
-    padding: 1rem 0rem 1rem 2rem;
+    margin: 1rem 0rem 1rem 2rem;
+    padding-top: 0.6rem;
 }
 
 .writeIcon{
@@ -75,4 +81,24 @@
 
 .writeMultiSelectContainer{
     color: var(--color-gold);
+}
+
+/* MEDIA QUERIES */
+
+/* For phones */
+@media screen and (max-width: 600px) {
+    .writeFormGroup {
+        flex-direction: column;
+        justify-content: center;
+        margin-left: 0px;
+    }
+
+    .writeSubmit{
+        top: 0px;
+        right: 20px;
+    }
+
+    .writeImg{
+        margin-left: 15%;
+    }
 }
