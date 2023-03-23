@@ -1,0 +1,23 @@
+.ck.ck-editor {
+    width: 80vw;
+}
+
+.ck-editor__editable_inline {
+    min-height: 55vh;
+}
+
+/* MEDIA QUERIES */
+
+/* For tablets */
+@media screen and (max-width: 1024px) {
+    .ck.ck-editor {
+        width: 70vw;
+    }
+  }
+  
+  /* For phones */
+  @media screen and (max-width: 600px) {
+    .ck.ck-editor {
+        width: 80vw;
+    }
+  }
