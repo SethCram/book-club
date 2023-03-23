@@ -5,6 +5,7 @@ import { Context } from "../../context/Context";
 import { imagesFolder } from "../settings/Settings"
 import Multiselect from 'multiselect-react-dropdown'
 import { ThemeContext } from "../../App";
+import Editor from "../../components/editor/Editor";
 
 //should be able to update picture, but no currently possible
 
@@ -135,14 +136,8 @@ export default function WritePage() {
                 />
             </div>
           </div>
-          <div className="writeFormGroup">
-            <textarea 
-                className="writeInput writeText" 
-                placeholder="Tell your story..." 
-                type="text"
-                onChange={(event)=>setDescription(event.target.value)}
-            >
-            </textarea>
+          <div className="writeFormGroup writeFormEditor">
+            <Editor setDescription={setDescription}/>
           </div>
           <button className="writeSubmit" type="submit">Publish</button>
         </form>

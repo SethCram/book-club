@@ -8,6 +8,8 @@ import Multiselect from "multiselect-react-dropdown";
 import { ThemeContext } from "../../App";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 import CommentSection from "../commentSection/CommentSection";
+import * as DOMPurify from 'dompurify';
+import Editor from "../editor/Editor";
 
 export default function SinglePost({post, setUpdatedPostAuthor}) {
     const { user } = useContext(Context);
@@ -370,18 +372,19 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                           </b>
                       </Link>
                   </span>
-                  <span className="singlePostDate">Published: <b>{new Date(post?.createdAt).toDateString()}</b></span>
+                  <span className="singlePostDate">Published: {new Date(post?.createdAt).toDateString()}</span>
               </div>
               {updateMode ?
-                <textarea
-                    type="text"
-                    value={description}
+                <div
                     className="singlePostDescriptionInput singlePostInputField" 
-                    onChange={(event)=>setDescription(event.target.value)}
-                /> :
-                <p className="singlePostDescription">
-                    {description}
-                </p>
+                  >
+                    <Editor setDescription={setDescription} defaultText={description} />
+                </div>
+                :
+                <p
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description) }} 
+                    className="singlePostDescription"
+                />
               }
               {updateMode && 
                 <button

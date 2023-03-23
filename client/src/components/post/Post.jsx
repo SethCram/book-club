@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import ReputationIcon from "../reputationIcon/ReputationIcon"
 import "./Post.css"
+import * as DOMPurify from 'dompurify'; /* permit HTML, SVG and MathML (may only need HTML?) */
 
 export default function post({ post }) {
 
@@ -41,9 +42,7 @@ export default function post({ post }) {
             </b>
           </span>
       </div>
-        <p className="postDescription">
-          {post.description}
-        </p>
+      <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.description) }} className="postDescription"/>
       </div>
   )
 }

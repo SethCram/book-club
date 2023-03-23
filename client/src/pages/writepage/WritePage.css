@@ -26,6 +26,13 @@
     flex-direction: row;
 }
 
+.writeFormEditor{
+    color: var(--color-text-light-variant);
+    font-size: 18px;
+    line-height: 25px;
+    padding: 20px;
+}
+
 .writeIconWrapper{
     margin: 1rem 0rem 1rem 2rem;
     padding-top: 0.6rem;
@@ -53,17 +60,11 @@
 
 #dark .writeInput{
     background-color: var(--color-bg-dark);
-    color: var(--color-light-text);
+    color: var(--color-text-light);
 }
 
 .writeInput:focus {
     outline: none;
-}
-
-.writeText{
-    font-size: 20px;
-    height: 70vh;
-    margin-bottom: 50px;
 }
 
 .writeSubmit{
