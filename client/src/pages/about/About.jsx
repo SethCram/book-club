@@ -1,6 +1,22 @@
 import "./About.css"
 import { DeviceType, GetDeviceType } from "../../App";
 
+function renderSlides(src, currDeviceType) {
+    return(
+        <div className="aboutSlides">
+            <iframe
+                src={src}
+                frameborder="0"
+                width={currDeviceType == DeviceType.TABLET ? 480 : 960}
+                height={currDeviceType == DeviceType.TABLET ? 299 : 569}
+                allowfullscreen="true"
+                mozallowfullscreen="true"
+                webkitallowfullscreen="true"
+            />
+        </div>
+    )
+}
+
 export default function About() {
 
     const currDeviceType = GetDeviceType();
@@ -21,7 +37,14 @@ export default function About() {
                     In addition, the users of Book Club will be given thoughtful feedback and a good gauge to determine what the community thinks of their work.
                 </p>
                 {currDeviceType !== DeviceType.PHONE &&
-                    <iframe title="iframeProposalSlides" src="https://docs.google.com/presentation/d/e/2PACX-1vR09_leK1o_rWDyEh5y2XFQnewpAsDsH7KMYCTVN7Lp4-8DWj-ypn5XleNzpRVYkZQSVq8UcDPSt6d3/embed?start=true&loop=true&delayms=3000" frameborder="0" width="480" height="299" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+                    <>
+                        {renderSlides(
+                            "https://docs.google.com/presentation/d/e/2PACX-1vR09_leK1o_rWDyEh5y2XFQnewpAsDsH7KMYCTVN7Lp4-8DWj-ypn5XleNzpRVYkZQSVq8UcDPSt6d3/embed?start=false&loop=false&delayms=3000",
+                        currDeviceType)}
+                        {renderSlides(
+                            "https://docs.google.com/presentation/d/e/2PACX-1vShrTKNKzTwxHvTcFZ5A-4l2wzBum1q6XTT2mueejTnUHgOC2UlhWxbQhwz94sbTPWOtEOG-zPvWs1D/embed?start=false&loop=false&delayms=3000",
+                        currDeviceType)}
+                    </>
                 }
                 <div className="aboutContribution">
                     <span className="aboutContributionPhrase">Book Club is open source and accepting contributions</span>
