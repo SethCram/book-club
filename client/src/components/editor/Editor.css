@@ -13,6 +13,10 @@
     border: none !important;
 }
 
+.ck.ck-sticky-panel .ck-sticky-panel__content_sticky{
+    top: 50px !important;
+}
+
 /* MEDIA QUERIES */
 
 /* For tablets */
