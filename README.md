@@ -12,6 +12,11 @@
   - from api dir: 
     - insertion: "node seedData.js -i -p # -u # -c #"
     - deletion: "node seedData.js -d"
+- CkEditor features can be added or removed:
+  - download from https://ckeditor.com/ckeditor-5/online-builder/
+  - unzip folder into client folder 
+  - rename unzipped folder into "ckeditor5"
+  - run "npm add file:./ckeditor5" in the client directory
 ### Packages
 - Nodemon is installed for a responsive api
 - Mongoose connects the API to MongoDB Atlas through NodeJS
