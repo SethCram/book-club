@@ -100,6 +100,8 @@
     color: var(--color-text-light-variant);
     font-size: 18px;
     line-height: 25px;
+    margin-top: 39.5px; /* same as height of ckeditor toolbar */
+    min-height: 55vh;
 }
 .singlePostDescriptionInput{
     color: var(--color-text-light-variant);
