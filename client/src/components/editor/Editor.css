@@ -4,6 +4,13 @@
 
 .ck-editor__editable_inline {
     min-height: 55vh;
+    border: none;
+    background: transparent;
+}
+
+.ck-editor__editable{
+    background: transparent !important;
+    border: none !important;
 }
 
 /* MEDIA QUERIES */
