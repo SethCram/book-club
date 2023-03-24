@@ -25,7 +25,9 @@ export default function WritePage() {
             username: user.username,
             title: title,
             description: description,
-        };
+      };
+      
+      //console.log(picture);
 
         if (picture) {
             const data = new FormData();
@@ -34,12 +36,15 @@ export default function WritePage() {
             data.append("name", fileName);
             data.append("file", picture);
 
-            newPost.photo = imagesFolder + fileName;
+            //newPost.photo = imagesFolder + fileName;
+          
+            console.log(picture);
 
             try {
-                await axios.post("/upload", data);
+              const response = await axios.post("/upload", data);
+              newPost.photo = response.data.url;
             } catch (error) {
-                
+              console.log(error);
             }
         }
       
