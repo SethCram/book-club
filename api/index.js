@@ -40,7 +40,23 @@ const storage = multer.diskStorage({
 //file upload and deletion
 const upload = multer({ storage: storage });
 app.post("/api/upload", upload.single("file"), (request, response) => {
-    response.status(200).json("File has been uploaded");
+    //console.log(request.body.upload);
+
+    //await upload.single("file");
+    
+    try {
+        response.status(200).json({
+            "url": "http://localhost:5000/images/" + request.file.filename
+        });
+    } catch (error) {
+        response.status(500).json({
+            "error": {
+                "message": "The image upload failed."
+            }
+        });
+    } finally {
+        //console.log(request.file.filename);
+    }
 });
 app.delete("/api/photo/delete", async (request, response) => {
 

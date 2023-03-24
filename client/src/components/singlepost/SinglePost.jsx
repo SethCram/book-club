@@ -3,7 +3,6 @@ import { Link } from "react-router-dom"
 import { useContext, useEffect, useRef, useState } from "react"
 import axios from "axios"
 import { Context } from "../../context/Context";
-import { imagesFolder } from "../../pages/settings/Settings";
 import Multiselect from "multiselect-react-dropdown";
 import { ThemeContext } from "../../App";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
@@ -92,21 +91,30 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
             categories: uploadedCategories
         };
 
-        const actuallyDeleteOldPicture = deleteOldPicture && post.photo !== "";
+        //console.log(`delete old picture ${deleteOldPicture}`);
 
-        //console.log(post.photo);
+        //if haven't reloaded page yet after previous file upload, this'll be empty
+        //console.log(`and cached post photo: ${post.photo}`);
+
+        const actuallyDeleteOldPicture = deleteOldPicture && post.photo;
 
         //if want to delete old pic and there is one, delete it
         if (actuallyDeleteOldPicture)
         {
             try {
-                //rm from post
-                updatedPost.photo = "";
                 
                 //delete from FS
-                await axios.delete("/photo/delete/", {
+                const response = await axios.delete("/photo/delete/", {
                     data: { filePath: post.photo }
                 });
+
+                //rm from db post
+                updatedPost.photo = "";
+                //clear locally cached post
+                post.photo = "";
+                setPicture("");
+
+                console.log(response);
 
             } catch (error) {
                 console.log("Failed to delete " + post.photo);
@@ -121,12 +129,15 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
             data.append("name", fileName);
             data.append("file", picture);
 
-            updatedPost.photo = imagesFolder + fileName;
-
             try {
-                await axios.post("/upload", data);
+                const response = await axios.post("/upload", data);
+                //update db photo url
+                updatedPost.photo = response.data.url;
+                //update local cache photo url
+                post.photo = response.data.url; //need this for future file deletion
+                //setPicture(response.data.url); //cant set this here bc url created from picture var
             } catch (error) {
-                
+                console.log(error);
             }
         }
         
@@ -140,11 +151,6 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
 
         //reset deletion desires
         setDeleteOldPicture(false);
-
-        //if old pic deletion attempted, reload window
-        if (actuallyDeleteOldPicture) {
-            window.location.reload(); //reload page to allow old image to dissapear
-        }
 
         //update categories
         setCategories(uploadedCategories);
