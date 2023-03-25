@@ -5,6 +5,20 @@ import * as DOMPurify from 'dompurify'; /* permit HTML, SVG and MathML (may only
 
 export default function post({ post }) {
 
+  // Specify a configuration directive, only <p> and <span> elements allowed
+  // Note: We want to also keep the allow element's text content, so we add #text too
+  // KEEP_CONTENT removes content from non-allow-listed nodes
+  const sanitizeConfig = { ALLOWED_TAGS: ['p', 'span', '#text'], KEEP_CONTENT: false };
+  const dirtyHTML = post.description;
+  const cleanHTML = DOMPurify.sanitize(dirtyHTML, sanitizeConfig);
+
+  // Strip out all html for standardized presentation format
+  function strip(html){
+    let doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+  }
+  const rawPostDescription = strip(cleanHTML);
+
   return (
       <div className="post container">
         {post.photo && ( //shows post's image if provided
@@ -42,7 +56,9 @@ export default function post({ post }) {
             </b>
           </span>
       </div>
-      <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.description) }} className="postDescription"/>
+      <p className="postDescription">
+        {rawPostDescription}
+      </p>
       </div>
   )
 }
