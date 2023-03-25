@@ -24,6 +24,27 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
 
+    // extend the existing array of allowed tags and attributes
+    const sanitizeConfig = { ADD_TAGS: ['iframe'], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] };
+
+    DOMPurify.addHook('uponSanitizeElement', (node, data) => {
+        //if an iframe doesnt have all of the typical attributes assoc'd w/ ckeditor 
+        //  (honestly not a great check but better than nothing)
+        if (!(data.tagName === 'iframe' && 
+            node.hasAttribute('style') && 
+            node.hasAttribute('allow') && 
+            node.hasAttribute('allowfullscreen') && 
+            node.hasAttribute('frameborder') && 
+            node.hasAttribute('src') )) {
+                //console.log(node);
+                //console.log(data);
+                //remove its source
+                node.src = '';
+                data.attrValue = node.src;
+        }
+        return node;
+    });
+
     const clearThumbsUpScore = 1;
     const solidThumbsUpScore = 0;
     const clearThumbsDownScore = -1;
@@ -386,9 +407,9 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                   >
                     <Editor setDescription={setDescription} defaultText={description} />
                 </div>
-                :
+                  :
                 <p
-                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description) }} 
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, sanitizeConfig) }} 
                     className="singlePostDescription"
                 />
               }

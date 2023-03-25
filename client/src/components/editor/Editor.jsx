@@ -38,7 +38,11 @@ export default function Editor({setDescription, defaultText="<p>Tell your story.
             editor={CustomEditor}
             data={defaultText}
             config={{
-                extraPlugins: [uploadPlugin]
+                extraPlugins: [uploadPlugin],
+                mediaEmbed: {
+                    previewsInData: true,
+                    removeProviders: [ 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook' ]
+                }
             }}
             onReady={editor => {
                 // You can store the "editor" and use when it is needed.
