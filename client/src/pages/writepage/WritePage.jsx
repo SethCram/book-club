@@ -2,7 +2,6 @@ import { useContext, useEffect, useRef, useState } from "react"
 import "./WritePage.css"
 import axios from "axios"
 import { Context } from "../../context/Context";
-import { imagesFolder } from "../settings/Settings"
 import Multiselect from 'multiselect-react-dropdown'
 import { ThemeContext } from "../../App";
 import Editor from "../../components/editor/Editor";
@@ -35,10 +34,6 @@ export default function WritePage() {
 
             data.append("name", fileName);
             data.append("file", picture);
-
-            //newPost.photo = imagesFolder + fileName;
-          
-            console.log(picture);
 
             try {
               const response = await axios.post("/upload", data);

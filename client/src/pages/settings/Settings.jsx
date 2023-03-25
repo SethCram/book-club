@@ -5,8 +5,6 @@ import { Context } from "../../context/Context"
 import axios from "axios";
 import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "../../context/Actions";
 
-export const imagesFolder = "http://localhost:5000/images/";
-
 export default function Settings() {
     const [picture, setPicture] = useState(null);
     const [username, setUsername] = useState("");
@@ -68,10 +66,9 @@ export default function Settings() {
             data.append("name", fileName);
             data.append("file", picture);
 
-            updatedUser.profilePicture = imagesFolder + fileName;
-
             try {
-                await axios.post("/upload", data);
+                const response = await axios.post("/upload", data);
+                updatedUser.profilePicture = response.data.url;
             } catch (error) {
                 console.log(error);
             }

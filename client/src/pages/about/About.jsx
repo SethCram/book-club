@@ -7,8 +7,10 @@ function renderSlides(src, currDeviceType) {
             <iframe
                 src={src}
                 frameborder="0"
-                width={currDeviceType == DeviceType.TABLET ? 480 : 960}
-                height={currDeviceType == DeviceType.TABLET ? 299 : 569}
+                //render width and height based on device type
+                width={currDeviceType === DeviceType.TABLET ? 480 : 960}
+                height={currDeviceType === DeviceType.TABLET ? 299 : 569}
+
                 allowfullscreen="true"
                 mozallowfullscreen="true"
                 webkitallowfullscreen="true"
