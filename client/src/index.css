@@ -78,6 +78,11 @@
   width: var(--container-width-lg);
 }
 
+img {
+  width: 100%;
+  object-fit: cover;
+}
+
 /* MEDIA QUERIES */
 
 /* For tablets */
