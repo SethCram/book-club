@@ -1,9 +1,10 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { Editor as CustomEditor } from 'ckeditor5-custom-build/build/ckeditor';
+//import { Editor as CustomEditor } from 'ckeditor5-custom-build/build/ckeditor';
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
 import "./Editor.css";
 import axios from 'axios';
 
-export default function Editor({setDescription, defaultText="<p>Tell your story...</p>"}) {
+export default function RFC_CkEditor({setDescription, defaultText="<p>Tell your story...</p>"}) {
 
     function uploadAdapter(loader) {
         return {
@@ -35,7 +36,7 @@ export default function Editor({setDescription, defaultText="<p>Tell your story.
 
     return (
         <CKEditor
-            editor={CustomEditor}
+            editor={Editor}
             data={defaultText}
             config={{
                 extraPlugins: [uploadPlugin],
