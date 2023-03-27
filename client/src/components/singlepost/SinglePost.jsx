@@ -30,14 +30,15 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
     DOMPurify.addHook('uponSanitizeElement', (node, data) => {
         //if an iframe doesnt have all of the typical attributes assoc'd w/ ckeditor 
         //  (honestly not a great check but better than nothing)
-        if (!(data.tagName === 'iframe' && 
-            node.hasAttribute('style') && 
+        if (data.tagName === 'iframe' && 
+            !(node.hasAttribute('style') && 
             node.hasAttribute('allow') && 
             node.hasAttribute('allowfullscreen') && 
             node.hasAttribute('frameborder') && 
             node.hasAttribute('src') )) {
                 //console.log(node);
                 //console.log(data);
+            
                 //remove its source
                 node.src = '';
                 data.attrValue = node.src;
@@ -408,10 +409,16 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                     <Editor setDescription={setDescription} defaultText={description} />
                 </div>
                   :
-                <p
-                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, sanitizeConfig) }} 
-                    className="singlePostDescription"
-                />
+                <>
+                    <p
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, sanitizeConfig) }} 
+                        className="singlePostDescription"
+                    />
+                    <p
+                        dangerouslySetInnerHTML={{ __html: description }} 
+                        className="singlePostDescription"
+                    />
+                </>
               }
               {updateMode && 
                 <button
