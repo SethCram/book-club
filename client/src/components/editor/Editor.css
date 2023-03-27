@@ -25,6 +25,10 @@ code{
     color: var(--color-text-dark)
 }
 
+.marker-red{
+    background-color: red;
+}
+
 /* FONT SIZES (used in "single post page" and potentially "post" later) (could restrict further)*/
 .text-tiny {
     font-size: 0.7em;
