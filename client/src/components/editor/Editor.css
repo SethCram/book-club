@@ -17,6 +17,14 @@
     top: 50px !important;
 }
 
+.ck-content .image > figcaption{
+    color: var(--color-text-light-variant);
+}
+
+code{
+    color: var(--color-text-dark)
+}
+
 /* FONT SIZES (used in "single post page" and potentially "post" later) (could restrict further)*/
 .text-tiny {
     font-size: 0.7em;

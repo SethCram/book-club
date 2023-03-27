@@ -43,6 +43,50 @@ export default function RFC_CkEditor({setDescription, defaultText="<p>Tell your 
                 mediaEmbed: {
                     previewsInData: true,
                     removeProviders: [ 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook' ]
+                },
+                fontColor: {
+                    colors: [
+                        {
+                            color: 'hsl(0, 0%, 0%)',
+                            label: 'Black'
+                        },
+                        {
+                            color: 'hsl(0, 0%, 30%)',
+                            label: 'Dim grey'
+                        },
+                        {
+                            color: 'hsl(0, 0%, 60%)',
+                            label: 'Grey'
+                        },
+                        {
+                            color: '#e64d4d',
+                            label: 'Red'
+                        },
+                        {
+                            color: '#e6994d',
+                            label: 'Orange'
+                        },
+                        {
+                            color: '#e6e64d',
+                            label: 'Yellow'
+                        },
+                        {
+                            color: '#4de64d',
+                            label: 'Green'
+                        },
+                        {
+                            color: '#4d99e6',
+                            label: 'Light Blue'
+                        },
+                        {
+                            color: '#4d4de6',
+                            label: 'Blue'
+                        },
+                        {
+                            color: '#994de6',
+                            label: 'Purple'
+                        },
+                    ]
                 }
             }}
             onReady={editor => {
