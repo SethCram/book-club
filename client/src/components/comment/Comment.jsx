@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react"
 import axios from "axios"
 import { Context } from "../../context/Context";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
+import { Link } from "react-router-dom";
 
 export default function Comment({ handleComment = null, handleReply = null, comment = null, replyId = "", replyUsername = "", setUpdatedCommentAuthor = null }) {
     const [feedback, setFeedback] = useState("");
@@ -161,6 +162,18 @@ export default function Comment({ handleComment = null, handleReply = null, comm
         }
     };
 
+    function renderUsername(comment) {
+        let retdUsername;
+        
+        if (comment) {
+            retdUsername = comment.username;
+        } else {
+            retdUsername = user.username;
+        } 
+
+        return retdUsername
+    }
+
     return (
         <div className="comment">
             <div className={`commentContainer ${replyUsername ? "commentReplyContainer" : ""}`}>
@@ -206,15 +219,21 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                     <span className="commentTitleRow">
                     
                         <h3 className="commentAuthor">
-                            {comment ? comment.username : user.username}
+                            <Link
+                                to={`/?username=${renderUsername(comment)}`}
+                                className="link"
+                            >
+                                {renderUsername(comment)}
+                            </Link>
                         </h3>
                         {comment && new Date(comment.updatedAt).toDateString()}
                         {comment?.username === user?.username && !writeMode &&
                             <button
+                                type="submit"
                                 className="commentButton commentUpdate"
                                 onClick={() => { setWriteMode(true); setFeedback(comment.description); }}
                             >
-                                Update
+                                <strong>Update</strong>
                             </button>
                         }
                     </span>
@@ -236,6 +255,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                                 value={feedback}
                                 onChange={text => setFeedback(text.target.value)}
                                 required
+                                autoFocus
                             />
                         )
                     }
@@ -245,7 +265,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                                 className="commentButton"
                                 onClick={() => { handleReply(comment._id); }}
                             >
-                                Reply
+                               <strong>Reply</strong>
                             </button>
                         ) : (
                             <>
@@ -254,13 +274,13 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                                     onClick={handleConfirm}
                                     type="submit"
                                 >
-                                    Confirm
+                                    <strong>Confirm</strong>
                                 </button>
                                 <button
                                     className="commentButton"
                                     onClick={() => { setFeedback("") }}
                                 >
-                                    Clear
+                                    <strong>Clear</strong>
                                 </button>
                             </>
                         )

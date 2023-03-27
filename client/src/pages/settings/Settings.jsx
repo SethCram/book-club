@@ -100,9 +100,6 @@ export default function Settings() {
                 data: { userId: user._id, username: user.username }
             });
 
-            //auto-navigates back to register page after deletion for some reason
-            //window.location.replace("/"); 
-
             dispatch(UserUpdateSuccessful(null));
         } catch (error) {
             dispatch(UserUpdateFailure());

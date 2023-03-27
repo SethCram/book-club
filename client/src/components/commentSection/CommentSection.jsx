@@ -68,10 +68,15 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
     };
 
     const handleReply = (replyId) => {
-        //create another comment below the requested comment
-        // but how to figure out what the requested comment is?
 
-        setReplyId(replyId);
+        if (user) {
+            setReplyId(replyId);
+        }
+        else {
+            //assign allows navigate back to prev post thru browser history easily
+            window.location.assign("/login");
+        }
+        
     };
 
     return (
