@@ -8,16 +8,16 @@ export default function post({ post }) {
   // Specify a configuration directive, only <p> and <span> elements allowed
   // Note: We want to also keep the allow element's text content, so we add #text too
   // KEEP_CONTENT removes content from non-allow-listed nodes
-  const sanitizeConfig = { ALLOWED_TAGS: ['p', 'span', '#text'], KEEP_CONTENT: false };
+  const sanitizeConfig = {
+    ALLOWED_TAGS: [
+      'p', 'span', '#text', 'mark', 'i', 'strong', 'u', 'ul',
+      'li', 'ol', 's', 'sub', 'sup', 'blockquote', 'code'
+    ], KEEP_CONTENT: false
+  };
   const dirtyHTML = post.description;
-  const cleanHTML = DOMPurify.sanitize(dirtyHTML, sanitizeConfig);
-
-  // Strip out all html for standardized presentation format
-  function strip(html){
-    let doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent || "";
-  }
-  const rawPostDescription = strip(cleanHTML);
+  console.log(dirtyHTML);
+  const cleanHTML = DOMPurify.sanitize(dirtyHTML, sanitizeConfig).replaceAll(/<p>(&nbsp;)+<\/p>/g, "");
+  const compactCleanHTML = cleanHTML.replaceAll(/<p>(&nbsp;)+<\/p>/g, "");
 
   return (
       <div className="post container">
@@ -56,9 +56,10 @@ export default function post({ post }) {
             </b>
           </span>
       </div>
-      <p className="postDescription">
-        {rawPostDescription}
-      </p>
+        <p
+          dangerouslySetInnerHTML={{ __html: compactCleanHTML }} 
+          className="postDescription ck-content"
+        />
       </div>
   )
 }
