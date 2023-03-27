@@ -9,6 +9,7 @@
     align-items: center;
     /*position: sticky;*/
     height: fit-content;
+    max-width: fit-content;
 }
 
 #dark .sidebar{
@@ -82,20 +83,4 @@
     color: var(--color-white);
     cursor: default;
     margin-right: 1.1rem;
-}
-
-/* MEDIA QUERIES */
-
-/* For tablets */
-@media screen and (max-width: 1024px) {
-    .sidebar {
-        max-width: 50%;
-    }
-}
-
-/* For phones */
-@media screen and (max-width: 600px) {
-    .sidebar {
-        max-width: 100%;
-    }
 }

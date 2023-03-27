@@ -5,7 +5,6 @@
     min-height: calc(100vh - 50px); /* bc topbar is 50px*/
     /* possibly unnecessary 
     height: auto !important;
-    height: 600px;
     */
 }
 
@@ -14,6 +13,7 @@
 /* For phones */
 @media screen and (max-width: 600px) {
     .singlepostpage {
+        /* move sidebar below post */
         flex-direction: column;
     }
 }
