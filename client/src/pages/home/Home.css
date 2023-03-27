@@ -31,6 +31,14 @@
 
 /* MEDIA QUERIES */
 
+/* For tablets */
+@media screen and (max-width: 1024px) {
+    .homeColumnAligned {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
 /* For phones */
 @media screen and (max-width: 600px) {
     .homeColumnAligned {
