@@ -412,11 +412,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                 <>
                     <p
                         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description, sanitizeConfig) }} 
-                        className="singlePostDescription"
-                    />
-                    <p
-                        dangerouslySetInnerHTML={{ __html: description }} 
-                        className="singlePostDescription"
+                        className="singlePostDescription ck-content"
                     />
                 </>
               }

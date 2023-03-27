@@ -8,6 +8,11 @@
     */
 }
 
+/* ensure background figure caption is clear (just like in editor) */
+.ck-content figure figcaption{
+    background-color: transparent !important;
+}
+
 /* MEDIA QUERIES */
 
 /* For phones */
