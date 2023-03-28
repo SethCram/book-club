@@ -16,8 +16,9 @@ export default function post({ post }) {
   };
   const dirtyHTML = post.description;
   console.log(dirtyHTML);
-  const cleanHTML = DOMPurify.sanitize(dirtyHTML, sanitizeConfig).replaceAll(/<p>(&nbsp;)+<\/p>/g, "");
-  const compactCleanHTML = cleanHTML.replaceAll(/<p>(&nbsp;)+<\/p>/g, "");
+  const cleanHTML = DOMPurify.sanitize(dirtyHTML, sanitizeConfig);
+  /* rm all whitespace lines */
+  const compactCleanHTML = cleanHTML.replaceAll(/<p>(&nbsp;)+<\/p>/g, ""); 
 
   return (
       <div className="post container">
