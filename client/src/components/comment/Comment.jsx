@@ -121,6 +121,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
     }
 
     const handleConfirm = (event) => {
+        event.preventDefault();
 
         if (!feedback) {
             return;
@@ -228,13 +229,10 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                         </h3>
                         {comment && new Date(comment.updatedAt).toDateString()}
                         {comment?.username === user?.username && !writeMode &&
-                            <button
-                                type="submit"
-                                className="commentButton commentUpdate"
+                            <i
+                                className="commentButton commentUpdate fa-regular fa-pen-to-square"
                                 onClick={() => { setWriteMode(true); setFeedback(comment.description); }}
-                            >
-                                <strong>Update</strong>
-                            </button>
+                            />
                         }
                     </span>
                     {replyUsername &&
