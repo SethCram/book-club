@@ -290,7 +290,7 @@ const createFakeComment = (postId, username, badges, minDate, replyId = undefine
 };
 
 //replyRate must be a number from 0-1
-const createFakeComments = (posts, users, badges, replyRate = 0.5) => {
+const createFakeComments = (posts, users, badges) => {
     let comments = [];
 
     //for each post
@@ -298,7 +298,12 @@ const createFakeComments = (posts, users, badges, replyRate = 0.5) => {
         //have each user comment on it
         for (let i = 0; i < users.length; i++) {
 
-            const comment = createFakeComment(posts[j]._id, users[i].username, badges, posts[j].createdAt)
+            const comment = createFakeComment(
+                posts[j]._id,
+                users[i].username,
+                badges,
+                posts[j].createdAt
+            );
             comments.push( comment );
             
         }    
@@ -308,7 +313,7 @@ const createFakeComments = (posts, users, badges, replyRate = 0.5) => {
 }
 
 //replyRate must be a number from 0-1
-const createFakeReplyComments = (posts, users, rootComments, commentsToReplyTo, badges, replyRate = 0.5) => {
+const createFakeReplyComments = (posts, users, commentsToReplyTo, badges, replyRate = 0.5) => {
 
     let replyComments = [];
 
@@ -324,13 +329,7 @@ const createFakeReplyComments = (posts, users, rootComments, commentsToReplyTo, 
                 const randomCommentIndex = getRndInteger(0, commentsToReplyTo.length - 1);
                 const commentToReplyTo = commentsToReplyTo[randomCommentIndex];
 
-                //console.log(comments.length);
-
-                //const post = posts.find(post => {
-                //    return post._id.equals(commentToReplyTo.postId)
-                //});
-
-                //create a reply to a comment
+                //create a reply to the comment
                 const reply = createFakeComment(
                     commentToReplyTo.postId,
                     users[i].username,
@@ -340,36 +339,50 @@ const createFakeReplyComments = (posts, users, rootComments, commentsToReplyTo, 
                     commentToReplyTo.username
                 );
 
-                let replyCommentIndex = randomCommentIndex;
-
-                //find the root comment being replied to
-                if(commentToReplyTo.replyId) {
-                    //find replied to root comment index
-                    replyCommentIndex = rootComments.findIndex(comment => {
-                        return comment._id.equals(commentToReplyTo.replyId)
-                    });
-
-                    //make sure replied to comment exists
-                    if (replyCommentIndex === -1) {
-
-                        console.log("Couldn't find a comment's root replied to comment.");
-                        break;
-                    }
-                }
-                //otherwise, already root comment
-
-                if (replyCommentIndex !== -1) {
-                    //add reply to root comment
-                    rootComments[replyCommentIndex].replies.push(reply);
-                }
-
                 //add reply to list of comments
                 replyComments.push(reply);
             }
         }    
     }
 
-    return [rootComments, replyComments];
+    return replyComments;
+}
+
+//replyRate must be a number from 0-1
+const linkReplyCommentsToRootComments = (rootComments, commentsToReplyTo, newlyPostedReplyComments) => {
+
+    //for each newly posted reply comment
+    for (let j = 0; j < newlyPostedReplyComments.length; j++) {
+
+        const replyComment = newlyPostedReplyComments[j];
+
+        //find comment being replied to
+        let replyCommentIndex = commentsToReplyTo.findIndex(comment => {
+            return comment._id.equals(replyComment.replyId)
+        });
+        const commentRepliedTo = commentsToReplyTo[replyCommentIndex];
+
+        //find the root comment being replied to
+        if (commentRepliedTo.replyId) {
+            //find replied to root comment index
+            replyCommentIndex = rootComments.findIndex(comment => {
+                return comment._id.equals(commentRepliedTo.replyId)
+            });
+        }
+        //otherwise, already root comment
+        
+        //console.log(rootComments[replyCommentIndex]);
+
+        if (replyCommentIndex !== -1) {
+            //add reply to root comment
+            rootComments[replyCommentIndex].replies.push(replyComment);
+        }
+        else {
+            throw new Error("Couldn't find a comment's root replied to comment.");
+        }
+    }
+
+    return rootComments;
 }
 
 const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
@@ -415,20 +428,38 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
     console.log(`   ${insertedRootComments.length} root comments inserted.`);
 
     //INSERT ROOT REPLY COMMENTS
-    const [updatedRootComments, replyComments] = createFakeReplyComments(
-        insertedPosts, newUsers, insertedRootComments,
+    const replyComments = createFakeReplyComments(
+        insertedPosts, newUsers,
         insertedRootComments, badges, 1
     );
+
+    //POST ROOT REPLY COMMENTS
     const insertedRootReplyComments = await Comment.insertMany(replyComments );
     console.log(`   ${insertedRootReplyComments.length} root reply comments inserted.`);
     
+    //LINK ROOT REPLY COMMENTS TO ROOT COMMENTS
+    const updatedRootComments = linkReplyCommentsToRootComments(
+        insertedRootComments,
+        insertedRootComments,
+        insertedRootReplyComments
+    )
+
     //INSERT REPLIES TO REPLY COMMENTS
-    const [updatedRootCommentsV2, replyReplyComments] = createFakeReplyComments(
-        insertedPosts, newUsers, updatedRootComments,
+    const replyReplyComments = createFakeReplyComments(
+        insertedPosts, newUsers,
         insertedRootReplyComments, badges, 1
     );
+
+    //POST REPLIES TO REPLY COMMENTS
     const insertedReplyReplyComments = await Comment.insertMany(replyReplyComments );
     console.log(`   ${insertedReplyReplyComments.length} replies to reply comments inserted.`);
+
+    //LINK REPLIES TO REPLY COMMENTS TO ROOT COMMENTS
+    const updatedRootCommentsV2 = linkReplyCommentsToRootComments(
+        updatedRootComments,
+        insertedRootReplyComments,
+        insertedReplyReplyComments
+    )
 
     //UPDATE ROOT COMMENTS
     for (let i = 0; i < updatedRootCommentsV2.length; i++){

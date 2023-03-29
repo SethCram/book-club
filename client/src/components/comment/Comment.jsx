@@ -265,23 +265,23 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                             >
                                <strong>Reply</strong>
                             </button>
-                        ) : (
-                            <>
-                                <button
-                                    className="commentButton"
-                                    onClick={handleConfirm}
-                                    type="submit"
-                                >
-                                    <strong>Confirm</strong>
-                                </button>
-                                <button
-                                    className="commentButton"
-                                    onClick={() => { setFeedback("") }}
-                                >
-                                    <strong>Clear</strong>
-                                </button>
-                            </>
-                        )
+                            ) : (
+                                <>
+                                    <button
+                                        className="commentButton"
+                                        onClick={handleConfirm}
+                                        type="submit"
+                                    >
+                                        <strong>Confirm</strong>
+                                    </button>
+                                    <button
+                                        className="commentButton"
+                                        onClick={() => { setFeedback("") }}
+                                    >
+                                        <strong>Clear</strong>
+                                    </button>
+                                </>
+                            )
                         }
                     </span>
                 </div>

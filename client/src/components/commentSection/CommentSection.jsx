@@ -67,10 +67,10 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
         
     };
 
-    const handleReply = (replyId) => {
+    const handleReply = (replyingToId) => {
 
         if (user) {
-            setReplyId(replyId);
+            setReplyId(replyingToId);
         }
         else {
             //assign allows navigate back to prev post thru browser history easily
@@ -79,13 +79,26 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
         
     };
 
+    //for printing out nested objs
+    /*
+    function printValues(obj) {
+        for (var key in obj) {
+            if (typeof obj[key] === "object") {
+                printValues(obj[key]);   
+            } else {
+                console.log(key, obj[key]);    
+            }
+        }
+    }
+    */
+
     return (
         <div className="commentSection">
             {user &&
                 <Comment handleComment={handleComment} postId={post?._id} />
             }
             {comments.length > 0 && //render every comment
-                comments.map((comment) => (
+                comments.map((comment, i) => (
                     <div key={comment._id}>
                         <Comment
                             postId={post?._id}
@@ -93,13 +106,17 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
                             comment={comment}
                             setUpdatedCommentAuthor={setUpdatedCommentAuthor}
                         />
-                        
                         {replyId === comment._id && user &&
-                            <Comment handleComment={handleComment} postId={post?._id} replyId={comment._id} replyUsername={comment.username}/>
+                            <Comment
+                                handleComment={handleComment}
+                                postId={post?._id}
+                                replyId={comment._id}
+                                replyUsername={comment.username} 
+                            />
                         }
 
-                        {comment.replies.length > 0 && comment.replies.map((reply) => ( //render every reply to the root comment
-                            <div key = {reply._id}>
+                        {comment.replies.length > 0 && comment.replies.map((reply, j) => ( //render every reply to the root comment
+                            <div key={reply._id}>
                                 <Comment
                                     postId={post?._id}
                                     handleReply={handleReply}

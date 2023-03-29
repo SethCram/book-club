@@ -2,8 +2,9 @@ const Comment = require("../models/Comment");
 const Post = require("../models/Post");
 const router = require("express").Router();
 
-//Create
+//Create Comment
 router.post("/", async (request, response) => {
+
     try {
         //make sure linked post exists
         const post = await Post.findById(request.body.postId);
