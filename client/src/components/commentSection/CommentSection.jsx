@@ -98,7 +98,7 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
                 <Comment handleComment={handleComment} postId={post?._id} />
             }
             {comments.length > 0 && //render every comment
-                comments.map((comment, i) => (
+                comments.map((comment) => (
                     <div key={comment._id}>
                         <Comment
                             postId={post?._id}
@@ -115,7 +115,7 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
                             />
                         }
 
-                        {comment.replies.length > 0 && comment.replies.map((reply, j) => ( //render every reply to the root comment
+                        {comment.replies.length > 0 && comment.replies.map((reply) => ( //render every reply to the root comment
                             <div key={reply._id}>
                                 <Comment
                                     postId={post?._id}

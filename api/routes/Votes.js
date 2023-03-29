@@ -4,6 +4,7 @@ const Post = require("../models/Post");
 const User = require("../models/User");
 const Vote = require("../models/Vote");
 const Comment = require("../models/Comment");
+const mongoose = require("mongoose");
 
 function sortedIndex(array, value) {
 
@@ -97,6 +98,8 @@ const updateLinkedModel = async (linkedId, score) => {
 
     let linkedModel;
 
+    let rootComment = null;
+
     //set linked model to post or comment depending on which can be found
     if (post) {
         linkedModel = post;
@@ -107,6 +110,24 @@ const updateLinkedModel = async (linkedId, score) => {
 
         if (comment) {
             linkedModel = comment;
+
+            let currReplyId = comment.replyId;
+
+            //find the root comment being replied to
+            while (currReplyId) {
+                //find replied to comment
+                rootComment = await Comment.findById(currReplyId);
+
+                //make sure replied to comment exists
+                if (!rootComment ) {
+                    createComment = false;
+                    response.status(404).json("Replied to comment couldn't be found.");
+                    break;
+                }
+
+                //look for next replied to comment
+                currReplyId = rootComment.replyId;
+            }
         }
         else
         {
@@ -129,12 +150,17 @@ const updateLinkedModel = async (linkedId, score) => {
         reputation: newScore
     };
 
+    let rootCommentUpdateFilter = {
+        'replies.$.reputation': newScore
+    }
+
     //if badge found to update
     if (newBadge) {
         //if no current badge, update w/ new badge
         if (!linkedModel.badgeName)
         {
             updateFilter["badgeName"] = newBadge.name;
+            rootCommentUpdateFilter['replies.$.badgeName'] = newBadge.name;
             //update linked model's author thru increasing score by half the new badge's
             updatedAuthor = await updateUserRep(Math.round(newBadge.score / 2), username=linkedModel.username)
         }
@@ -149,6 +175,7 @@ const updateLinkedModel = async (linkedId, score) => {
             //if updating too a higher badge score, allow it
             if (currBadge.score < newBadge.score) {
                 updateFilter["badgeName"] = newBadge.name;
+                rootCommentUpdateFilter['replies.$.badgeName'] = newBadge.name;
                 //update linked model's author thru increasing score by half the new badge's
                 updatedAuthor = await updateUserRep(Math.round(newBadge.score / 2), username=linkedModel.username)
             }
@@ -172,6 +199,20 @@ const updateLinkedModel = async (linkedId, score) => {
             },
             { new: true }
         );
+
+        //if root comment, update its replies 
+        if (rootComment) {
+            await Comment.findOneAndUpdate(
+                {
+                    _id: rootComment._id,
+                    "replies._id": linkedId
+                },
+                {
+                    $set: rootCommentUpdateFilter
+                }
+            );
+            //console.log(updatedRootComment?.replies.filter(reply => reply._id.equals(linkedId) ));
+        }
     }
     
 
@@ -183,7 +224,7 @@ const updateLinkedModel = async (linkedId, score) => {
 router.post("/vote", async (request, response) => {
     
     const username = request.body.username;
-    const linkedId = request.body.linkedId;
+    const linkedId = mongoose.Types.ObjectId(request.body.linkedId); //string, not obj id
     const score = request.body.score;
     
     try {
@@ -216,7 +257,10 @@ router.post("/vote", async (request, response) => {
             }
 
             //update linked post or comment rep and possibly author rep
-            const [updatedLinkedModel, updatedAuthor] = await updateLinkedModel(linkedId, score);
+            const [updatedLinkedModel, updatedAuthor] = await updateLinkedModel(
+                linkedId,
+                score
+            );
 
             //create and save new vote
             const newVote = new Vote({
