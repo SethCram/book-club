@@ -15,7 +15,6 @@ export default function post({ post }) {
     ], KEEP_CONTENT: false
   };
   const dirtyHTML = post.description;
-  console.log(dirtyHTML);
   const cleanHTML = DOMPurify.sanitize(dirtyHTML, sanitizeConfig);
   /* rm all whitespace lines */
   const compactCleanHTML = cleanHTML.replaceAll(/<p>(&nbsp;)+<\/p>/g, ""); 

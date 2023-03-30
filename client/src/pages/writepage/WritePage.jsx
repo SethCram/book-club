@@ -13,18 +13,26 @@ export default function WritePage() {
     const [description, setDescription] = useState("");
     const [picture, setPicture] = useState(null);
     const [categories, setCategories] = useState([]);
+    const [errorMsg, setErrorMsg] = useState("");
     const { user } = useContext(Context);
     const multiSelectRef = useRef();
     const { theme } = useContext(ThemeContext);
  
     const handleSubmit = async (event) => {
-        event.preventDefault();
+      event.preventDefault();
+      
+      setErrorMsg("");
+
+      if (!description) {
+        setErrorMsg("The description is required to create a post.");
+        return;
+      }
 
         const newPost = {
             username: user.username,
             title: title,
             description: description,
-      };
+        };
       
       //console.log(picture);
 
@@ -48,10 +56,11 @@ export default function WritePage() {
         }
       
         try {
-            const response = await axios.post("/posts", newPost); // errors out here
+            const response = await axios.post("/posts", newPost); 
             window.location.replace("/singlePostPage/" + response.data._id);
         } catch (error) {
           console.log(error);
+          setErrorMsg(error.response.data.message);
         }
     };
     
@@ -133,9 +142,14 @@ export default function WritePage() {
                   placeholder='Title'
                   autoFocus={true}
                   onChange={(event)=>setTitle(event.target.value)} //needa use event's curr txt box val
+                  required
                 />
             </div>
           </div>
+          <div className="writeFormErrorMsg">
+            {errorMsg}
+          </div>
+          
           <div className="writeFormGroup writeFormEditor">
             <Editor setDescription={setDescription}/>
           </div>
