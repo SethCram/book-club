@@ -6,7 +6,7 @@ router.post("/", async (request, response) => { //async bc dont know how long it
     const newPost = new Post(request.body);
     try {
         const savedPost = await newPost.save(); // save new post
-        response.status(200).json(savedPost);
+        response.status(201).json(savedPost);
     } catch (error) {
         response.status(500).json(error);
     }

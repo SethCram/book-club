@@ -52,7 +52,7 @@ router.post("/register", async (request, response) => { //async bc dont know how
                 //remove password and email from response
                 const { password, email, ...publicUser } = user._doc;
         
-                response.status(200).json(publicUser);
+                response.status(201).json(publicUser);
             }
             catch (error) {
                 response.status(500).json(error);

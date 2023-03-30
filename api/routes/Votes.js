@@ -271,7 +271,7 @@ router.post("/vote", async (request, response) => {
     
             const vote = await newVote.save();
     
-            response.status(200).json({
+            response.status(201).json({
                 vote,
                 linkedModel: updatedLinkedModel,
                 updatedAuthor,

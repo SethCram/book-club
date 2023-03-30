@@ -42,7 +42,7 @@ const upload = multer({ storage: storage });
 app.post("/api/upload", upload.single("file"), (request, response) => {
     //console.log(request.body.upload);
     try {
-        response.status(200).json({
+        response.status(201).json({
             "url": "http://localhost:5000/images/" + request.file.filename
         });
     } catch (error) {

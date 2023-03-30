@@ -6,7 +6,7 @@ router.post("/", async (request, response) => {
     const newCategory = new Category(request.body);   //dont have to await bc just created locally
     try {
         const savedCategory = await newCategory.save();
-        response.status(200).json(savedCategory);
+        response.status(201).json(savedCategory);
     } catch (error) {
         response.status(500).json(error);
     }

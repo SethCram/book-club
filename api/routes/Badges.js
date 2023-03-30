@@ -7,7 +7,7 @@ router.post("/", async (request, response) => {
 
         const savedBadge = await badge.save();
 
-        response.status(200).json(savedBadge);
+        response.status(201).json(savedBadge);
     }
     catch (error) {
         response.status(500).json(error);

@@ -53,7 +53,7 @@ router.post("/", async (request, response) => {
                     );
                 }
 
-                response.status(200).json({ savedComment, rootComment });
+                response.status(201).json({ savedComment, rootComment });
             }
         }
         else {
