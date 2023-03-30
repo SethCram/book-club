@@ -27,7 +27,7 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
             //update the post author thru sidebar
             setUpdatedPostAuthor(updatedCommentAuthor);
         }
-    }, [updatedCommentAuthor])
+    }, [updatedCommentAuthor, post])
 
     const getComments = async () => {
         const response = await axios.get("/comments/all/" + post._id);
@@ -55,7 +55,8 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
         }
 
         try {
-            const response = await axios.post("/comments/", newComment); 
+            //const response =
+            await axios.post("/comments/", newComment); 
 
             //refetch all comments
             await getComments();
