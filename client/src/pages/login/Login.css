@@ -46,6 +46,10 @@
     background-color: rgb(250, 131, 131);
 }
 
+.loginError{
+    margin-top: 20px;
+}
+
 .loginRegisterButton{
     position: absolute;
     top: 60px;

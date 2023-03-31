@@ -77,6 +77,7 @@ export default function Register() { //could use context API to register but not
                   onChange={(isValid) => {setPasswordValid(isValid)}}
                 />
               </div>
+              {error && <span className="responseMsg errorText registerError">{error}</span>}
               <button 
                 className="registerRegisterButton" 
                 type="submit"
@@ -87,8 +88,7 @@ export default function Register() { //could use context API to register but not
           </form>
           <button className="registerLoginButton">
             <Link to="/login" className="link">Login</Link>  
-      </button>
-      {error && <span style={{color:"red", marginTop: "10px", fontWeight: "600"}}>{error}</span>}
+          </button>
       </div>
   )
 }

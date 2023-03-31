@@ -203,109 +203,6 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
         setCategories(uploadedCategories);
     }
 
-    /*
-    const handleVote = async (score) => {
-
-        setVoteErrorMsg("");
-
-        //if upvote
-        if (score > 0) {
-            //if user rep is too low
-            if (user.reputation < reputationRequirements.upVote) {
-                setVoteErrorMsg(`You need atleast ${reputationRequirements.upVote} reputation to cast an up-vote. (Try creating a highly reputed post or comment)`);
-                return;
-            }
-        //if downvote
-        } else if (score < 0) {
-            //if user rep is too low
-            if (user.reputation < reputationRequirements.downVote) {
-                setVoteErrorMsg(`You need atleast ${reputationRequirements.downVote} reputation to cast a down-vote.`);
-                return;
-            }
-        }
-
-        //console.log(score);
-
-        let voteObject;
-
-        let changeInVoteScoring;
-
-        try {
-
-            if (vote) {
-                //update vote w/ new score
-                voteObject = await axios.put(`/votes/update/${vote._id}`, {
-                    score,
-                    linkedId: post._id,
-                    voteId: vote._id,
-                    username: user.username
-                });
-
-                changeInVoteScoring = voteObject.data.vote.score - vote.score
-            }
-            else
-            {
-                //create new vote
-                voteObject = await axios.post("/votes/vote", {
-                    score,
-                    linkedId: post._id,
-                    username: user.username
-                }); 
-
-                changeInVoteScoring = voteObject.data.vote.score;
-            }
-
-            //if linkedModel badgeName, update it locally (have to use context API ?)
-            if (voteObject.data.linkedModel.badgeName) {
-                post["badgeName"] = voteObject.data.linkedModel.badgeName;
-            }
-
-            if (Object.keys(voteObject.data.updatedAuthor).length > 0) {
-                //need to update sidebar user reputation
-                console.log("Sidebar author rep should be updated");
-                setUpdatedPostAuthor(voteObject.data.updatedAuthor);
-            }
-
-            //set new vote properly
-            setVote(voteObject.data.vote);
-
-            //change local post rep score
-            setRepScore(repScore + changeInVoteScoring);
-
-        } catch (error) {
-            console.log(error);
-        } 
-    };
-    
-
-    const chooseVoteIconClass = (desiredNumber, clearIcon) => {
-
-        //if any vote cast
-        if (vote) {
-            //if vote cast is equal to desired number
-            if (vote.score === desiredNumber) {
-                return "icon-lock";
-            }
-            else
-            {
-                return "icon-unlock";
-            }
-        }
-        //if no vote cast
-        else
-        {
-            //display icon only if clear
-           if (clearIcon) {
-                return "icon-lock";
-            }
-            else
-            {
-                return "icon-unlock";
-            } 
-        }
-    };
-    */
-
   return (
       <div className="singlePost">
           <div className="singlePostWrapper">
@@ -379,7 +276,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
               </div>
               {voteErrorMsg &&
                   <span className="singlePostVoteContainer">
-                      <div className="singlePostVoteError">{voteErrorMsg}</div>
+                      <div className="responseMsg errorText">{voteErrorMsg}</div>
                   </span>
               }
               <span className="singlePostTitleRow">

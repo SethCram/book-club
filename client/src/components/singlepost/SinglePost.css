@@ -30,15 +30,6 @@
     justify-content: right;
 }
 
-.singlePostVoteError{
-    color: var(--color-error);
-    border: 1px solid transparent;
-    border-radius: 2rem;
-    padding: 0.5rem;
-    width: fit-content;
-    border-color: var(--color-error);
-}
-
 .singlePostTitle{ /* should be centered under image */
     text-align: center;
     margin: 10px;

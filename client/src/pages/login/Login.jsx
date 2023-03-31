@@ -73,7 +73,7 @@ export default function Login() {
           <button className="loginRegisterButton">
             <Link to="/register" className="link">Register</Link>
           </button>
-      {error && <span style={{ color: "red", marginTop: "10px", fontWeight: "700" }}>{error}</span>}
+      {error && <span className="loginError responseMsg errorText">{error}</span>}
       </div>
       
   )

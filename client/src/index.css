@@ -51,6 +51,33 @@
   background-color: var(--color-bg-dark);
 }
 
+.responseMsg{
+  border: 1px solid transparent;
+  border-radius: 2rem;
+  padding: 0.5rem;
+  width: fit-content;
+  font-weight: 600;
+}
+
+.errorText{
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.successText{
+  color: green;
+  border-color: green;
+}
+
+.container {
+  width: var(--container-width-lg);
+}
+
+img {
+  width: 100%;
+  object-fit: cover;
+}
+
 /* SCORING ICON COLORS */
 .reddishBrown{
   color: var(--color-error);
@@ -74,15 +101,6 @@
 
 .black{
   color: black;
-}
-
-.container {
-  width: var(--container-width-lg);
-}
-
-img {
-  width: 100%;
-  object-fit: cover;
 }
 
 /* MEDIA QUERIES */

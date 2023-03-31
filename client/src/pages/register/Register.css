@@ -42,6 +42,11 @@
     color: black;
 }
 
+.registerError{
+    margin-top: 10px;
+    align-self: center;
+}
+
 .registerRegisterButton{
     margin-top: 20px;
     cursor: pointer;

@@ -192,11 +192,11 @@ export default function Settings() {
                       value={password}
                       required
                   />
-                  <button className="settingsSubmit" type="submit">Update</button>
                   <div className="settingsMessages">
-                    {success && <span className="settingsSubmitMessage">Your profile has been updated</span>}
-                    {error && <span className="settingsFailureMessage">{error}</span>}
+                    {success && <span className="settingsSubmitMessage responseMsg successText">Your profile has been updated</span>}
+                    {error && <span className="settingsFailureMessage responseMsg errorText">{error}</span>}
                   </div>
+                  <button className="settingsSubmit" type="submit">Update</button>
               </form>
           </div>
           <SideBar user={user} />
