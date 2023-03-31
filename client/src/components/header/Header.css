@@ -23,6 +23,16 @@
     font-size: 50px;
 }
 
+.headerSearchTitle{
+    margin-left: 8%;
+    font-size: 3em;
+}
+
+.headerSearchBar{
+    margin-left: 4%;
+    margin-right: 25%;
+}
+
 .headerImg{
     width: 100%;
     height: 450px;
