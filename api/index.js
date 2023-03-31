@@ -15,11 +15,12 @@ const fs = require('fs')
 const { promisify } = require('util')
 const unlinkAsync = promisify(fs.unlink)
 
-
-
+//bring in env vars
 dotenv.config();
+//start express app
 app.use(express.json());
-app.use("/images", express.static(path.join(__dirname, "/images"))); //makes images folder public
+//specify images folder as public
+app.use("/images", express.static(path.join(__dirname, "/images")));
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

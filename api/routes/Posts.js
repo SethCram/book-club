@@ -1,6 +1,8 @@
 const router = require("express").Router(); //can handle post, put (update), get, delete
 const Post = require("../models/Post");
 
+const PAGE_SIZE = 10;
+
 //Create Post
 router.post("/", async (request, response) => { //async bc dont know how long it'll take
     const newPost = new Post(request.body);
@@ -105,7 +107,6 @@ router.get("/", async (request, response) => {
     const username = request.query.username; //query = anything after ?        
     const categoryName = request.query.category;  
     const page = parseInt(request.query.page);
-    const PAGE_SIZE = 10;
 
     try {    
 
@@ -178,5 +179,44 @@ router.get("/sum/sum", async (request, response) => {
         response.status(500).json(error);
     }
 });
+
+router.get("/search/search", async (request, response) => {
+    
+    const page = parseInt(request.query.page);
+    const searchContents = request.query.searchContents;
+
+    let pipeline = {
+        $search: {
+            index: "searchPosts",
+            text: {
+                query: searchContents,
+                path: {
+                    wildcard: "*"
+                }
+            }
+        }
+    };
+
+    try {
+        //paginate resultant posts w/ limiting + skipping
+        const posts = await Post.aggregate([pipeline])
+            .limit(PAGE_SIZE)
+            .skip(PAGE_SIZE * page);
+        
+        console.log((await Post.aggregate([pipeline])).length);
+        
+        //count total document pages ret'd by pipeline w/o pagination
+        const totalPostPages = Math.ceil((await Post.aggregate([pipeline])).length / PAGE_SIZE);
+        
+        response.status(200).json({
+            totalPages: totalPostPages,
+            posts
+        });
+        
+    } catch (error) {
+        console.log(error);
+        response.status(500).json(error);
+    }
+})
 
 module.exports = router;
