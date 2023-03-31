@@ -34,6 +34,9 @@ export default function Home() {
     }
     fetchPosts();
 
+    //force scroll user to top of page
+    window.scrollTo(0, 0);
+
   }, [search, pageNumber]) //only runs code everytime new query or page number changes
 
   //retrieve user according to username
