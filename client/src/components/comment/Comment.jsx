@@ -4,6 +4,7 @@ import axios from "axios"
 import { Context } from "../../context/Context";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 import { Link } from "react-router-dom";
+import Vote, { VoteType } from "../vote/Vote";
 
 export default function Comment({ handleComment = null, handleReply = null, comment = null, replyId = "", replyUsername = "", setUpdatedCommentAuthor = null }) {
     const [feedback, setFeedback] = useState("");
@@ -11,11 +12,8 @@ export default function Comment({ handleComment = null, handleReply = null, comm
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
     const [writeMode, setWriteMode] = useState(false);
-
-    const clearThumbsUpScore = 1;
-    const solidThumbsUpScore = 0;
-    const clearThumbsDownScore = -1;
-    const solidThumbsDownScore = 0;
+    const [voteErrorMsg, setVoteErrorMsg] = useState("");
+    const [updatedComment, setUpdatedComment] = useState(null);
 
     useEffect(() => {
         const getVote = async () => {
@@ -46,60 +44,16 @@ export default function Comment({ handleComment = null, handleReply = null, comm
         
     }, [comment]);
 
-    const handleVote = async (score) => {
+    useEffect(() => {
+        if (updatedComment) {
+            setRepScore(updatedComment.reputation);
 
-        //console.log(score);
-
-        let voteObject;
-
-        let changeInVoteScoring;
-
-        try {
-
-            if (vote) {
-                //update vote w/ new score
-                voteObject = await axios.put(`/votes/update/${vote._id}`, {
-                    score,
-                    linkedId: comment._id,
-                    voteId: vote._id,
-                    username: user.username
-                });
-
-                changeInVoteScoring = voteObject.data.vote.score - vote.score
+            if (updatedComment.badgeName) {
+                comment.badgeName = updatedComment.badgeName;
             }
-            else {
-                //create new vote
-                voteObject = await axios.post("/votes/vote", {
-                    score,
-                    linkedId: comment._id,
-                    username: user.username
-                });
-
-                changeInVoteScoring = voteObject.data.vote.score;
-            }
-
-            //if linkedModel badgeName, update it locally 
-            if (voteObject.data.linkedModel.badgeName) {
-                comment["badgeName"] = voteObject.data.linkedModel.badgeName;
-            }
-
-            if (Object.keys(voteObject.data.updatedAuthor).length > 0) {
-                //need to update sidebar user reputation somehow 
-                console.log("Sidebar author rep should be updated");
-
-                setUpdatedCommentAuthor(voteObject.data.updatedAuthor);
-            }
-
-            //set new vote properly
-            setVote(voteObject.data.vote);
-
-            //change local post rep score
-            setRepScore(repScore + changeInVoteScoring);
-
-        } catch (error) {
-            console.log(error);
         }
-    };
+        
+    }, [updatedComment]);
 
     const handleUpdate = async () => {
 
@@ -139,30 +93,6 @@ export default function Comment({ handleComment = null, handleReply = null, comm
         setFeedback("");
     };
 
-    const chooseVoteIconClass = (desiredNumber, clearIcon) => {
-
-        //if any vote cast
-        if (vote) {
-            //if vote cast is equal to desired number
-            if (vote.score === desiredNumber) {
-                return "icon-lock";
-            }
-            else {
-                return "icon-unlock";
-            }
-        }
-        //if no vote cast
-        else {
-            //display icon only if clear
-            if (clearIcon) {
-                return "icon-lock";
-            }
-            else {
-                return "icon-unlock";
-            }
-        }
-    };
-
     function renderUsername(comment) {
         let retdUsername;
         
@@ -186,31 +116,55 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                         comment={comment ? comment : { badgeName: "" }}
                         numberClass="commentRepNumbering"
                     />
-                    {comment && //display icons if a pre-existing comment
+                    {comment && user && //display icons if a pre-existing comment
                         <>
                             <div className="commentVoteIcon">
-                                <i
-                                    className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
-                                    onClick={() => { handleVote(clearThumbsUpScore) }}
-                                ></i>
+                                <Vote 
+                                  voteType={VoteType.UPVOTE}
+                                  hollowIcon={true}
+                                  setVote={setVote}
+                                  setVoteErrorMsg={setVoteErrorMsg} 
+                                  setUpdatedLinkedModel={setUpdatedComment}
+                                  setUpdatedAuthor={setUpdatedCommentAuthor}
+                                  linkedId={comment?._id}
+                                  existingVote={vote}
+                                />
                             </div>
                             <div className="commentVoteIcon">
-                                <i
-                                    className={`${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
-                                    onClick={() => { handleVote(solidThumbsUpScore) }}
-                                ></i>
+                                <Vote 
+                                  voteType={VoteType.UPVOTE}
+                                  hollowIcon={false}
+                                  setVote={setVote}
+                                  setVoteErrorMsg={setVoteErrorMsg} 
+                                  setUpdatedLinkedModel={setUpdatedComment}
+                                  setUpdatedAuthor={setUpdatedCommentAuthor}
+                                  linkedId={comment?._id}
+                                  existingVote={vote}
+                                />
                             </div>
                             <div className="commentVoteIcon">
-                                <i
-                                    className={`${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
-                                    onClick={() => { handleVote(clearThumbsDownScore) }}
-                                ></i>
+                                <Vote 
+                                  voteType={VoteType.DOWNVOTE}
+                                  hollowIcon={true}
+                                  setVote={setVote}
+                                  setVoteErrorMsg={setVoteErrorMsg} 
+                                  setUpdatedLinkedModel={setUpdatedComment}
+                                  setUpdatedAuthor={setUpdatedCommentAuthor}
+                                  linkedId={comment?._id}
+                                  existingVote={vote}
+                                />
                             </div>
                             <div className="commentVoteIcon">
-                                <i
-                                    className={`${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
-                                    onClick={() => { handleVote(solidThumbsDownScore) }}
-                                ></i>
+                                <Vote 
+                                  voteType={VoteType.DOWNVOTE}
+                                  hollowIcon={false}
+                                  setVote={setVote}
+                                  setVoteErrorMsg={setVoteErrorMsg} 
+                                  setUpdatedLinkedModel={setUpdatedComment}
+                                  setUpdatedAuthor={setUpdatedCommentAuthor}
+                                  linkedId={comment?._id}
+                                  existingVote={vote}
+                                />
                             </div>
                         </>
                     }
@@ -238,6 +192,11 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                     {replyUsername &&
                         <span className="commentReplyTo">
                             @{replyUsername}
+                        </span>
+                    }
+                    {voteErrorMsg &&
+                        <span className="responseMsg errorText">
+                            {voteErrorMsg}
                         </span>
                     }
                     {(comment && !writeMode) ? (

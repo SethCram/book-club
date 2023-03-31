@@ -161,10 +161,3 @@
     margin-top: 15px;
     margin-right: 10px;
 }
-
-.icon-unlock {
-    display: none;
-}
-.icon-lock { /* needa be hovering over lock icon */
-    display: inline;
-}

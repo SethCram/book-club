@@ -146,9 +146,11 @@ export default function WritePage() {
                 />
             </div>
           </div>
-          <span className="writeFormErrorMsg">
-            <div className="responseMsg errorText">{errorMsg}</div>
-          </span>
+          {errorMsg &&
+            <span className="writeFormErrorMsg">
+              <div className="responseMsg errorText">{errorMsg}</div>
+            </span>
+          }
           
           <div className="writeFormGroup writeFormEditor">
             <Editor setDescription={setDescription}/>

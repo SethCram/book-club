@@ -1,3 +1,11 @@
+
+.icon-unlock { /* hide */
+    display: none;
+}
+.icon-lock { /* show */
+    display: inline;
+}
+
 .voteScoringIcon{
     cursor: pointer;
 }
