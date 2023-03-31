@@ -1,0 +1,7 @@
+.voteScoringIcon{
+    cursor: pointer;
+}
+
+#dark .voteScoringIcon{
+    color: var(--color-gold);
+}

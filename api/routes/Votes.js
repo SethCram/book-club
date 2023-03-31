@@ -131,7 +131,7 @@ const updateLinkedModel = async (linkedId, score) => {
         }
         else
         {
-            throw new Error("Couldn't find linked Object by their id.");
+            throw new Error("Couldn't find linked Object by id " + linkedId);
         }
     }
 
@@ -231,7 +231,7 @@ router.post("/vote", async (request, response) => {
 
         if (score !== 1 && score !== -1) {
             //console.log(score);
-            throw new Error("Score must be +1 or -1.");
+            throw new Error("Score must be +1 or -1 not " + score);
         }
 
         //find a vote w/ user as author and same linkedId

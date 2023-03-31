@@ -24,6 +24,8 @@
     --color-silver: rgb(161, 161, 161);
     --color-bronze: #9b702b;
     --color-platinum: #4db5ff;
+    
+    --color-error: brown;
 
     --transition: all 400ms ease;
 
@@ -51,7 +53,7 @@
 
 /* SCORING ICON COLORS */
 .reddishBrown{
-  color: brown;
+  color: var(--color-error);
 }
 
 .bronze{

@@ -9,6 +9,7 @@ import ReputationIcon from "../reputationIcon/ReputationIcon";
 import CommentSection from "../commentSection/CommentSection";
 import * as DOMPurify from 'dompurify';
 import Editor from "../editor/Editor";
+import Vote, { VoteType } from "../vote/Vote";
 
 export default function SinglePost({post, setUpdatedPostAuthor}) {
     const { user } = useContext(Context);
@@ -23,6 +24,8 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
     const { theme } = useContext(ThemeContext);
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
+    const [voteErrorMsg, setVoteErrorMsg] = useState("");
+    const [updatedPost, setUpdatedPost] = useState(null);
 
     // extend the existing array of allowed tags and attributes
     const sanitizeConfig = { ADD_TAGS: ['iframe'], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] };
@@ -45,11 +48,6 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
         }
         return node;
     });
-
-    const clearThumbsUpScore = 1;
-    const solidThumbsUpScore = 0;
-    const clearThumbsDownScore = -1;
-    const solidThumbsDownScore = 0;
 
     //retrieve post according to postId
     useEffect(() => {
@@ -89,6 +87,33 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
         }
     }, [post, user])
 
+    useEffect(() => {
+        const updateLocalPostFields = () => {
+            //need for updating:
+            setRepScore(updatedPost.reputation);
+
+            if (updatedPost.badgeName) {
+                post.badgeName = updatedPost.badgeName;
+            }
+            
+        };
+        if (updatedPost) {
+            updateLocalPostFields(); 
+        }
+    }, [updatedPost])
+
+    useEffect(() => {
+        const getCategories = async () => {
+          try {
+            const storedCategories = await axios.get("/categories/");
+            setAllCategories(storedCategories.data);
+          } catch (error) {
+          
+          }
+        }
+        getCategories();
+    }, [])
+
     const handleDelete = async () => {
         try {
             await axios.delete(`/posts/${post._id}`, {
@@ -106,7 +131,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
 
         const uploadedCategories = multiSelectRef?.current.getSelectedItems();
 
-        const updatedPost = {
+        const postUpdate = {
             username: user.username,
             title,
             description,
@@ -131,7 +156,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                 });
 
                 //rm from db post
-                updatedPost.photo = "";
+                postUpdate.photo = "";
                 //clear locally cached post
                 post.photo = "";
                 setPicture("");
@@ -154,7 +179,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
             try {
                 const response = await axios.post("/upload", data);
                 //update db photo url
-                updatedPost.photo = response.data.url;
+                postUpdate.photo = response.data.url;
                 //update local cache photo url
                 post.photo = response.data.url; //need this for future file deletion
                 //setPicture(response.data.url); //cant set this here bc url created from picture var
@@ -164,7 +189,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
         }
         
         try {
-            await axios.put("/posts/" + post._id, updatedPost);
+            await axios.put("/posts/" + post._id, postUpdate);
 
             setUpdateMode(false); //dont needa update this way
         } catch (error) {
@@ -178,19 +203,26 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
         setCategories(uploadedCategories);
     }
 
-    useEffect(() => {
-        const getCategories = async () => {
-          try {
-            const storedCategories = await axios.get("/categories/");
-            setAllCategories(storedCategories.data);
-          } catch (error) {
-          
-          }
-        }
-        getCategories();
-    }, [])
-
+    /*
     const handleVote = async (score) => {
+
+        setVoteErrorMsg("");
+
+        //if upvote
+        if (score > 0) {
+            //if user rep is too low
+            if (user.reputation < reputationRequirements.upVote) {
+                setVoteErrorMsg(`You need atleast ${reputationRequirements.upVote} reputation to cast an up-vote. (Try creating a highly reputed post or comment)`);
+                return;
+            }
+        //if downvote
+        } else if (score < 0) {
+            //if user rep is too low
+            if (user.reputation < reputationRequirements.downVote) {
+                setVoteErrorMsg(`You need atleast ${reputationRequirements.downVote} reputation to cast a down-vote.`);
+                return;
+            }
+        }
 
         //console.log(score);
 
@@ -244,6 +276,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
             console.log(error);
         } 
     };
+    
 
     const chooseVoteIconClass = (desiredNumber, clearIcon) => {
 
@@ -271,6 +304,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
             } 
         }
     };
+    */
 
   return (
       <div className="singlePost">
@@ -343,9 +377,14 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                     ))
                 }
               </div>
+              {voteErrorMsg &&
+                  <span className="singlePostVoteContainer">
+                      <div className="singlePostVoteError">{voteErrorMsg}</div>
+                  </span>
+              }
               <span className="singlePostTitleRow">
                 <div className="singlepostReputation">
-                    <ReputationIcon repScore={repScore} post={post} />
+                      <ReputationIcon repScore={repScore} post={post} />
                 </div>
                 {updateMode ?
                     <input type="text"
@@ -362,24 +401,48 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                     {!updateMode && user && post?.username !== user?.username &&
                         <>
                             <div className="singlePostScoringIconPairing">
-                                <i 
-                                    className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-up`}
-                                    onClick={() => {handleVote(clearThumbsUpScore) }}
-                                ></i>
-                                <i 
-                                className={`singlePostScoringIcon ${chooseVoteIconClass(1, false)} fa-solid fa-thumbs-up`}
-                                onClick={() => {handleVote(solidThumbsUpScore) }}
-                                ></i>
+                                <Vote 
+                                  voteType={VoteType.UPVOTE}
+                                  hollowIcon={true}
+                                  setVote={setVote}
+                                  setVoteErrorMsg={setVoteErrorMsg}
+                                  setUpdatedLinkedModel={setUpdatedPost}
+                                  setUpdatedAuthor={setUpdatedPostAuthor}
+                                  linkedId={post?._id}
+                                  existingVote={vote}
+                                />
+                                <Vote 
+                                  voteType={VoteType.UPVOTE}
+                                  hollowIcon={false}
+                                  setVote={setVote}
+                                  setVoteErrorMsg={setVoteErrorMsg}
+                                  setUpdatedLinkedModel={setUpdatedPost}
+                                  setUpdatedAuthor={setUpdatedPostAuthor}
+                                  linkedId={post?._id}
+                                  existingVote={vote}
+                                />
                             </div>
                             <div className="singlePostScoringIconPairing">
-                                <i 
-                                className={`singlePostScoringIcon ${chooseVoteIconClass(0, true)} fa-regular fa-thumbs-down`}
-                                onClick={() => {handleVote(clearThumbsDownScore) }}
-                                ></i>
-                                <i 
-                                className={`singlePostScoringIcon ${chooseVoteIconClass(-1, false)} fa-solid fa-thumbs-down`}
-                                onClick={() => {handleVote(solidThumbsDownScore) }}
-                                ></i>
+                                <Vote 
+                                  voteType={VoteType.DOWNVOTE}
+                                  hollowIcon={true}
+                                  setVote={setVote}
+                                  setVoteErrorMsg={setVoteErrorMsg}
+                                  setUpdatedLinkedModel={setUpdatedPost}
+                                  setUpdatedAuthor={setUpdatedPostAuthor}
+                                  linkedId={post?._id}
+                                  existingVote={vote}
+                                />
+                                <Vote 
+                                  voteType={VoteType.DOWNVOTE}
+                                  hollowIcon={false}
+                                  setVote={setVote}
+                                  setVoteErrorMsg={setVoteErrorMsg}
+                                  setUpdatedLinkedModel={setUpdatedPost}
+                                  setUpdatedAuthor={setUpdatedPostAuthor}
+                                  linkedId={post?._id}
+                                  existingVote={vote}
+                                />
                             </div>
                         </>
                     }

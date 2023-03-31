@@ -9,6 +9,7 @@ import { Context } from "./context/Context";
 import About from "./pages/about/About";
 import "./App.css"
 import { useLayoutEffect } from 'react'
+import NotFound from "./pages/notfound/NotFound";
 
 // Need the following to setup dynamic routing:
 import { createContext, useContext, useState } from "react";
@@ -17,7 +18,6 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import NotFound from "./pages/notfound/NotFound";
 
 export const ThemeContext = createContext(null);
 
