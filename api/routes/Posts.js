@@ -130,7 +130,8 @@ router.get("/", async (request, response) => {
                         query: searchContents,
                         path: {
                             wildcard: "*"
-                        }
+                        },
+                        fuzzy: {} /* use fuzzy searching defaults */
                     }
                 }
             };
@@ -174,6 +175,37 @@ router.get("/", async (request, response) => {
             posts
         });
 
+    } catch (error) {
+        console.log(error);
+        response.status(500).json(error);
+    }
+});
+
+router.get("/autocomplete/:searchTerm", async (request, response) => {
+
+    const MAX_AUTOCOMPLETE_TERMS = 10;
+
+    let pipeline = [
+        {
+            $search: {
+                index: "autoCompletePosts",
+                "autocomplete": {
+                    "query": request.params.searchTerm,
+                    "path": "title",
+                    "tokenOrder": "sequential"
+                }
+            }
+        }
+    ];
+
+    try {
+        const postTitles = await Post.aggregate(pipeline)
+            .limit(MAX_AUTOCOMPLETE_TERMS)
+            .project({ "title": 1 });
+        
+        response.status(200).json({
+            posts: postTitles
+        });
     } catch (error) {
         console.log(error);
         response.status(500).json(error);
