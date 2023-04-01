@@ -17,6 +17,7 @@
     height: 25vmin;
     pointer-events: none;
     padding: 50px;
+    width: 25vmin;
 }
 
 .notFoundItem {

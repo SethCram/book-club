@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { LoginFailure } from "../../context/Actions";
 import { Context } from "../../context/Context";
 import SocialMediaIcons from "../socialmediaicons/SocialMediaIcons";
@@ -14,6 +14,9 @@ export default function TopBar() {
     const { user, dispatch } = useContext(Context);
     const { theme, toggleTheme } = useContext(ThemeContext);
     const currDeviceType = GetDeviceType();
+    const [searchBarActive, setSearchBarActive] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const handleLogout = () => {
         dispatch(LoginFailure());
@@ -62,6 +65,33 @@ export default function TopBar() {
         },
         bmOverlay: {
             background: 'rgba(0, 0, 0, 0.3)'
+        }
+    }
+
+    const handleSearch = async (event) => {
+        event.preventDefault();
+
+        try {
+            //const response = await axios.get("/posts/search/search/", {
+            //    params: {
+            //        page: 0,
+            //        searchContents: searchTerm
+            //    }
+            //});
+
+            //console.log(response.data);
+
+            //setPageCount(response.data.totalPages);
+            //setPosts(response.data.posts);
+
+            //window.location.assign(`/?searchContents=${searchTerm}&&page=0`);
+
+            //new posts are auto fetched from DB everytime search term in url changes
+            setSearchParams(`searchContents=${searchTerm}`);
+
+            setSearchTerm("");
+        } catch (error) {
+            
         }
     }
 
@@ -147,6 +177,17 @@ export default function TopBar() {
                                         <Link to={`/?username=${user.username}`} className="link">MY POSTS</Link>
                                     </li>
                                 }
+                                {searchBarActive && 
+                                    <form onSubmit={handleSearch}>
+                                        <input
+                                            type="text"
+                                            placeholder="Search..."
+                                            onChange={e => setSearchTerm(e.target.value)}
+                                            value={searchTerm}
+                                            autoFocus
+                                        />
+                                    </form>
+                                }
                                 <li className="topListItem">
                                     <Link to="/writepage" className="link">WRITE</Link>
                                 </li>
@@ -201,7 +242,10 @@ export default function TopBar() {
                             </>
                         )
                         }
-                    <i className="topSearchIcon fa-solid fa-magnifying-glass"></i>
+                    <i
+                        className="topSearchIcon fa-solid fa-magnifying-glass"
+                        onClick={() => setSearchBarActive(!searchBarActive)}
+                    ></i>
                     {currDeviceType === DeviceType.DESKTOP &&
                         <div className="topSwitch">
                             <ReactSwitch

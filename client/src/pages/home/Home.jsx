@@ -66,12 +66,12 @@ export default function Home() {
 
     //if pre-existing search
     if (search) {
-      //if one of the queries is current pagination
+      //if one of the queries is currently pagination
       if (search.indexOf(parameter) !== -1) {
         //update the pagination
         search = updateUrlParameter(search, parameter, pageIndex)
       }
-      //if one of the queries isn't current pagination
+      //if one of the queries isn't currently pagination
       else {
         //add pagination to the end
         search += "&&" + parameter + "=" + pageIndex;
