@@ -23,10 +23,24 @@
     align-content: center;
     padding-bottom: 10px;
     width: 100%;
+    flex-wrap: wrap;
 }
 
 .homePaginationButton{
+    background: transparent;
+    border-radius: 1rem;
+    cursor: pointer;
+    font-weight: 700;
+    border-color: var(--color-text-dark);
+    color: var(--color-text-dark);
+    border-width: 2px;
+    margin: 5px;
+    margin-bottom: 20px;
+}
 
+#dark .homePaginationButton{
+    border-color: var(--color-text-light);
+    color: var(--color-text-light);
 }
 
 /* MEDIA QUERIES */

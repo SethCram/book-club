@@ -105,9 +105,14 @@ export default function Home() {
             <div className="homePush"></div>
           </div>
           {pages.length > 1 && 
-            <span className="homePagination">
+            <div className="homePagination">
               <Link className="link" to={"/" + updatePagePagination(search, "page", decrPageCount())}>
-                <button onClick={() => { setPageNumber(decrPageCount()) }}>Previous</button>
+                <button
+                  className="homePaginationButton"
+                  onClick={() => { setPageNumber(decrPageCount()) }}
+                >
+                  Previous
+                </button>
               </Link>
               {pages.map((pageIndex) => (
                 <Link className="link" key={pageIndex} to={"/" + updatePagePagination(search, "page", pageIndex)}>
@@ -121,9 +126,14 @@ export default function Home() {
                 </Link>
               ))}
               <Link className="link" to={"/" + updatePagePagination(search, "page", incrPageCount())}>
-                <button onClick={() => { setPageNumber(incrPageCount()) }}>Next</button>
+                <button
+                  className="homePaginationButton"
+                  onClick={() => { setPageNumber(incrPageCount()) }}
+                >
+                  Next
+                </button>
               </Link>
-            </span>
+            </div>
           }
         </div>
     </>
