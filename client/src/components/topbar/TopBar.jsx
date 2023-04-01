@@ -72,28 +72,33 @@ export default function TopBar() {
         event.preventDefault();
 
         try {
-            //const response = await axios.get("/posts/search/search/", {
-            //    params: {
-            //        page: 0,
-            //        searchContents: searchTerm
-            //    }
-            //});
-
-            //console.log(response.data);
-
-            //setPageCount(response.data.totalPages);
-            //setPosts(response.data.posts);
-
-            //window.location.assign(`/?searchContents=${searchTerm}&&page=0`);
-
             //new posts are auto fetched from DB everytime search term in url changes
             setSearchParams(`searchContents=${searchTerm}`);
 
             setSearchTerm("");
         } catch (error) {
-            
+            console.log(error);
         }
     }
+
+    const renderSearchBar = () => (
+        <form className="topSearchBarContainer topListItem" onSubmit={handleSearch}>
+            <button type="submit">
+                <i
+                    className="topSearchBarIcon fa-solid fa-magnifying-glass"
+                ></i>
+            </button>
+            <input
+                className="topSearchBar"
+                type="text"
+                placeholder="Search..."
+                onChange={e => setSearchTerm(e.target.value)}
+                value={searchTerm}
+                autoFocus
+                onBlur={() => setSearchBarActive(false)}
+            />
+        </form>
+    );
 
     return (
         <>
@@ -178,15 +183,7 @@ export default function TopBar() {
                                     </li>
                                 }
                                 {searchBarActive && 
-                                    <form onSubmit={handleSearch}>
-                                        <input
-                                            type="text"
-                                            placeholder="Search..."
-                                            onChange={e => setSearchTerm(e.target.value)}
-                                            value={searchTerm}
-                                            autoFocus
-                                        />
-                                    </form>
+                                    renderSearchBar()
                                 }
                                 <li className="topListItem">
                                     <Link to="/writepage" className="link">WRITE</Link>
@@ -201,14 +198,17 @@ export default function TopBar() {
                                 }
                             </>
                             :
-                            <>
-                                <img className="topTitleImage" src={BC} alt=""/>
-                                <h2>
-                                    <Link to="/" className="link">
-                                        Book Club
-                                    </Link>
-                                </h2>
-                            </>
+                                searchBarActive ? 
+                                    renderSearchBar()
+                                    :
+                                    <>
+                                        <img className="topTitleImage" src={BC} alt=""/>
+                                        <h2>
+                                            <Link to="/" className="link">
+                                                Book Club
+                                            </Link>
+                                        </h2>
+                                    </>
                         }
                     </ul>
                 </div>
@@ -241,11 +241,13 @@ export default function TopBar() {
                                 }
                             </>
                         )
-                        }
-                    <i
-                        className="topSearchIcon fa-solid fa-magnifying-glass"
-                        onClick={() => setSearchBarActive(!searchBarActive)}
-                    ></i>
+                    }
+                    {!searchBarActive &&
+                        <i
+                            className="topSearchIcon fa-solid fa-magnifying-glass"
+                            onClick={() => { setSearchBarActive(true); setSearchTerm(""); }}
+                        ></i>
+                    }
                     {currDeviceType === DeviceType.DESKTOP &&
                         <div className="topSwitch">
                             <ReactSwitch

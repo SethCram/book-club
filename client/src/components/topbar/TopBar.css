@@ -78,10 +78,16 @@
     margin-right: 20px;
     font-size: var(--medium-font-size);
     font-weight: 300;
+    align-self: center;
+    justify-self: center;
 }
 
 #dark .topList{
     color: var(--color-white);
+}
+
+.topSearchBarContainer{
+    display: flex;
 }
 
 .topSearchIcon {
@@ -93,6 +99,28 @@
 
 #dark .topSearchIcon {
     color: var(--color-white);
+}
+
+.topSearchBarIcon{
+    color: var(--color-bg-variant);
+    cursor: pointer;
+}
+
+.topSearchBar{
+    background: transparent;
+    border: 1px solid var(--color-text-light-variant);
+    border-radius: 0.2rem;
+    padding: 5px;
+    color: var(--color-text-light-variant);
+    width: fit-content;
+}
+
+.topSearchBar::placeholder{
+    color: var(--color-text-light-variant);
+}
+
+.topSearchBar:focus{
+    outline: var(--color-text-light-variant) solid 1px;
 }
 
 .topSwitch{
