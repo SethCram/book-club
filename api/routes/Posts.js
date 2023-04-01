@@ -1,8 +1,6 @@
 const router = require("express").Router(); //can handle post, put (update), get, delete
 const Post = require("../models/Post");
 
-const PAGE_SIZE = 10;
-
 //Create Post
 router.post("/", async (request, response) => { //async bc dont know how long it'll take
     const newPost = new Post(request.body);
@@ -106,35 +104,70 @@ router.get("/", async (request, response) => {
     //query-able via username or category
     const username = request.query.username; //query = anything after ?        
     const categoryName = request.query.category;  
-    const page = parseInt(request.query.page);
+    let page = parseInt(request.query.page);
+    const searchContents = request.query.searchContents;
 
-    try {    
+    const PAGE_SIZE = 10;
+    let filter = {}; //if no query or unspecified query case, filter by all posts
+    let posts;
+    let totalPostPages;
 
-        let filter = {}; //if no query or unspecified query case, filter by all posts
+    //default page to 0 if none passed in
+    if (!page) {
+        page = 0;
+    }
 
-        //if username queried, filter by all posts by that user
-        if (username) {
-            filter["username"] = username;
-        }
-        
-        //if category queried, filter by all posts marked as that category
-        if(categoryName)
-        {
+    const skipPosts = PAGE_SIZE * page;
 
-            filter["categories.name"] = {
-                $in: [categoryName] //could theoretically query via mult cats
+    try {
+
+        //if search bar request
+        if (searchContents) {
+            filter = {
+                $search: {
+                    index: "searchPosts",
+                    text: {
+                        query: searchContents,
+                        path: {
+                            wildcard: "*"
+                        }
+                    }
+                }
             };
+
+            //find posts by filter
+            posts = await Post.aggregate([filter])
+                .skip(skipPosts)
+                .limit(PAGE_SIZE);
             
+            //count documents by filter
+            totalPostPages = Math.ceil((await Post.aggregate([filter])).length / PAGE_SIZE);
         }
+        //if keyword request
+        else {
+            //if username queried, filter by all posts by that user
+            if (username) {
+                filter["username"] = username;
+            }
+            
+            //if category queried, filter by all posts marked as that category
+            if (categoryName) {
 
-        //find posts by filter
-        const posts = await Post.find(filter)
-            .limit(PAGE_SIZE)
-            .sort({reputation: "descending", updatedAt: "descending"})
-            .skip(PAGE_SIZE * page);
+                filter["categories.name"] = {
+                    $in: [categoryName] //could theoretically query via mult cats
+                };
+                
+            }
 
-        //count documents by filter
-        const totalPostPages = Math.ceil( await Post.countDocuments(filter) / PAGE_SIZE);
+            //find posts by filter
+            posts = await Post.find(filter)
+                .limit(PAGE_SIZE)
+                .sort({ reputation: "descending", updatedAt: "descending" })
+                .skip(skipPosts);
+            
+            //count documents by filter
+            totalPostPages = Math.ceil(await Post.countDocuments(filter) / PAGE_SIZE);
+        }
 
         response.status(200).json({
             totalPages: totalPostPages,
@@ -142,6 +175,7 @@ router.get("/", async (request, response) => {
         });
 
     } catch (error) {
+        console.log(error);
         response.status(500).json(error);
     }
 });
@@ -179,44 +213,5 @@ router.get("/sum/sum", async (request, response) => {
         response.status(500).json(error);
     }
 });
-
-router.get("/search/search", async (request, response) => {
-    
-    const page = parseInt(request.query.page);
-    const searchContents = request.query.searchContents;
-
-    let pipeline = {
-        $search: {
-            index: "searchPosts",
-            text: {
-                query: searchContents,
-                path: {
-                    wildcard: "*"
-                }
-            }
-        }
-    };
-
-    try {
-        //paginate resultant posts w/ limiting + skipping
-        const posts = await Post.aggregate([pipeline])
-            .limit(PAGE_SIZE)
-            .skip(PAGE_SIZE * page);
-        
-        console.log((await Post.aggregate([pipeline])).length);
-        
-        //count total document pages ret'd by pipeline w/o pagination
-        const totalPostPages = Math.ceil((await Post.aggregate([pipeline])).length / PAGE_SIZE);
-        
-        response.status(200).json({
-            totalPages: totalPostPages,
-            posts
-        });
-        
-    } catch (error) {
-        console.log(error);
-        response.status(500).json(error);
-    }
-})
 
 module.exports = router;
