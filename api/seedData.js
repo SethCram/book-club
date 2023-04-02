@@ -125,7 +125,7 @@ const createFakePosts = (numOf, authorsUsernames, categories, badges) => {
         tmpPost["username"] = authorUsername;
 
         //add some categories
-        faker.helpers.arrayElements(categories).forEach(catName => {
+        faker.helpers.arrayElements(categories.slice(0, 2)).forEach(catName => {
             tmpPost.categories.push({name: catName})
         });
 
