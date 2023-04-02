@@ -87,7 +87,15 @@
 }
 
 .topSearchBarContainer{
+    position: absolute;
+    top: 70px;
+    left: var(--searchbar-container-left-margin-lg);
     display: flex;
+}
+
+.topSearchButton {
+    cursor: pointer;
+    height: 28px;
 }
 
 .topSearchIcon {
@@ -107,12 +115,11 @@
 }
 
 .topSearchBar{
-    background: transparent;
     border: 1px solid var(--color-text-light-variant);
     border-radius: 0.2rem;
     padding: 5px;
     color: var(--color-text-light-variant);
-    width: fit-content;
+    width: var(--searchbar-width-lg);
 }
 
 .topSearchBar::placeholder{
@@ -121,6 +128,28 @@
 
 .topSearchBar:focus{
     outline: var(--color-text-light-variant) solid 1px;
+}
+
+.topSearchBarItems{
+    position: absolute;
+    top: 98px;
+    left: var(--searchbar-dropdown-left-margin-lg);
+    width: var(--searchbar-dropdown-width-lg);
+    border: 1px solid var(--color-text-light-variant);
+    border-radius: 0.2rem;
+    list-style: none;
+    background-color: black;
+    padding-left: 0;
+}
+
+.topSearchBarItem{
+    cursor: pointer;
+    padding: 1rem;
+    background-color: grey;
+}
+
+.topSearchBarItem:hover{
+    background: var(--color-bg-variant);
 }
 
 .topSwitch{
@@ -137,10 +166,28 @@
 
 /* For tablets */
 @media screen and (max-width: 1024px) {
-
+    .topSearchBar{
+        width: var(--searchbar-width-md);
+    }
+    .topSearchBarContainer{
+        left: var(--searchbar-container-left-margin-md);
+    }
+    .topSearchBarItems{
+        width: var(--searchbar-dropdown-width-md);
+        left: var(--searchbar-dropdown-left-margin-md);
+    }
   }
   
   /* For phones */
   @media screen and (max-width: 600px) {
-  
+    .topSearchBar{
+        width: var(--searchbar-width-sm);
+    }
+    .topSearchBarContainer{
+        left: var(--searchbar-container-left-margin-sm);
+    }
+    .topSearchBarItems{
+        width: var(--searchbar-dropdown-width-sm);
+        left: var(--searchbar-dropdown-left-margin-sm);
+    }
   }

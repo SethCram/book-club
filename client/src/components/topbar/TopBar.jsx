@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { LoginFailure } from "../../context/Actions";
 import { Context } from "../../context/Context";
 import SocialMediaIcons from "../socialmediaicons/SocialMediaIcons";
@@ -9,6 +9,7 @@ import { DeviceType, GetDeviceType, ThemeContext } from "../../App";
 import BC from "../../assets/favicon_io/android-chrome-512x512.png"
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 import { fallDown as Menu } from 'react-burger-menu'
+import axios from "axios";
 
 export default function TopBar() {
     const { user, dispatch } = useContext(Context);
@@ -17,12 +18,10 @@ export default function TopBar() {
     const [searchBarActive, setSearchBarActive] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchParams, setSearchParams] = useSearchParams();
+    const [autoCompleteTerms, setAutoCompleteTerms] = useState([]);
+    const navigate = useNavigate();
 
-    const handleLogout = () => {
-        dispatch(LoginFailure());
-    };
-
-    var burgerMenuStyles = {
+    const burgerMenuStyles = {
         bmBurgerButton: {
             position: 'fixed',
             width: '36px',
@@ -68,12 +67,46 @@ export default function TopBar() {
         }
     }
 
+    useEffect(() => {
+        const getAutoCompleteTerms = async () => {
+            try {
+                const autoCompletes = await axios.get("/posts/autocomplete/" + searchTerm);
+                setAutoCompleteTerms(autoCompletes.data.posts);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        if (searchTerm.length > 0) {
+            getAutoCompleteTerms();
+        }
+        else {
+            setAutoCompleteTerms([]);
+        }
+      
+    }, [searchTerm]);
+
+    const handleSelect = (postId) => {
+
+        setSearchTerm("");
+
+        //navigate to select post page (only one that works w/ searching on single post page)
+        navigate(`/singlepostpage/${postId}`);
+    };
+    
+
+    const handleLogout = () => {
+        dispatch(LoginFailure());
+    };
+
     const handleSearch = async (event) => {
         event.preventDefault();
 
+        //console.log(searchTerm);
+
         try {
             //new posts are auto fetched from DB everytime search term in url changes
-            setSearchParams(`searchContents=${searchTerm}`);
+            navigate(`/?searchContents=${searchTerm}`);
 
             setSearchTerm("");
         } catch (error) {
@@ -82,22 +115,39 @@ export default function TopBar() {
     }
 
     const renderSearchBar = () => (
-        <form className="topSearchBarContainer topListItem" onSubmit={handleSearch}>
-            <button type="submit">
-                <i
-                    className="topSearchBarIcon fa-solid fa-magnifying-glass"
-                ></i>
-            </button>
-            <input
-                className="topSearchBar"
-                type="text"
-                placeholder="Search..."
-                onChange={e => setSearchTerm(e.target.value)}
-                value={searchTerm}
-                autoFocus
-                onBlur={() => setSearchBarActive(false)}
-            />
-        </form>
+        <>
+            <div className="topSearchBarContainer">
+                <button onMouseDown={e => handleSearch(e)} className="topSearchButton">
+                    <i
+                        className="topSearchBarIcon fa-solid fa-magnifying-glass"
+                    ></i>
+                </button>
+                <form onSubmit={handleSearch}>
+                    <input
+                        className="topSearchBar"
+                        type="text"
+                        placeholder="Search..."
+                        onChange={e => setSearchTerm(e.target.value)}
+                        value={searchTerm}
+                        autoFocus
+                        //onBlur={() => setSearchBarActive(false)}
+                    />
+                </form>
+            </div>
+            {autoCompleteTerms.length > 0 &&
+                <ul className="topSearchBarItems">
+                    {autoCompleteTerms.map(term => (
+                        <li
+                            key={term._id}
+                            className="topSearchBarItem"
+                            onMouseDown={() => handleSelect(term._id)}
+                        >
+                            {term.title}
+                        </li>
+                    ))}
+                </ul>
+            }
+        </>
     );
 
     return (
@@ -174,28 +224,28 @@ export default function TopBar() {
                     <ul className="topList">
                         {currDeviceType === DeviceType.DESKTOP ? 
                             <>
-                                <li className="topListItem">
-                                    <Link to="/" className="link">HOME</Link>
-                                </li>
-                                {user &&
                                     <li className="topListItem">
-                                        <Link to={`/?username=${user.username}`} className="link">MY POSTS</Link>
+                                        <Link to="/" className="link">HOME</Link>
                                     </li>
-                                }
-                                {searchBarActive && 
-                                    renderSearchBar()
-                                }
-                                <li className="topListItem">
-                                    <Link to="/writepage" className="link">WRITE</Link>
-                                </li>
-                                <li className="topListItem">
-                                    <Link to="/about" className="link">ABOUT</Link>
-                                </li>
-                                {user &&
+                                    {user &&
+                                        <li className="topListItem">
+                                            <Link to={`/?username=${user.username}`} className="link">MY POSTS</Link>
+                                        </li>
+                                    }
                                     <li className="topListItem">
-                                        <Link to="/" onClick={handleLogout} className="link">LOGOUT</Link>
+                                        <Link to="/writepage" className="link">WRITE</Link>
                                     </li>
-                                }
+                                    <li className="topListItem">
+                                        <Link to="/about" className="link">ABOUT</Link>
+                                    </li>
+                                    {user &&
+                                        <li className="topListItem">
+                                            <Link to="/" onClick={handleLogout} className="link">LOGOUT</Link>
+                                        </li>
+                                    }
+                                    {searchBarActive && 
+                                        renderSearchBar()
+                                    }
                             </>
                             :
                                 searchBarActive ? 
@@ -245,7 +295,7 @@ export default function TopBar() {
                     {!searchBarActive &&
                         <i
                             className="topSearchIcon fa-solid fa-magnifying-glass"
-                            onClick={() => { setSearchBarActive(true); setSearchTerm(""); }}
+                            onClick={() => { setSearchBarActive(true); setSearchTerm(""); setAutoCompleteTerms([]); }}
                         ></i>
                     }
                     {currDeviceType === DeviceType.DESKTOP &&

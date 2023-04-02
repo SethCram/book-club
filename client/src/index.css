@@ -35,6 +35,23 @@
     --container-width-lg: 75%;
     --container-width-md: 86%;
     --container-width-sm: 90%;
+
+    /* Searchbar consts that're dependent upon one another */
+    --searchbar-container-left-margin-lg: 300px;
+    --searchbar-container-left-margin-md: 150px;
+    --searchbar-container-left-margin-sm: 50px;
+
+    --searchbar-width-lg: 650px;
+    --searchbar-width-md: 350px;
+    --searchbar-width-sm: 250px;
+
+    --searchbar-dropdown-left-margin-lg: 325px;
+    --searchbar-dropdown-left-margin-md: 175px;
+    --searchbar-dropdown-left-margin-sm: 75px;
+    
+    --searchbar-dropdown-width-lg: 660px;
+    --searchbar-dropdown-width-md: 360px;
+    --searchbar-dropdown-width-sm: 260px;
 }
 
 /* GENERAL STYLES */
