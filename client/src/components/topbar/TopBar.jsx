@@ -107,8 +107,6 @@ export default function TopBar() {
         try {
             //new posts are auto fetched from DB everytime search term in url changes
             navigate(`/?searchContents=${searchTerm}`);
-
-            setSearchTerm("");
         } catch (error) {
             console.log(error);
         }
@@ -130,7 +128,7 @@ export default function TopBar() {
                         onChange={e => setSearchTerm(e.target.value)}
                         value={searchTerm}
                         autoFocus
-                        //onBlur={() => setSearchBarActive(false)}
+                        onBlur={() => setSearchBarActive(false)}
                     />
                 </form>
             </div>
