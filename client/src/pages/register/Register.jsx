@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import "./Register.css"
 import PasswordChecklist from "react-password-checklist"
 
@@ -12,6 +12,7 @@ export default function Register() { //could use context API to register but not
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [passwordValid, setPasswordValid] = useState(false);
+  const navigate = useNavigate();
   
   const handleSubmit = async (event) => { //need to def funct as async if ever await
     event.preventDefault(); //dont refresh if page submitted w/ no info
@@ -24,7 +25,7 @@ export default function Register() { //could use context API to register but not
         email,
         password
       });
-      (response.data && window.location.replace("login")); //redir to login page
+      (response.data && navigate("/login")); //redir to login page
     } 
     catch (error) {
       setError(error.response.data);

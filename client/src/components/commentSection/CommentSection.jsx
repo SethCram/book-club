@@ -3,12 +3,14 @@ import { useContext, useEffect, useState } from "react"
 import axios from "axios"
 import Comment from "../comment/Comment";
 import { Context } from "../../context/Context";
+import { useNavigate } from "react-router-dom";
 
 export default function CommentSection({post, setUpdatedPostAuthor}) {
     const [comments, setComments] = useState([]);
     const [replyId, setReplyId] = useState("");
     const [updatedCommentAuthor, setUpdatedCommentAuthor] = useState(null);
     const { user } = useContext(Context);
+    const nagivate = useNavigate();
 
     useEffect(() => {
         const getComments = async () => {
@@ -74,8 +76,7 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
             setReplyId(replyingToId);
         }
         else {
-            //assign allows navigate back to prev post thru browser history easily
-            window.location.assign("/login");
+            nagivate("/login");
         }
         
     };

@@ -1,5 +1,5 @@
 import "./SinglePost.css"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useContext, useEffect, useRef, useState } from "react"
 import axios from "axios"
 import { Context } from "../../context/Context";
@@ -26,6 +26,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
     const [repScore, setRepScore] = useState(0);
     const [voteErrorMsg, setVoteErrorMsg] = useState("");
     const [updatedPost, setUpdatedPost] = useState(null);
+    const navigate = useNavigate();
 
     // extend the existing array of allowed tags and attributes
     const sanitizeConfig = { ADD_TAGS: ['iframe'], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] };
@@ -119,7 +120,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
             await axios.delete(`/posts/${post._id}`, {
                 data: { username: user.username }
             });
-            window.location.replace("/"); // go to home page if post deleted
+            navigate("/"); // go to home page if post deleted
         } catch (error) {
             
         }

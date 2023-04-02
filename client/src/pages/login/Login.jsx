@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext, useRef, useState } from "react";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { LoginFailure, LoginStart, LoginSuccessful } from "../../context/Actions";
 import { Context } from "../../context/Context";
 import "./Login.css"
@@ -11,6 +11,7 @@ export default function Login() {
   const passwordReference = useRef();
   const { dispatch, isFetching } = useContext(Context);
   const [error, setError] = useState("");
+  const nagivate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,8 +31,8 @@ export default function Login() {
       //tell user context of login success
       dispatch(LoginSuccessful(response.data));
 
-      //required to clear url, but has choppy transition: 
-      window.location.replace("/"); //window.location.assign("/") //window.open("/", "_self");
+      //go to the home page
+      nagivate("/");
 
     } catch (error) {
 

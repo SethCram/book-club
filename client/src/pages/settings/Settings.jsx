@@ -78,8 +78,6 @@ export default function Settings() {
 
             const response = await axios.put(`/users/${user._id}`, updatedUser);
 
-            //window.location.reload(); //reload page
-
             setPassword("");
 
             setSuccess(true);

@@ -17,7 +17,6 @@ export default function TopBar() {
     const currDeviceType = GetDeviceType();
     const [searchBarActive, setSearchBarActive] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const [searchParams, setSearchParams] = useSearchParams();
     const [autoCompleteTerms, setAutoCompleteTerms] = useState([]);
     const navigate = useNavigate();
 

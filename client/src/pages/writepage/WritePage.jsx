@@ -5,6 +5,7 @@ import { Context } from "../../context/Context";
 import Multiselect from 'multiselect-react-dropdown'
 import { ThemeContext } from "../../App";
 import Editor from "../../components/editor/Editor";
+import { useNavigate } from "react-router-dom";
 
 //should be able to update picture, but no currently possible
 
@@ -17,6 +18,7 @@ export default function WritePage() {
     const { user } = useContext(Context);
     const multiSelectRef = useRef();
     const { theme } = useContext(ThemeContext);
+    const navigate = useNavigate();
  
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -56,8 +58,9 @@ export default function WritePage() {
         }
       
         try {
-            const response = await axios.post("/posts", newPost); 
-            window.location.replace("/singlePostPage/" + response.data._id);
+          const response = await axios.post("/posts", newPost); 
+          navigate("/singlePostPage/" + response.data._id);
+
         } catch (error) {
           console.log(error);
           setErrorMsg(error.response.data.message);
