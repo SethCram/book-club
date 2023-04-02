@@ -1,7 +1,6 @@
 const router = require("express").Router(); //can handle post, put (update), get, delete
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const Post = require("../models/Post");
 const Vote = require("../models/Vote");
 
 //Update user
@@ -29,20 +28,50 @@ router.put("/:userId", async (request, response) => { //async bc dont know how l
             if (user) {
                 //if password is correct
                 if (await bcrypt.compare(password, user.password)) {
-                
+                    
+                    /*
                     //if changing username
                     if (user.username != request.body?.username) {
 
-                        //update posts and their usernames
+                        const filterByUsername = { username: user.username };
+                        const updateUsername = { username: request.body.username };
+
+                        //update posts authored usernames
                         try {
                             await Post.updateMany(
-                                { username: user.username },
-                                { username: request.body.username }
+                                filterByUsername,
+                                updateUsername
                             );
                         } catch (error) {
                             response.status(500).json("Failed to update their posts usernames, so user not updated.");
                         }
+
+                        //update comments usernames
+                        try {
+                            //update comments authored usernames
+                            await Comment.updateMany(
+                                filterByUsername,
+                                updateUsername
+                            )
+
+                            //update their root comments' replies if held as a reply
+
+                            //update replyUsername of comments replying to this one
+                        } catch (error) {
+                            response.status(500).json("Failed to update their comments usernames, so user not updated.");
+                        }
+
+                        //update vote authored username
+                        try {
+                            await Vote.updateMany(
+                                filterByUsername,
+                                updateUsername
+                            )
+                        } catch (error) {
+                            response.status(500).json("Failed to update their comments usernames, so user not updated.");
+                        }
                     }
+                    */
 
                     try {
                         //if can find user, update it

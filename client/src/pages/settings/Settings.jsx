@@ -136,8 +136,9 @@ export default function Settings() {
                       type="text"
                       placeholder="Enter a new username..."
                       value={username}
-                      onChange={(event) => { setUsername(event.target.value) }}
+                      //onChange={(event) => { setUsername(event.target.value) }}
                       required
+                      disabled
                   />
                   <label>Email</label>
                   <input
