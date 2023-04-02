@@ -2,10 +2,9 @@ import { useContext, useEffect, useRef, useState } from "react"
 import "./WritePage.css"
 import axios from "axios"
 import { Context } from "../../context/Context";
-import Multiselect from 'multiselect-react-dropdown'
-import { ThemeContext } from "../../App";
 import Editor from "../../components/editor/Editor";
 import { useNavigate } from "react-router-dom";
+import MyMultiselect from "../../components/mymultiselect/MyMultiselect";
 
 //should be able to update picture, but no currently possible
 
@@ -17,7 +16,6 @@ export default function WritePage() {
     const [errorMsg, setErrorMsg] = useState("");
     const { user } = useContext(Context);
     const multiSelectRef = useRef();
-    const { theme } = useContext(ThemeContext);
     const navigate = useNavigate();
  
     const handleSubmit = async (event) => {
@@ -90,43 +88,13 @@ export default function WritePage() {
         }
         <form className='writeForm' onSubmit={handleSubmit}>
           <div className='writeFormGroup'>
-            <div className="writeMultiSelectContainer">
-            <Multiselect
-              isObject={true}
-              displayValue="name" // Property name to display in the dropdown options
+            <MyMultiselect
+              displayValue={"name"}
               options={categories}
-              placeholder="Select categories..."
+              placeholderTxt="Select categories..."
               selectionLimit={3}
-              showArrow
-              showCheckbox
-              avoidHighlightFirstOption
-              ref={multiSelectRef}
-              style={theme === "dark" ? { //Select styling CSS based on theme
-                searchBox: {
-                  border: 'none'
-                },
-                chips: {
-                  'background': 'var(--color-gold)'
-                },
-                inputField: {
-                  'color' : 'white'
-                },
-                optionContainer: {
-                  'background': 'var(--color-bg-dark)'
-                },
-                circle: {
-                  'color': 'black'
-                }
-              } : {
-                searchBox: {
-                  border: 'none'
-                },
-                chips: {
-                  'background': 'var(--color-gold)'
-                },
-              }}
+              multiSelectRef={multiSelectRef}
             />
-            </div>
             <div className="writeFormRow">
               <div className="writeIconWrapper">
                 <label htmlFor='fileInput'>

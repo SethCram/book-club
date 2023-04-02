@@ -3,13 +3,12 @@ import { Link, useNavigate } from "react-router-dom"
 import { useContext, useEffect, useRef, useState } from "react"
 import axios from "axios"
 import { Context } from "../../context/Context";
-import Multiselect from "multiselect-react-dropdown";
-import { ThemeContext } from "../../App";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 import CommentSection from "../commentSection/CommentSection";
 import * as DOMPurify from 'dompurify';
 import Editor from "../editor/Editor";
 import Vote, { VoteType } from "../vote/Vote";
+import MyMultiselect from "../mymultiselect/MyMultiselect";
 
 export default function SinglePost({post, setUpdatedPostAuthor}) {
     const { user } = useContext(Context);
@@ -21,7 +20,6 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
     const [categories, setCategories] = useState([]);
     const [allCategories, setAllCategories] = useState([]);
     const multiSelectRef = useRef();
-    const { theme } = useContext(ThemeContext);
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
     const [voteErrorMsg, setVoteErrorMsg] = useState("");
@@ -231,43 +229,17 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
               }
               <div className="singlePostCategories">
                 {updateMode ?
-                    <Multiselect
-                        className="singlePostCategory"
-                        isObject={true}
-                        displayValue="name" // Property name to display in the dropdown options
-                        options={allCategories}
-                        selectedValues={categories}
-                        placeholder="Select categories..."
-                        selectionLimit={3}
-                        showArrow
-                        showCheckbox
-                        avoidHighlightFirstOption
-                        ref={multiSelectRef}
-                        style={theme === "dark" ? { //Select styling CSS based on theme
-                            searchBox: {
-                            border: 'none'
-                            },
-                            chips: {
-                            'background': 'var(--color-gold)'
-                            },
-                            inputField: {
-                            'color' : 'white'
-                            },
-                            optionContainer: {
-                            'background': 'var(--color-bg-dark)'
-                            },
-                            circle: {
-                            'color': 'black'
-                            }
-                        } : {
-                            searchBox: {
-                            border: 'none'
-                            },
-                            chips: {
-                            'background': 'var(--color-gold)'
-                            },
-                        }}
-                    /> :
+                    <div className="singlePostCategory">
+                        <MyMultiselect
+                            displayValue={"name"}
+                            options={allCategories}
+                            preSelectedOptions={categories}
+                            placeholderTxt="Select categories..."
+                            selectionLimit={3}
+                            multiSelectRef={multiSelectRef}
+                        />
+                    </div>
+                    :
                     categories?.map((category, i) => (
                         <span className="singlePostCategory" key={i}>
                             <Link to={`/?category=${category.name}`} className="link">{category.name}</Link>
