@@ -461,14 +461,20 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
         insertedReplyReplyComments
     )
 
-    //UPDATE ROOT COMMENTS
-    for (let i = 0; i < updatedRootCommentsV2.length; i++){
-        await Comment.findByIdAndUpdate(
-            updatedRootCommentsV2[i]._id,
-            updatedRootCommentsV2[i]
-        );
-    }
-    console.log(`   Updated ${updatedRootComments.length} root comments.`);
+    //UPDATE ROOT COMMENT REPLIES
+    const bulk = [];
+    updatedRootCommentsV2.forEach((item) => {
+        bulk.push(
+            {
+                updateOne: {
+                    "filter": {_id: item._id},
+                    "update": { $set: {replies: item.replies } }
+                }
+            }
+        )
+    })
+    const bulkWriteResponse = await Comment.bulkWrite(bulk);
+    console.log(`   Updated ${bulkWriteResponse.result.nModified}/${updatedRootComments.length} root comment replies.`);
 
     console.log(`${updatedRootComments.length+insertedRootReplyComments.length+insertedReplyReplyComments.length} comments inserted in total.`);
 
