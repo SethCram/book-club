@@ -20,6 +20,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
 .sidebarTitle {
@@ -65,6 +66,7 @@
     display: inline-block;
     width: 50%;
     margin-top: 15px;
+    font-weight: 600;
 }
 
 .sidebarSocial{

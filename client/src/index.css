@@ -95,6 +95,17 @@ img {
   object-fit: cover;
 }
 
+.categoryBtn{
+  border: 2px solid var(--color-gold);
+  padding: 0.2rem 0.4rem 0.2rem 0.4rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-family: 'Varela Round', sans-serif;
+  font-size: 11px;
+  color: var(--color-gold);
+  line-height: 20px;
+}
+
 /* SCORING ICON COLORS */
 .reddishBrown{
   color: var(--color-error);

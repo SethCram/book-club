@@ -246,7 +246,11 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                     :
                     categories?.map((category, i) => (
                         <span className="singlePostCategory" key={i}>
-                            <Link to={`/?category=${category.name}`} className="link">{category.name}</Link>
+                            <Link
+                                to={`/?category=${category.name}`}
+                                className="categoryBtn link">
+                                    {category.name} 
+                            </Link>
                         </span>
                     ))
                 }
