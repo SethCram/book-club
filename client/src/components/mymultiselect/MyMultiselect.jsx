@@ -4,6 +4,7 @@ import "./MyMultiselect.css"
 import Multiselect from 'multiselect-react-dropdown'
 import { ThemeContext } from "../../App";
 import axios from "axios";
+import { Context } from "../../context/Context";
 
 export default function MyMultiselect({
     displayValue, options, setOptions, placeholderTxt,
@@ -12,14 +13,29 @@ export default function MyMultiselect({
     const { theme } = useContext(ThemeContext);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedOptions, setSelectedOptions] = useState([]);
+    const { user } = useContext(Context);
+    const [categoriesCount, setCategoriesCount] = useState([]);
     
     useEffect(() => {
         setSelectedOptions(preSelectedOptions);
     }, [preSelectedOptions]);
 
     useEffect(() => {
-        console.log(selectedOptions);
-    }, [selectedOptions]);
+        const getPosts = async () => {
+            
+            const response = await axios.get(`/posts/sum/sum/?username=${user.username}&&sumBy=category`);  
+            
+            console.log(response.data.categoriesCount);
+            
+            setCategoriesCount(response.data.categoriesCount);
+            //const topUserCats = response.data.categoryCount.map((value, index) => value._id);
+            //console.log(topUserCats);
+            //setCategories(topUserCats);
+        }
+        if (user) {
+            getPosts();
+        }
+    }, [user, options])
 
     const searchHook = (textBoxContents) => {
         setSearchTerm(textBoxContents);
@@ -31,10 +47,10 @@ export default function MyMultiselect({
             //stops form from being submitted
             event.preventDefault();
 
-            let newSelectedOption;
-
             //if not too many items selected yet
             if (multiSelectRef.current.getSelectedItemsCount() < selectionLimit) {
+
+                let newSelectedOption;
 
                 console.log(selectedOptions);
 
@@ -58,7 +74,7 @@ export default function MyMultiselect({
                 //if searchterm is an option + not already selected
                 else if(!selectedOptions.some(selectedOption => selectedOption.name === searchTerm)) {
                     //find it
-                    newSelectedOption = options.filter(option => option.name === searchTerm)[0];
+                    newSelectedOption = options.find(option => option.name === searchTerm);
                     //update selected options
                     setSelectedOptions(prevSelectedOptions => [...prevSelectedOptions, newSelectedOption]);
                 }
@@ -69,7 +85,7 @@ export default function MyMultiselect({
 
     const removeSelectedItemHook = (selectedList, removedItem) => {
 
-        console.log(removedItem);
+        //console.log(removedItem);
 
         //change selected options w/ deselect
         setSelectedOptions(selectedList);
@@ -77,11 +93,29 @@ export default function MyMultiselect({
 
     const addSelectedItemHook = (selectedList, selectedItem) => {
 
-        console.log(selectedList);
+        //console.log(selectedList);
 
         //change selected options w/ select (clears out selectedItems? possibly bc ran when manually updated selected items)
         setSelectedOptions(prevSelectedOptions => [...prevSelectedOptions, selectedItem]);
     };
+
+    //Display each option alongside the number of posts tagged by it
+    const optionDisplay = (option) => {
+        if (categoriesCount.length > 0 && option) {
+            const catCount = categoriesCount.find(categoryCount => categoryCount._id === option);
+            
+            let postsTaggedWithCat;
+
+            if (catCount) {
+                postsTaggedWithCat = catCount.count;
+            }
+            else {
+                postsTaggedWithCat = 0;
+            }
+            
+            return postsTaggedWithCat + " " + option
+        }
+    }
 
     return (
     <div className="myMultiSelect">
@@ -101,7 +135,7 @@ export default function MyMultiselect({
             avoidHighlightFirstOption
             ref={multiSelectRef}
             onKeyPressFn={keyHook}
-            optionValueDecorator={element => (element + 1)}
+            optionValueDecorator={optionDisplay}
             style={theme === "dark" ? { //Select styling CSS based on theme
                 searchBox: {
                     border: 'none'

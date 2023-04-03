@@ -218,22 +218,27 @@ router.get("/sum/sum", async (request, response) => {
     //query-able via summation
     const username = request.query.username;
     const sumBy = request.query.sumBy;
-    const user_cats = parseInt(request.query.count);
 
     try {
 
-        //if (sumBy && username) {
-        //    if (sumBy === "category") {
-                //find posts by filter + aggregate
-        const posts = await Post.aggregate([
-            { "$match" : { username: username }},
+        let pipeline = [
+            { "$match": { username: username } },
             { $unwind: "$categories" },
-            { $sortByCount: "$categories.name"}, //sorts in descending order
-            //{ $rename: { "_id": "name" }}
-        ])
-            .limit(user_cats);
-        //    }
-        //}
+            { $sortByCount: "$categories.name" } //sorts in descending order
+        ];
+
+        let posts;
+
+        //apply limit if count passed in
+        if (request.query.count) {
+            const user_cats = parseInt(request.query.count);
+
+            posts = await Post.aggregate(pipeline)
+                .limit(user_cats);
+        }
+        else {
+            posts = await Post.aggregate(pipeline);
+        }
 
         //console.log(posts);
         
