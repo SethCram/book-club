@@ -50,28 +50,46 @@ const updateUserRep = async (additionalScore, username) => {
         //get all badges + sort them in ascending order
         const allBadges = await Badge.find().sort({ score: ASC });
 
-        //make sure badges were retrieved and increasing score
-        if (allBadges && newScore > user.reputation) {
-            
-            //console.log(allBadges);
-            //console.log(newScore);
-            //console.log(user.reputation);
+        //make sure badges were retrieved
+        if (allBadges) {
 
             //find where old+new scores would be inserted in ASC order arr
             let newScoreIndex = sortedIndex(allBadges, newScore);
             const oldScoreIndex = sortedIndex(allBadges, user.reputation);
 
-            //console.log(newScoreIndex);
-            //console.log(oldScoreIndex);
+            //if increasing score
+            if (newScore > user.reputation) {
 
-            //if new score inserted at higher spot than old score, new badge must be inserted
-            if (newScoreIndex > oldScoreIndex) {
-                //take care of score index if not zero
-                if (newScoreIndex !== 0) {
-                    newScoreIndex -= 1;
+                //console.log(newScoreIndex);
+                //console.log(oldScoreIndex);
+
+                //if new score inserted at higher spot than old score, new badge must be inserted
+                if (newScoreIndex > oldScoreIndex) {
+
+                    //adjust score index if not zero
+                    if (newScoreIndex !== 0) {
+                        newScoreIndex -= 1;
+                    }
+
+                    updateFilter["badgeName"] = allBadges[newScoreIndex].name; 
                 }
+            }
+            //if decreasing score
+            else if (newScore < user.reputation){
+                //console.log(newScoreIndex);
+                //console.log(oldScoreIndex);
 
-                updateFilter["badgeName"] = allBadges[newScoreIndex].name; 
+                //if new score inserted at lower spot than old score, new badge must be inserted
+                if (newScoreIndex < oldScoreIndex) {
+
+                    //adjust score index if not zero
+                    if (newScoreIndex !== 0) {
+                        newScoreIndex -= 1;
+                    }
+
+                    updateFilter["badgeName"] = allBadges[newScoreIndex].name; 
+                }
+                
             }
         }
 
@@ -161,8 +179,20 @@ const updateLinkedModel = async (linkedId, score) => {
         {
             updateFilter["badgeName"] = newBadge.name;
             rootCommentUpdateFilter['replies.$.badgeName'] = newBadge.name;
+
+            let scoreChange;
+
+            //if the new badge is a negative one, decrease score by 5
+            if (newBadge.score < 0) {
+                scoreChange = -5;
+            }
+            //if new badge is positive one, incr score by half of badge req
+            else {
+                scoreChange = Math.round(newBadge.score / 2);
+            }
+
             //update linked model's author thru increasing score by half the new badge's
-            updatedAuthor = await updateUserRep(Math.round(newBadge.score / 2), username=linkedModel.username)
+            updatedAuthor = await updateUserRep(scoreChange, username=linkedModel.username)
         }
         //if has badge name and trying to update it to a diff badge
         else if (linkedModel.badgeName != newBadge.name)

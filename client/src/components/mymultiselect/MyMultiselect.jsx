@@ -24,7 +24,7 @@ export default function MyMultiselect({
             
             const response = await axios.get(`/posts/sum/sum/?sumBy=category`);  
             
-            console.log(response.data.categoriesCount);
+            //console.log(response.data.categoriesCount);
             
             setCategoriesCount(response.data.categoriesCount);
         }
