@@ -222,10 +222,13 @@ router.get("/sum/sum", async (request, response) => {
     try {
 
         let pipeline = [
-            { "$match": { username: username } },
             { $unwind: "$categories" },
             { $sortByCount: "$categories.name" } //sorts in descending order
-        ];
+        ]
+
+        if (username) {
+            pipeline.unshift({ "$match": { username: username } });
+        }
 
         let posts;
 

@@ -4,7 +4,6 @@ import "./MyMultiselect.css"
 import Multiselect from 'multiselect-react-dropdown'
 import { ThemeContext } from "../../App";
 import axios from "axios";
-import { Context } from "../../context/Context";
 
 export default function MyMultiselect({
     displayValue, options, setOptions, placeholderTxt,
@@ -13,7 +12,6 @@ export default function MyMultiselect({
     const { theme } = useContext(ThemeContext);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedOptions, setSelectedOptions] = useState([]);
-    const { user } = useContext(Context);
     const [categoriesCount, setCategoriesCount] = useState([]);
     
     useEffect(() => {
@@ -21,21 +19,17 @@ export default function MyMultiselect({
     }, [preSelectedOptions]);
 
     useEffect(() => {
-        const getPosts = async () => {
+        const countPostsByCats = async () => {
             
-            const response = await axios.get(`/posts/sum/sum/?username=${user.username}&&sumBy=category`);  
+            const response = await axios.get(`/posts/sum/sum/?sumBy=category`);  
             
             console.log(response.data.categoriesCount);
             
             setCategoriesCount(response.data.categoriesCount);
-            //const topUserCats = response.data.categoryCount.map((value, index) => value._id);
-            //console.log(topUserCats);
-            //setCategories(topUserCats);
         }
-        if (user) {
-            getPosts();
-        }
-    }, [user, options])
+        countPostsByCats();
+        
+    }, [])
 
     const searchHook = (textBoxContents) => {
         setSearchTerm(textBoxContents);
