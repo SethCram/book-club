@@ -17,6 +17,10 @@ export default function MyMultiselect({
         setSelectedOptions(preSelectedOptions);
     }, [preSelectedOptions]);
 
+    useEffect(() => {
+        console.log(selectedOptions);
+    }, [selectedOptions]);
+
     const searchHook = (textBoxContents) => {
         setSearchTerm(textBoxContents);
     };
@@ -64,6 +68,9 @@ export default function MyMultiselect({
     };
 
     const removeSelectedItemHook = (selectedList, removedItem) => {
+
+        console.log(removedItem);
+
         //change selected options w/ deselect
         setSelectedOptions(selectedList);
     };
@@ -73,7 +80,7 @@ export default function MyMultiselect({
         console.log(selectedList);
 
         //change selected options w/ select (clears out selectedItems? possibly bc ran when manually updated selected items)
-        //setSelectedOptions(prevSelectedOptions => [...prevSelectedOptions, selectedItem]);
+        setSelectedOptions(prevSelectedOptions => [...prevSelectedOptions, selectedItem]);
     };
 
     return (
