@@ -1,3 +1,9 @@
 .myMultiSelect{
     color: var(--color-gold);
 }
+
+.icon_down_dir{
+    top: 45% !important;
+    border: 1px solid var(--color-text-light-variant);
+    border-radius: 0.2rem;
+}
