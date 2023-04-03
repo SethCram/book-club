@@ -17,6 +17,8 @@ export default function WritePage() {
     const { user } = useContext(Context);
     const multiSelectRef = useRef();
     const navigate = useNavigate();
+  
+    const emptyArr = [];
  
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -69,6 +71,7 @@ export default function WritePage() {
       const getCategories = async () => {
         try {
           const storedCategories = await axios.get("/categories/");
+
           setCategories(storedCategories.data);
         } catch (error) {
         
@@ -90,7 +93,9 @@ export default function WritePage() {
           <div className='writeFormGroup'>
             <MyMultiselect
               displayValue={"name"}
+              setOptions={setCategories}
               options={categories}
+              preSelectedOptions={emptyArr}
               placeholderTxt="Select categories..."
               selectionLimit={3}
               multiSelectRef={multiSelectRef}

@@ -233,6 +233,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                         <MyMultiselect
                             displayValue={"name"}
                             options={allCategories}
+                            setOptions={setAllCategories}
                             preSelectedOptions={categories}
                             placeholderTxt="Select categories..."
                             selectionLimit={3}
