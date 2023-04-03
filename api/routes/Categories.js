@@ -3,13 +3,26 @@ const Category = require("../models/Category");
 
 //Create Category
 router.post("/", async (request, response) => {
-    const newCategory = new Category(request.body);   //dont have to await bc just created locally
-    try {
-        const savedCategory = await newCategory.save();
-        response.status(201).json(savedCategory);
-    } catch (error) {
-        response.status(500).json(error);
+    
+    const catName = request.body.name;
+
+    //if string has no whitespace in it
+    if (catName && !(/\s/g.test(catName))) {
+        //create and post new cat
+        const newCategory = new Category(request.body);   //dont have to await bc just created locally
+    
+        try {
+            const savedCategory = await newCategory.save();
+            response.status(201).json(savedCategory);
+        } catch (error) {
+            response.status(500).json(error);
+        }
     }
+    else {
+        response.status(400).json("Category name not specified or contains a string");
+    }
+    
+    
 });
 
 //Get All Categories
