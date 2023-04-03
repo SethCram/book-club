@@ -18,7 +18,7 @@ export default function WritePage() {
     const multiSelectRef = useRef();
     const navigate = useNavigate();
   
-    const emptyArr = [];
+    const [preSelectedCategories, setPreSelectedCategories] = useState([]);
  
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -73,6 +73,7 @@ export default function WritePage() {
           const storedCategories = await axios.get("/categories/");
 
           setCategories(storedCategories.data);
+          setPreSelectedCategories([storedCategories.data[0]]);
         } catch (error) {
         
         }
@@ -95,7 +96,7 @@ export default function WritePage() {
               displayValue={"name"}
               setOptions={setCategories}
               options={categories}
-              preSelectedOptions={emptyArr}
+              preSelectedOptions={preSelectedCategories}
               placeholderTxt="Select categories..."
               selectionLimit={3}
               multiSelectRef={multiSelectRef}
