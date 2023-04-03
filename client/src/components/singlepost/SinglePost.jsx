@@ -22,7 +22,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
     const multiSelectRef = useRef();
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
-    const [voteErrorMsg, setVoteErrorMsg] = useState("");
+    const [errorMsg, setErrorMsg] = useState("");
     const [updatedPost, setUpdatedPost] = useState(null);
     const navigate = useNavigate();
 
@@ -200,6 +200,8 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
 
         //update categories
         setCategories(uploadedCategories);
+
+        setErrorMsg("");
     }
 
   return (
@@ -238,6 +240,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                             placeholderTxt="Select categories..."
                             selectionLimit={3}
                             multiSelectRef={multiSelectRef}
+                            setErrorMsg={setErrorMsg}
                         />
                     </div>
                     :
@@ -248,9 +251,9 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                     ))
                 }
               </div>
-              {voteErrorMsg &&
+              {errorMsg &&
                   <span className="singlePostVoteContainer">
-                      <div className="responseMsg errorText">{voteErrorMsg}</div>
+                      <div className="responseMsg errorText">{errorMsg}</div>
                   </span>
               }
               <span className="singlePostTitleRow">
@@ -276,7 +279,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                                   voteType={VoteType.UPVOTE}
                                   hollowIcon={true}
                                   setVote={setVote}
-                                  setVoteErrorMsg={setVoteErrorMsg}
+                                  setVoteErrorMsg={setErrorMsg}
                                   setUpdatedLinkedModel={setUpdatedPost}
                                   setUpdatedAuthor={setUpdatedPostAuthor}
                                   linkedId={post?._id}
@@ -286,7 +289,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                                   voteType={VoteType.UPVOTE}
                                   hollowIcon={false}
                                   setVote={setVote}
-                                  setVoteErrorMsg={setVoteErrorMsg}
+                                  setVoteErrorMsg={setErrorMsg}
                                   setUpdatedLinkedModel={setUpdatedPost}
                                   setUpdatedAuthor={setUpdatedPostAuthor}
                                   linkedId={post?._id}
@@ -298,7 +301,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                                   voteType={VoteType.DOWNVOTE}
                                   hollowIcon={true}
                                   setVote={setVote}
-                                  setVoteErrorMsg={setVoteErrorMsg}
+                                  setVoteErrorMsg={setErrorMsg}
                                   setUpdatedLinkedModel={setUpdatedPost}
                                   setUpdatedAuthor={setUpdatedPostAuthor}
                                   linkedId={post?._id}
@@ -308,7 +311,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                                   voteType={VoteType.DOWNVOTE}
                                   hollowIcon={false}
                                   setVote={setVote}
-                                  setVoteErrorMsg={setVoteErrorMsg}
+                                  setVoteErrorMsg={setErrorMsg}
                                   setUpdatedLinkedModel={setUpdatedPost}
                                   setUpdatedAuthor={setUpdatedPostAuthor}
                                   linkedId={post?._id}

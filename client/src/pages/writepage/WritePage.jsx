@@ -100,6 +100,7 @@ export default function WritePage() {
               placeholderTxt="Select categories..."
               selectionLimit={3}
               multiSelectRef={multiSelectRef}
+              setErrorMsg={setErrorMsg}
             />
             <div className="writeFormRow">
               <div className="writeIconWrapper">

@@ -7,7 +7,8 @@ import axios from "axios";
 
 export default function MyMultiselect({
     displayValue, options, setOptions, placeholderTxt,
-    preSelectedOptions, selectionLimit, multiSelectRef
+    preSelectedOptions, selectionLimit, multiSelectRef,
+    setErrorMsg
 }) {
     const { theme } = useContext(ThemeContext);
     const [searchTerm, setSearchTerm] = useState("");
@@ -41,12 +42,16 @@ export default function MyMultiselect({
             //stops form from being submitted
             event.preventDefault();
 
+            //if string has any whitespace in it
+            if (searchTerm && /\s/g.test(searchTerm)) {
+                setErrorMsg("Categories can't contain spaces.");
+                return;
+            }
+
             //if not too many items selected yet
             if (multiSelectRef.current.getSelectedItemsCount() < selectionLimit) {
 
                 let newSelectedOption;
-
-                console.log(selectedOptions);
 
                 //if searchterm isn't already an option
                 if (!options.some(option => option.name === searchTerm)) {
