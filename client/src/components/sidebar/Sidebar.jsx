@@ -16,12 +16,8 @@ export default function Sidebar({ user, updatedPostAuthor = null }) {
 
   useEffect(() => {
     const getPosts = async (howMany) => {
-      
       const response = await axios.get(`/posts/sum/sum/?username=${user.username}&&sumBy=category&&count=${howMany}`);  
       setCategoriesCount(response.data.categoriesCount);
-      //const topUserCats = response.data.categoryCount.map((value, index) => value._id);
-      //console.log(topUserCats);
-      //setCategories(topUserCats);
     }
     const USER_CATS = 6;
     if (user) {
@@ -36,8 +32,20 @@ export default function Sidebar({ user, updatedPostAuthor = null }) {
           <span className='sidebarTitle'>ABOUT ME</span>
           <span className='sidebarReputation'> 
           <ReputationIcon
-            repScore={updatedPostAuthor ? updatedPostAuthor.reputation : user?.reputation}
-            user={updatedPostAuthor ? updatedPostAuthor : user}
+            repScore={
+              (updatedPostAuthor && updatedPostAuthor.username !== user.username)
+                ?
+                updatedPostAuthor.reputation
+                :
+                user?.reputation
+            }
+            user={
+              (updatedPostAuthor && updatedPostAuthor.username !== user.username)
+                ?
+                updatedPostAuthor
+                :
+                user
+            }
             fromSideBar={true}
           />
             {user ? user.username : "No user found"}

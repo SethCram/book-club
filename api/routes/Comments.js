@@ -1,9 +1,12 @@
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
 const router = require("express").Router();
+const { updateUserRep } = require("./HelperFunctions");
 
 //Create Comment
 router.post("/", async (request, response) => {
+
+    const username = request.body.username;
 
     try {
         //make sure linked post exists
@@ -35,6 +38,17 @@ router.post("/", async (request, response) => {
             //console.log(replyComment);
 
             if (createComment) {
+
+                let updatedAuthor;
+
+                //check if number of comments by user is gonna fall on a threshold value
+                if ((((await Comment.countDocuments({ username })) + 1) % 10) === 0) {
+                    updatedAuthor = await updateUserRep(
+                        5,
+                        username
+                    );
+                }
+
                 const newComment = new Comment(request.body);
                 const savedComment = await newComment.save();
 
@@ -53,7 +67,13 @@ router.post("/", async (request, response) => {
                     );
                 }
 
-                response.status(201).json({ savedComment, rootComment });
+                response.status(201).json(
+                    {
+                        savedComment,
+                        rootComment,
+                        updatedUser: updatedAuthor
+                    }
+                );
             }
         }
         else {

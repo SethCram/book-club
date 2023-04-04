@@ -4,12 +4,13 @@ import axios from "axios"
 import Comment from "../comment/Comment";
 import { Context } from "../../context/Context";
 import { useNavigate } from "react-router-dom";
+import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "../../context/Actions";
 
 export default function CommentSection({post, setUpdatedPostAuthor}) {
     const [comments, setComments] = useState([]);
     const [replyId, setReplyId] = useState("");
     const [updatedCommentAuthor, setUpdatedCommentAuthor] = useState(null);
-    const { user } = useContext(Context);
+    const { user, dispatch } = useContext(Context);
     const nagivate = useNavigate();
 
     useEffect(() => {
@@ -57,8 +58,25 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
         }
 
         try {
-            //const response =
-            await axios.post("/comments/", newComment); 
+            const response = await axios.post("/comments/", newComment); 
+
+            const updatedAuthor = response.data.updatedUser;
+
+            //if we require updating
+            // update us if we're the one who's rep changed
+            if (updatedAuthor?.username === user.username) {
+
+                //console.log(`updating user rep to ${updatedAuthor.reputation}`);
+                        
+                try {
+                    dispatch(UserUpdateStart());
+                    dispatch(UserUpdateSuccessful(updatedAuthor));
+                } catch (error) {
+                    console.log(error);
+                    dispatch(UserUpdateFailure());
+                }
+
+            }
 
             //refetch all comments
             await getComments();
