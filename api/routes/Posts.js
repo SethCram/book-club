@@ -1,13 +1,37 @@
 const router = require("express").Router(); //can handle post, put (update), get, delete
 const Post = require("../models/Post");
+const { updateUserRep } = require("./HelperFunctions");
 
 //Create Post
 router.post("/", async (request, response) => { //async bc dont know how long it'll take
-    const newPost = new Post(request.body);
-    try {
+    try {     
+        
+        const newPost = new Post(request.body);
+        const username = request.body.username;
+    
+        let updatedAuthor;
+
+        //check if number of posts by user is gonna fall on a threshold value
+        if ((((await Post.countDocuments({ username })) + 1) % 5) === 0) {
+            updatedAuthor = await updateUserRep(
+                5,
+                username
+            );
+        }
+
         const savedPost = await newPost.save(); // save new post
-        response.status(201).json(savedPost);
+
+        const responseObj = {
+            post: savedPost
+        }
+
+        if (updatedAuthor) {
+            responseObj["updatedUser"] = updatedAuthor;
+        }
+
+        response.status(201).json(responseObj);
     } catch (error) {
+        console.log(error);
         response.status(500).json(error);
     }
 }); 

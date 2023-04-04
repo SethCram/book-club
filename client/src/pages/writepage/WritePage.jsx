@@ -5,6 +5,7 @@ import { Context } from "../../context/Context";
 import Editor from "../../components/editor/Editor";
 import { useNavigate } from "react-router-dom";
 import MyMultiselect from "../../components/mymultiselect/MyMultiselect";
+import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "../../context/Actions";
 
 //should be able to update picture, but no currently possible
 
@@ -14,7 +15,7 @@ export default function WritePage() {
     const [picture, setPicture] = useState(null);
     const [categories, setCategories] = useState([]);
     const [errorMsg, setErrorMsg] = useState("");
-    const { user } = useContext(Context);
+    const { user, dispatch } = useContext(Context);
     const multiSelectRef = useRef();
     const navigate = useNavigate();
   
@@ -59,7 +60,26 @@ export default function WritePage() {
       
         try {
           const response = await axios.post("/posts", newPost); 
-          navigate("/singlePostPage/" + response.data._id);
+
+          const updatedAuthor = response.data.updatedUser;
+
+          //if we require updating
+          // update us if we're the one who's rep changed
+          if (updatedAuthor?.username === user.username) {
+
+            console.log(`updating user rep to ${updatedAuthor.reputation}`);
+                    
+            try {
+                dispatch(UserUpdateStart());
+                dispatch(UserUpdateSuccessful(updatedAuthor));
+            } catch (error) {
+                console.log(error);
+                dispatch(UserUpdateFailure());
+            }
+
+        }
+
+          navigate("/singlePostPage/" + response.data.post._id);
 
         } catch (error) {
           console.log(error);

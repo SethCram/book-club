@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Context } from "../../context/Context";
 import axios from "axios"
 import "./Vote.css"
+import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "../../context/Actions";
 
 export const VoteType = {
     NONE: 0,
@@ -15,7 +16,7 @@ export default function Vote({
     linkedId,
     existingVote = null
 }) {
-    const { user } = useContext(Context);
+    const { user, dispatch } = useContext(Context);
     const [scoreChange, setScoreChange] = useState(0);
     const [voteIconClasses, setVoteIconClasses] = useState("");
 
@@ -190,10 +191,25 @@ export default function Vote({
                 setUpdatedLinkedModel(voteObject.data.linkedModel);
             }
 
-            if (Object.keys(voteObject.data.updatedAuthor).length > 0) {
+            const updatedAuthor = voteObject.data.updatedAuthor;
+
+            if (Object.keys(updatedAuthor).length > 0) {
+
                 //need to update sidebar user reputation
                 console.log("Sidebar author rep should be updated");
-                setUpdatedAuthor(voteObject.data.updatedAuthor);
+                setUpdatedAuthor(updatedAuthor);
+
+                //update us if we're the one who's rep changed
+                if (updatedAuthor.username === user.username) {
+                    
+                    try {
+                        dispatch(UserUpdateStart());
+                        dispatch(UserUpdateSuccessful(updatedAuthor));
+                    } catch (error) {
+                        dispatch(UserUpdateFailure());
+                    }
+
+                }
             }
 
             //set new vote properly
