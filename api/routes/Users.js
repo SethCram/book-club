@@ -10,7 +10,7 @@ router.put("/:userId", verify, async (request, response) => { //async bc dont kn
     console.log(request.user);
 
     //compare verified userId to params userID
-    if (request.user.id === request.params.userId) 
+    if (request.user._id === request.params.userId) 
     {
         //if password passed in, hash it
         //if (request.body.password) {
@@ -117,7 +117,7 @@ router.delete("/:userId", verify, async (request, response) => { //async bc dont
     
     //compare url id to request body id to see if correct user altering
     // or if verified admin
-    if(request.user.id === request.params.userId || request.user.isAdmin)
+    if(request.user._id === request.params.userId || request.user.isAdmin)
     {
         //if can find user, delete it
         const user = await User.findById(request.params.userId);

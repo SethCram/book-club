@@ -75,12 +75,12 @@ function App() {
         
         config.headers['Content-Type'] = 'application/json;charset=utf-8';
     
-      if (user) config.headers.Authorization = 'Bearer ' + user.jwt;
+      if (user) config.headers.Authorization = 'Bearer ' + user.accessToken;
     
       return config;
     });
 
-  }, [user?.jwt])
+  }, [user])
 
   const toggleTheme = () => {
     setTheme((currTheme) => ( currTheme === "light" ? "dark" : "light" ));

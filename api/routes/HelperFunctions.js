@@ -111,7 +111,9 @@ const verify = (request, response, next) => { //next is everything else
         //seperate jwt from "Bearer "
         const token = authHeader.split(" ")[1];
 
-        jwt.verify(token, process.env.JWT_SECRET_KEY, (error, payload) => {
+        //console.log(authHeader);
+
+        jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY, (error, payload) => {
             if (error) {
                 return response.status(403).json("Token isn't valid.");
             }

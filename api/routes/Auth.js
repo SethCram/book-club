@@ -62,6 +62,34 @@ router.post("/register", async (request, response) => { //async bc dont know how
     }
 }); 
 
+const generateAccessToken = (user) => {
+    return jwt.sign(
+        { _id: user._id, isAdmin: user.isAdmin },
+        process.env.JWT_ACCESS_SECRET_KEY,
+        { expiresIn: "15m"}
+    ); 
+}
+
+const generateRefreshToken = (user) => {
+    return jwt.sign(
+        { _id: user._id, isAdmin: user.isAdmin },
+        process.env.JWT_REFRESH_SECRET_KEY
+    ); 
+}
+
+//adds refresh token to the db user's arr combining old tokens + new token
+const addRefreshToken = async (user, oldRefreshTokens, newRefreshToken) => {
+    //add to refresh tokens arr for this user
+    const updatedRefreshTokens = [...oldRefreshTokens, newRefreshToken];
+    const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        { refreshTokens: updatedRefreshTokens },
+        { new: true }
+    );
+
+    return updatedUser;
+}
+
 //Login
 router.post("/login", async (request, response) => {
     let user = true;
@@ -74,12 +102,18 @@ router.post("/login", async (request, response) => {
         validated = await bcrypt.compare(request.body.password, user.password); //compare passed in and pass + stored pass
         !validated && response.status(400).json("Wrong email or password");
 
-        //Generate an access token (could include if user is admin)
-        const accessToken = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET_KEY); 
+        //Generate an access token 
+        const accessToken = generateAccessToken(user);
 
-        const { password, email, ...publicUser } = user._doc; //rm password from response
+        //gen refresh token
+        const refreshToken = generateRefreshToken(user);
 
-        publicUser["jwt"] = accessToken;
+        user = await addRefreshToken(user, user.refreshTokens, refreshToken);
+
+        const { password, email, ...publicUser } = user._doc; //rm password + email from response
+
+        publicUser["refreshToken"] = refreshToken;
+        publicUser["accessToken"] = accessToken;
 
         response.status(200).json(publicUser);
     }
@@ -88,5 +122,66 @@ router.post("/login", async (request, response) => {
         if(user && validated) response.status(500).json(error); //to avoid catching wrong username/password
     }
 });
+
+router.post("/refresh", async (request, response) => {
+    //take refresh token from user
+    const refreshToken = request.body.token;
+
+    //should store all refresh tokens in DB
+
+    console.log(refreshToken);
+
+    //send error if no token or invalid 
+    if (!refreshToken)
+        return response.status(401).json("You aren't authenticated.");
+
+    jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET_KEY,
+        async (error, payload) => {
+            if (error) {
+                console.log(error);
+                return response.status(403).json("Token isn't valid.");
+            }  
+            else {
+
+                let user;
+
+                try {
+                    user = await User.findById(
+                        payload._id
+                    );
+                } catch (error) {
+                    return response.status(404).json("Couldn't find user by their token id.");
+                }
+
+                console.log(user);
+                const refreshTokens = user.refreshTokens;
+
+                if (!refreshTokens.includes(refreshToken)) {
+                    return response.status(403).json("Refresh token is not valid.");
+                }
+
+                //rm passed in refreshToken
+                const otherRefreshTokens = refreshTokens.filter(token => token !== refreshToken);
+
+                //Generate an access token 
+                const newAccessToken = generateAccessToken(user);
+
+                //gen refresh token
+                const newRefreshToken = generateRefreshToken(user);
+
+                //post rm'd passed in refreshToken and new refresh token
+                user = await addRefreshToken(user, otherRefreshTokens, newRefreshToken);
+
+                response.status(201).json({
+                    accessToken: newAccessToken,
+                    refreshToken: newRefreshToken
+                })
+            }
+    });
+    
+    //create new access token, refresh token, send to user
+})
 
 module.exports = router;

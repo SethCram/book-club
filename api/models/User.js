@@ -50,6 +50,9 @@ const UserSchema = new mongoose.Schema(
         },
         badgeName: {
             type: String
+        },
+        refreshTokens: {
+            type: Array
         }
     },
     { timestamps: true } //for updated and created at timestamps
