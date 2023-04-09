@@ -2,12 +2,15 @@ const router = require("express").Router(); //can handle post, put (update), get
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const Vote = require("../models/Vote");
+const {verify} = require("./HelperFunctions");
 
 //Update user
-router.put("/:userId", async (request, response) => { //async bc dont know how long it'll take
+router.put("/:userId", verify, async (request, response) => { //async bc dont know how long it'll take
 
-    //can be safer through using JWT = Jason Web Token
-    if (request.body.userId === request.params.userId) //compare url id to body id
+    console.log(request.user);
+
+    //compare verified userId to params userID
+    if (request.user.id === request.params.userId) 
     {
         //if password passed in, hash it
         //if (request.body.password) {
@@ -110,11 +113,11 @@ router.put("/:userId", async (request, response) => { //async bc dont know how l
 }); 
 
 //Delete User and their posts
-router.delete("/:userId", async (request, response) => { //async bc dont know how long it'll take
+router.delete("/:userId", verify, async (request, response) => { //async bc dont know how long it'll take
     
-    //can be safer through using JWT = Jason Web Token
-    // compare url id to request body id to see if correct user altering
-    if(request.body.userId === request.params.userId)
+    //compare url id to request body id to see if correct user altering
+    // or if verified admin
+    if(request.user.id === request.params.userId || request.user.isAdmin)
     {
         //if can find user, delete it
         const user = await User.findById(request.params.userId);
@@ -125,10 +128,10 @@ router.delete("/:userId", async (request, response) => { //async bc dont know ho
                 //await Post.deleteMany({ username: user.username });
 
                 //delete all their votes
-                await Vote.deleteMany({ username: request.body.username });
+                //await Vote.deleteMany({ username: request.body.username });
                 
                 await User.findByIdAndDelete(request.params.userId); 
-                response.status(200).json("User and their votes have been deleted");
+                response.status(200).json("User has been deleted");
             }
             catch (error) {
                 response.status(500).json(error);

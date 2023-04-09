@@ -74,9 +74,21 @@ export default function Settings() {
             }
         }
 
-        try {
 
-            const response = await axios.put(`/users/${user._id}`, updatedUser);
+        try {
+            /*
+            const axiosConfig = {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Authorization': 'Bearer ' + user.jwt
+                }
+            };
+            */
+
+            const response = await axios.put(`/users/${user._id}`,
+                updatedUser,
+                //axiosConfig
+            );
 
             setPassword("");
 

@@ -1,5 +1,6 @@
 const Badge = require("../models/Badge");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
 function sortedIndex(array, value) {
 
@@ -13,7 +14,6 @@ function sortedIndex(array, value) {
     }
     return low;
 };
-
 
 const updateUserRep = async (additionalScore, username) => {
 
@@ -103,4 +103,26 @@ const updateUserRep = async (additionalScore, username) => {
     }
 };
 
-module.exports = { updateUserRep };
+//JWT verify middleware
+const verify = (request, response, next) => { //next is everything else
+    const authHeader = request.headers.authorization;
+
+    if (authHeader) {
+        //seperate jwt from "Bearer "
+        const token = authHeader.split(" ")[1];
+
+        jwt.verify(token, process.env.JWT_SECRET_KEY, (error, payload) => {
+            if (error) {
+                return response.status(403).json("Token isn't valid.");
+            }
+            else {
+                request.user = payload;
+                next();
+            }
+        });
+    } else {
+        response.status(401).json("Authentication failed and refused.");
+    }
+}
+
+module.exports = { updateUserRep, verify };

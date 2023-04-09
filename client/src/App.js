@@ -8,7 +8,7 @@ import Register from "./pages/register/Register";
 import { Context } from "./context/Context";
 import About from "./pages/about/About";
 import "./App.css"
-import { useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import NotFound from "./pages/notfound/NotFound";
 
 // Need the following to setup dynamic routing:
@@ -18,6 +18,7 @@ import {
   Routes,
   Route
 } from "react-router-dom";
+import axios from "axios";
 
 export const ThemeContext = createContext(null);
 
@@ -64,6 +65,22 @@ export const GetDeviceType = () => {
 function App() {
   const { user } = useContext(Context);
   const [theme, setTheme] = useState("dark");
+
+  useEffect(() => {
+    //Attach JSON and JWT headers to all post, patch, and put requests
+    axios.interceptors.request.use(config => {
+      if (config.method.toUpperCase() === 'POST' ||
+        config.method.toUpperCase() === 'PATCH' ||
+        config.method.toUpperCase() === 'PUT')
+        
+        config.headers['Content-Type'] = 'application/json;charset=utf-8';
+    
+      if (user) config.headers.Authorization = 'Bearer ' + user.jwt;
+    
+      return config;
+    });
+
+  }, [user?.jwt])
 
   const toggleTheme = () => {
     setTheme((currTheme) => ( currTheme === "light" ? "dark" : "light" ));

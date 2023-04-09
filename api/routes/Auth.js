@@ -1,6 +1,7 @@
 const router = require("express").Router(); //can handle post, put (update), get, delete
 const User = require("../models/User");
 const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
 
 //Register
 router.post("/register", async (request, response) => { //async bc dont know how long it'll take
@@ -73,11 +74,17 @@ router.post("/login", async (request, response) => {
         validated = await bcrypt.compare(request.body.password, user.password); //compare passed in and pass + stored pass
         !validated && response.status(400).json("Wrong email or password");
 
+        //Generate an access token (could include if user is admin)
+        const accessToken = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET_KEY); 
+
         const { password, email, ...publicUser } = user._doc; //rm password from response
+
+        publicUser["jwt"] = accessToken;
+
         response.status(200).json(publicUser);
     }
     catch (error) {
-        //console.log(error);
+        console.log(error);
         if(user && validated) response.status(500).json(error); //to avoid catching wrong username/password
     }
 });

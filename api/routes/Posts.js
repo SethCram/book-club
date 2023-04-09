@@ -205,6 +205,7 @@ router.get("/", async (request, response) => {
     }
 });
 
+//get possible autocomplete terms
 router.get("/autocomplete/:searchTerm", async (request, response) => {
 
     const MAX_AUTOCOMPLETE_TERMS = 10;

@@ -11,13 +11,13 @@ const badgeRoute = require("./routes/Badges");
 const commentRoute = require("./routes/Comments");
 const multer = require("multer");
 const path = require("path");
-const fs = require('fs')
-const { promisify } = require('util')
-const unlinkAsync = promisify(fs.unlink)
+const fs = require('fs');
+const { promisify } = require('util');
+const unlinkAsync = promisify(fs.unlink);
 
 //bring in env vars
 dotenv.config();
-//start express app
+//start express app + accept body as json
 app.use(express.json());
 //specify images folder as public
 app.use("/images", express.static(path.join(__dirname, "/images")));
