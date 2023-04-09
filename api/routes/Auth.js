@@ -64,7 +64,7 @@ router.post("/register", async (request, response) => { //async bc dont know how
 
 const generateAccessToken = (user) => {
     return jwt.sign(
-        { _id: user._id, isAdmin: user.isAdmin },
+        { _id: user._id, username: user.username, isAdmin: user.isAdmin },
         process.env.JWT_ACCESS_SECRET_KEY,
         { expiresIn: "15m"}
     ); 
@@ -72,7 +72,7 @@ const generateAccessToken = (user) => {
 
 const generateRefreshToken = (user) => {
     return jwt.sign(
-        { _id: user._id, isAdmin: user.isAdmin },
+        { _id: user._id, username: user.username, isAdmin: user.isAdmin },
         process.env.JWT_REFRESH_SECRET_KEY
     ); 
 }
@@ -126,10 +126,6 @@ router.post("/login", async (request, response) => {
 router.post("/refresh", async (request, response) => {
     //take refresh token from user
     const refreshToken = request.body.token;
-
-    //should store all refresh tokens in DB
-
-    console.log(refreshToken);
 
     //send error if no token or invalid 
     if (!refreshToken)

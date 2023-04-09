@@ -4,7 +4,7 @@ const Post = require("../models/Post");
 const Vote = require("../models/Vote");
 const Comment = require("../models/Comment");
 const mongoose = require("mongoose");
-const { updateUserRep } = require("./HelperFunctions");
+const { updateUserRep, verify } = require("./HelperFunctions");
 
 //Update linked model always and author user if necessary
 const updateLinkedModel = async (linkedId, score) => {
@@ -219,7 +219,7 @@ router.post("/vote", async (request, response) => {
 
 
 //update vote and update linked post rep
-router.put("/update/:voteId", async (request, response) => {
+router.put("/update/:voteId", verify, async (request, response) => {
     //ensure vote id's match
     if (request.body.voteId === request.params.voteId) {
 
@@ -230,7 +230,8 @@ router.put("/update/:voteId", async (request, response) => {
             if (vote.score !== request.body.score) {
 
                 //allow altering of vote if requester is author (should prolly use JWT)
-                if (vote.username === request.body.username) {
+                if (vote.username === request.body.username &&
+                    vote.username === request.user.username) {
                     try {
 
                         //calc how much new score differs from old one

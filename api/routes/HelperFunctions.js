@@ -111,7 +111,7 @@ const verify = (request, response, next) => { //next is everything else
         //seperate jwt from "Bearer "
         const token = authHeader.split(" ")[1];
 
-        //console.log(authHeader);
+        console.log(token);
 
         jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY, (error, payload) => {
             if (error) {

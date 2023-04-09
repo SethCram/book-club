@@ -1,7 +1,7 @@
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
 const router = require("express").Router();
-const { updateUserRep } = require("./HelperFunctions");
+const { updateUserRep, verify } = require("./HelperFunctions");
 
 //Create Comment
 router.post("/", async (request, response) => {
@@ -88,15 +88,19 @@ router.post("/", async (request, response) => {
 });
 
 //Update Comment
-router.put("/:commentId", async (request, response) => { //async bc dont know how long it'll take
+router.put("/:commentId", verify, async (request, response) => { //async bc dont know how long it'll take
+    
     try {
         const comment = await Comment.findById(request.params.commentId);
 
         //if comment exists
         if (comment)
         {
+            console.log(request.user);
+
             //if creator attempting to update, allow
-            if (comment.username === request.body.username)
+            if (comment.username === request.body.username &&
+                comment.username === request.user.username)
             {
                 const updatedComment = await Comment.findByIdAndUpdate(
                     request.params.commentId,
@@ -124,7 +128,7 @@ router.put("/:commentId", async (request, response) => { //async bc dont know ho
 }); 
 
 //Delete Comment
-router.delete("/:commentId", async (request, response) => { //async bc dont know how long it'll take
+router.delete("/:commentId", verify, async (request, response) => { //async bc dont know how long it'll take
     
     try {
         const comment = await Comment.findById(request.params.commentId);
@@ -133,7 +137,8 @@ router.delete("/:commentId", async (request, response) => { //async bc dont know
         if (comment)
         {
             //if creator attempting to delete, allow
-            if (comment.username === request.body.username)
+            if (comment.username === request.body.username &&
+                comment.username === request.user.username)
             {
                 await comment.delete();
                 response.status(200).json("Comment deleted");

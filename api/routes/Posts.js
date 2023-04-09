@@ -1,6 +1,6 @@
 const router = require("express").Router(); //can handle post, put (update), get, delete
 const Post = require("../models/Post");
-const { updateUserRep } = require("./HelperFunctions");
+const { updateUserRep, verify } = require("./HelperFunctions");
 
 //Create Post
 router.post("/", async (request, response) => { //async bc dont know how long it'll take
@@ -37,15 +37,17 @@ router.post("/", async (request, response) => { //async bc dont know how long it
 }); 
 
 //Update Post
-router.put("/:postId", async (request, response) => { //async bc dont know how long it'll take
+router.put("/:postId", verify, async (request, response) => { //async bc dont know how long it'll take
     try {
         const post = await Post.findById(request.params.postId);
 
         //if post exists
         if (post)
         {
+
             //if creator attempting to update, allow
-            if (post.username === request.body.username)
+            if (post.username === request.body.username &&
+                post.username === request.user.username)
             {
                 const updatedPost = await Post.findByIdAndUpdate(
                     request.params.postId,
@@ -73,7 +75,7 @@ router.put("/:postId", async (request, response) => { //async bc dont know how l
 }); 
 
 //Delete Post
-router.delete("/:postId", async (request, response) => { //async bc dont know how long it'll take
+router.delete("/:postId", verify, async (request, response) => { //async bc dont know how long it'll take
     
     try {
         const post = await Post.findById(request.params.postId);
@@ -82,7 +84,8 @@ router.delete("/:postId", async (request, response) => { //async bc dont know ho
         if (post)
         {
             //if creator attempting to delete, allow
-            if (post.username === request.body.username)
+            if (post.username === request.body.username &&
+                post.username === request.user.username)
             {
                 await post.delete();
                 response.status(200).json("Post deleted");
