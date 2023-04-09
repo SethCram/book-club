@@ -70,7 +70,10 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
                         
                 try {
                     dispatch(UserUpdateStart());
-                    dispatch(UserUpdateSuccessful(updatedAuthor));
+
+                    const newUser = { ...user, ...updatedAuthor };
+
+                    dispatch(UserUpdateSuccessful(newUser));
                 } catch (error) {
                     console.log(error);
                     dispatch(UserUpdateFailure());

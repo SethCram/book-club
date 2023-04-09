@@ -71,7 +71,10 @@ export default function WritePage() {
                     
             try {
                 dispatch(UserUpdateStart());
-                dispatch(UserUpdateSuccessful(updatedAuthor));
+                
+                const newUser = { ...user, ...updatedAuthor };
+
+                dispatch(UserUpdateSuccessful(newUser));
             } catch (error) {
                 console.log(error);
                 dispatch(UserUpdateFailure());

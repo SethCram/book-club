@@ -90,12 +90,23 @@ export default function Settings() {
                 //axiosConfig
             );
 
-            setPassword("");
-
+            const newUser = { ...user, ...response.data}
+            
+            dispatch(UserUpdateSuccessful(newUser));
             setSuccess(true);
-            dispatch(UserUpdateSuccessful(response.data));
+            setPassword("");
         } catch (error) {
-            setError(error.response.data);
+
+            console.log(error.response.data);
+
+            let errorMsg = "";
+            if (error.response.data) {
+                errorMsg = error.response.data;
+            }
+            else {
+                errorMsg = "Something went wrong.";
+            }
+            setError(errorMsg);
             dispatch(UserUpdateFailure());
         }
         

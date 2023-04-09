@@ -204,7 +204,10 @@ export default function Vote({
                     
                     try {
                         dispatch(UserUpdateStart());
-                        dispatch(UserUpdateSuccessful(updatedAuthor));
+
+                        const newUser = { ...user, ...updatedAuthor };
+
+                        dispatch(UserUpdateSuccessful(newUser));
                     } catch (error) {
                         dispatch(UserUpdateFailure());
                     }
