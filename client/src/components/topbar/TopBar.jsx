@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginFailure } from "../../context/Actions";
 import { Context } from "../../context/Context";
 import SocialMediaIcons from "../socialmediaicons/SocialMediaIcons";
@@ -94,7 +94,17 @@ export default function TopBar() {
     };
     
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+
+        try {
+            await axios.put("/auth/logout", {
+                "token": user.refreshToken
+            });
+
+        } catch (error) {
+            console.log(error);
+        }
+
         dispatch(LoginFailure());
     };
 

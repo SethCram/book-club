@@ -36,6 +36,8 @@ export default function Login() {
 
     } catch (error) {
 
+      console.log(error);
+
       setError(error.response.data);
 
       //tell user context of login failure

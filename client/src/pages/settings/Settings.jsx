@@ -97,15 +97,15 @@ export default function Settings() {
             setPassword("");
         } catch (error) {
 
-            console.log(error.response.data);
+            //console.log(error.response.data);
 
             let errorMsg = "";
-            if (error.response.data) {
+            try {
                 errorMsg = error.response.data;
+            } catch (error2) {
+                errorMsg = error;
             }
-            else {
-                errorMsg = "Something went wrong.";
-            }
+                
             setError(errorMsg);
             dispatch(UserUpdateFailure());
         }
