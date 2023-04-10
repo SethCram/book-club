@@ -103,7 +103,7 @@ const updateUserRep = async (additionalScore, username) => {
     }
 };
 
-//JWT verify middleware
+//JWT verify middleware accessToken
 const verify = (request, response, next) => { //next is everything else
     const authHeader = request.headers.authorization;
 
@@ -111,11 +111,11 @@ const verify = (request, response, next) => { //next is everything else
         //seperate jwt from "Bearer "
         const token = authHeader.split(" ")[1];
 
-        console.log(token);
+        //console.log(token);
 
         jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY, (error, payload) => {
             if (error) {
-                return response.status(403).json("Token isn't valid.");
+                return response.status(403).json("Access token isn't valid.");
             }
             else {
                 request.user = payload;

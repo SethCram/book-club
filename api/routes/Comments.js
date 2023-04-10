@@ -96,7 +96,7 @@ router.put("/:commentId", verify, async (request, response) => { //async bc dont
         //if comment exists
         if (comment)
         {
-            console.log(request.user);
+            //console.log(request.user);
 
             //if creator attempting to update, allow
             if (comment.username === request.body.username &&

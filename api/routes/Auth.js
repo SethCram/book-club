@@ -2,6 +2,7 @@ const router = require("express").Router(); //can handle post, put (update), get
 const User = require("../models/User");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
+const { verify } = require("./HelperFunctions");
 
 //Register
 router.post("/register", async (request, response) => { //async bc dont know how long it'll take
@@ -66,7 +67,7 @@ const generateAccessToken = (user) => {
     return jwt.sign(
         { _id: user._id, username: user.username, isAdmin: user.isAdmin },
         process.env.JWT_ACCESS_SECRET_KEY,
-        { expiresIn: "15m"}
+        { expiresIn: "5s"}
     ); 
 }
 
@@ -123,6 +124,7 @@ router.post("/login", async (request, response) => {
     }
 });
 
+//refresh jwt
 router.post("/refresh", async (request, response) => {
     //take refresh token from user
     const refreshToken = request.body.token;
@@ -151,7 +153,6 @@ router.post("/refresh", async (request, response) => {
                     return response.status(404).json("Couldn't find user by their token id.");
                 }
 
-                console.log(user);
                 const refreshTokens = user.refreshTokens;
 
                 if (!refreshTokens.includes(refreshToken)) {
@@ -179,5 +180,47 @@ router.post("/refresh", async (request, response) => {
     
     //create new access token, refresh token, send to user
 })
+
+//logout user
+router.put("/logout", verify, async (request, response) => {
+    
+    const refreshToken = request.body.token;
+
+    let user;
+
+    try {
+        user = await User.findById(
+            request.user._id
+        );
+    } catch (error) {
+        return response.status(404).json("Couldn't find user by their token id.");
+    }
+
+    const refreshTokens = user.refreshTokens;
+
+    if (!refreshTokens.includes(refreshToken)) {
+        return response.status(403).json("Refresh token is not valid.");
+    }
+
+    //rm passed in refreshToken
+    const otherRefreshTokens = refreshTokens.filter(token => token !== refreshToken);
+    
+    const updatedUser = await User.findByIdAndUpdate(
+        request.user._id,
+        { refreshTokens: otherRefreshTokens },
+        { new: true }
+    );
+
+    if (updatedUser) {
+        if (updatedUser.refreshTokens.some(token => token === refreshToken)) {
+            return response.status(500).json("Refresh token wasn't removed");
+        }
+    }
+
+    const { password, email, ...publicUser } = updatedUser._doc;
+
+    response.status(200).json(publicUser);
+
+});
 
 module.exports = router;
