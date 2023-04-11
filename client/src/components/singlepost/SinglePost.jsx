@@ -9,9 +9,10 @@ import * as DOMPurify from 'dompurify';
 import Editor from "../editor/Editor";
 import Vote, { VoteType } from "../vote/Vote";
 import MyMultiselect from "../mymultiselect/MyMultiselect";
+import { getAxiosAuthHeaders } from "../../App";
 
 export default function SinglePost({post, setUpdatedPostAuthor}) {
-    const { user } = useContext(Context);
+    const { user, dispatch } = useContext(Context);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [updateMode, setUpdateMode] = useState(false);
@@ -115,9 +116,16 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`/posts/${post._id}`, {
-                data: { username: user.username }
-            });
+
+            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+
+            await axios.delete(`/posts/${post._id}`,
+                {
+                    data: { username: user.username },
+                    headers: axiosAuthHeaders.headers
+                },
+            );
+
             navigate("/"); // go to home page if post deleted
         } catch (error) {
             
@@ -188,11 +196,17 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
         }
         
         try {
-            await axios.put("/posts/" + post._id, postUpdate);
+
+            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+
+            await axios.put("/posts/" + post._id,
+                postUpdate,
+                axiosAuthHeaders
+            );
 
             setUpdateMode(false); //dont needa update this way
         } catch (error) {
-            
+            console.log(error);
         }
 
         //reset deletion desires

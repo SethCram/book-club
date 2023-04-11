@@ -4,6 +4,7 @@ import { useContext, useState, useEffect } from "react"
 import { Context } from "../../context/Context"
 import axios from "axios";
 import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "../../context/Actions";
+import { getAxiosAuthHeaders } from "../../App";
 
 export default function Settings() {
     const [picture, setPicture] = useState(null);
@@ -42,11 +43,9 @@ export default function Settings() {
 
         setError("");
 
-        dispatch(UserUpdateStart());
-
         setSuccess(false);
         
-        const updatedUser = {
+        let updatedUser = {
             userId: user._id,
             username,
             email,
@@ -76,35 +75,44 @@ export default function Settings() {
 
 
         try {
-            /*
-            const axiosConfig = {
-                headers: {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    'Authorization': 'Bearer ' + user.jwt
-                }
-            };
-            */
+            
+            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+
+            dispatch(UserUpdateStart());
 
             const response = await axios.put(`/users/${user._id}`,
                 updatedUser,
-                //axiosConfig
+                axiosAuthHeaders
             );
 
-            const newUser = { ...user, ...response.data}
+            let newUser = response.data;
+
+            //make sure new user has the right tokens
+            newUser['accessToken'] = tokens.accessToken;
+            newUser['refreshToken'] = tokens.refreshToken;
+
+            //console.log(`Access token of updated user ${newUser.accessToken}`);
             
             dispatch(UserUpdateSuccessful(newUser));
             setSuccess(true);
             setPassword("");
         } catch (error) {
 
-            //console.log(error.response.data);
+            let errorMsg;
 
-            let errorMsg = "";
-            try {
-                errorMsg = error.response.data;
-            } catch (error2) {
+            console.log(error);
+
+            if (typeof error === 'string' || error instanceof String) {
                 errorMsg = error;
             }
+            else if (error instanceof Error) {
+                errorMsg = error.response.data
+            }
+            else {
+                errorMsg = "Something went wrong.";
+            }
+
+            //console.log(error.response.data);
                 
             setError(errorMsg);
             dispatch(UserUpdateFailure());
@@ -114,12 +122,18 @@ export default function Settings() {
 
     const handleDeleteAccount = async () => {
 
-        dispatch(UserUpdateStart());
-
         try {
-            await axios.delete("/users/" + user._id, {
-                data: { userId: user._id, username: user.username }
-            });
+
+            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+
+            dispatch(UserUpdateStart());
+
+            await axios.delete("/users/" + user._id,
+                {
+                    data: { userId: user._id, username: user.username },
+                    headers: axiosAuthHeaders.headers
+                }
+            );
 
             dispatch(UserUpdateSuccessful(null));
         } catch (error) {

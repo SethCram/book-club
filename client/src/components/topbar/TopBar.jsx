@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LoginFailure } from "../../context/Actions";
+import { Logout } from "../../context/Actions";
 import { Context } from "../../context/Context";
 import SocialMediaIcons from "../socialmediaicons/SocialMediaIcons";
 import ReactSwitch from 'react-switch'
 import "./TopBar.css"
-import { DeviceType, GetDeviceType, ThemeContext } from "../../App";
+import { DeviceType, GetDeviceType, ThemeContext, getAxiosAuthHeaders } from "../../App";
 import BC from "../../assets/favicon_io/android-chrome-512x512.png"
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 import { fallDown as Menu } from 'react-burger-menu'
@@ -97,15 +97,21 @@ export default function TopBar() {
     const handleLogout = async () => {
 
         try {
-            await axios.put("/auth/logout", {
-                "token": user.refreshToken
-            });
+
+            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+
+            await axios.put("/auth/logout",
+                {
+                    "token": tokens.refreshToken
+                },
+                axiosAuthHeaders
+            );
 
         } catch (error) {
             console.log(error);
         }
 
-        dispatch(LoginFailure());
+        dispatch(Logout());
     };
 
     const handleSearch = async (event) => {

@@ -3,6 +3,7 @@ import { Context } from "../../context/Context";
 import axios from "axios"
 import "./Vote.css"
 import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "../../context/Actions";
+import { getAxiosAuthHeaders } from "../../App";
 
 export const VoteType = {
     NONE: 0,
@@ -170,10 +171,15 @@ export default function Vote({
 
             if (existingVote) {
 
+                const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+
                 updateVote["voteId"] = existingVote._id;
 
                 //update vote w/ new score
-                voteObject = await axios.put(`/votes/update/${existingVote._id}`, updateVote);
+                voteObject = await axios.put(`/votes/update/${existingVote._id}`,
+                    updateVote,
+                    axiosAuthHeaders
+                );
 
                 //changeInVoteScoring = voteObject.data.vote.score - existingVote.score
             }

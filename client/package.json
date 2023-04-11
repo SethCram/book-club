@@ -10,6 +10,7 @@
     "axios": "^1.2.5",
     "ckeditor5-custom-build": "file:ckeditor5",
     "dompurify": "^3.0.1",
+    "jwt-decode": "^3.1.2",
     "multiselect-react-dropdown": "^2.0.25",
     "react": "^18.2.0",
     "react-burger-menu": "^3.0.9",

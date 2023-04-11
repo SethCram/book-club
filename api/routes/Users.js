@@ -1,15 +1,16 @@
 const router = require("express").Router(); //can handle post, put (update), get, delete
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const Vote = require("../models/Vote");
 const {verify} = require("./HelperFunctions");
 
 //Update user
 router.put("/:userId", verify, async (request, response) => { //async bc dont know how long it'll take
 
+    //console.log(request.body);
+
     //compare verified userId to params userID
     if (request.user._id === request.params.userId &&
-        request.user._id === request.body._id) 
+        request.user._id === request.body.userId) 
     {
         //if password passed in, hash it
         //if (request.body.password) {
@@ -117,7 +118,7 @@ router.delete("/:userId", verify, async (request, response) => { //async bc dont
     //compare url id to request body id to see if correct user altering
     // or if verified admin
     if((request.user._id === request.params.userId &&
-        request.user._id === request.body._id)
+        request.user._id === request.body.userId)
         ||
         request.user.isAdmin)
     {

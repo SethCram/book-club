@@ -10,6 +10,9 @@ import About from "./pages/about/About";
 import "./App.css"
 import { useEffect, useLayoutEffect } from 'react'
 import NotFound from "./pages/notfound/NotFound";
+import jwt_decode from "jwt-decode";
+import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "./context/Actions";
+
 
 // Need the following to setup dynamic routing:
 import { createContext, useContext, useState } from "react";
@@ -62,25 +65,85 @@ export const GetDeviceType = () => {
   return currDeviceType;
 }
 
+const refreshTokens = async (user, dispatch) => {
+
+  try {
+    dispatch(UserUpdateStart());
+
+    const response = await axios.post("/auth/refresh", {
+      token: user.refreshToken
+    });
+
+    const tokens = response.data;
+
+    const updatedUser = { ...user, ...tokens }
+
+    if (tokens.accessToken !== updatedUser.accessToken) {
+      throw new Error("Updated user not constructed with the new access token.");
+    }
+
+    dispatch(UserUpdateSuccessful(updatedUser));
+
+    //console.log(`Pre-returned new tokens are ${tokens.accessToken} and ${tokens.refreshToken}`);
+
+    return tokens;
+
+  } catch (error) {
+    dispatch(UserUpdateFailure());
+    return Promise.reject(error);
+  }
+}
+
+export const getAxiosAuthHeaders = async (user, dispatch) => {
+
+  if (!user) {
+    return Promise.reject("No user available.");
+  }
+
+  if (!user.accessToken || !user.refreshToken) {
+    return Promise.reject("User doesn't have the proper tokens.");
+  }
+
+  let axiosAuthHeaders = {
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    }
+  }
+
+  let currentDate = new Date();
+
+  let tokens;
+
+  //decode access token
+  const decodedToken = jwt_decode(user.accessToken);
+
+  //if token is expired
+  if(decodedToken.exp * 1000 < currentDate.getTime())
+  {
+    //console.log(`Old token ${user.accessToken}`);
+
+    const newTokens = await refreshTokens(user, dispatch);
+
+    tokens = newTokens;
+    
+    //console.log(`New token ${tokens.accessToken}`);
+  }
+  else {
+    tokens = {
+      refreshToken: user.refreshToken,
+      accessToken: user.accessToken
+    }
+  }
+
+  //set access token as auth header
+  axiosAuthHeaders.headers['Authorization'] = 'Bearer ' + tokens.accessToken;
+
+  return [axiosAuthHeaders, tokens];
+}
+
 function App() {
   const { user } = useContext(Context);
   const [theme, setTheme] = useState("dark");
-
-  useEffect(() => {
-    //Attach JSON and JWT headers to all post, patch, and put requests
-    axios.interceptors.request.use(config => {
-      if (config.method.toUpperCase() === 'POST' ||
-        config.method.toUpperCase() === 'PATCH' ||
-        config.method.toUpperCase() === 'PUT')
-        
-        config.headers['Content-Type'] = 'application/json;charset=utf-8';
-    
-      if (user) config.headers.Authorization = 'Bearer ' + user.accessToken;
-    
-      return config;
-    });
-
-  }, [user])
 
   const toggleTheme = () => {
     setTheme((currTheme) => ( currTheme === "light" ? "dark" : "light" ));

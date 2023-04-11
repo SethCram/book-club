@@ -98,10 +98,12 @@ router.post("/login", async (request, response) => {
     
     try {
         user = await User.findOne({ email: request.body.email });
-        !user && response.status(400).json("Wrong email or password"); //cant respond with 2 jsons, this triggers catch block
+        if (!user)
+            return response.status(400).json("Wrong email or password"); //cant respond with 2 jsons, this triggers catch block
 
         validated = await bcrypt.compare(request.body.password, user.password); //compare passed in and pass + stored pass
-        !validated && response.status(400).json("Wrong email or password");
+        if (!validated)
+            return response.status(400).json("Wrong email or password");
 
         //Generate an access token 
         const accessToken = generateAccessToken(user);
@@ -120,7 +122,7 @@ router.post("/login", async (request, response) => {
     }
     catch (error) {
         console.log(error);
-        if(user && validated) response.status(500).json(error); //to avoid catching wrong username/password
+        response.status(500).json(error); //to avoid catching wrong username/password
     }
 });
 

@@ -107,6 +107,9 @@ const updateUserRep = async (additionalScore, username) => {
 const verify = (request, response, next) => { //next is everything else
     const authHeader = request.headers.authorization;
 
+    //console.log(request.headers);
+    //console.log(authHeader);
+
     if (authHeader) {
         //seperate jwt from "Bearer "
         const token = authHeader.split(" ")[1];

@@ -5,10 +5,11 @@ import { Context } from "../../context/Context";
 import ReputationIcon from "../reputationIcon/ReputationIcon";
 import { Link } from "react-router-dom";
 import Vote, { VoteType } from "../vote/Vote";
+import { getAxiosAuthHeaders } from "../../App";
 
 export default function Comment({ handleComment = null, handleReply = null, comment = null, replyId = "", replyUsername = "", setUpdatedCommentAuthor = null }) {
     const [feedback, setFeedback] = useState("");
-    const { user } = useContext(Context);
+    const { user, dispatch } = useContext(Context);
     const [vote, setVote] = useState(null);
     const [repScore, setRepScore] = useState(0);
     const [writeMode, setWriteMode] = useState(false);
@@ -58,11 +59,17 @@ export default function Comment({ handleComment = null, handleReply = null, comm
     const handleUpdate = async () => {
 
         try {
+
+            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+
             //update comment in DB
-            await axios.put(`/comments/${comment._id}`, {
-                username: user.username,
-                description: feedback
-            });
+            await axios.put(`/comments/${comment._id}`,
+                {
+                    username: user.username,
+                    description: feedback
+                },
+                axiosAuthHeaders
+            );
 
             //update comment locally
             comment.description = feedback;
