@@ -112,7 +112,7 @@ router.put("/:userId", verify, async (request, response) => { //async bc dont kn
     }
 }); 
 
-//Delete User and their posts
+//Delete User 
 router.delete("/:userId", verify, async (request, response) => { //async bc dont know how long it'll take
     
     //compare url id to request body id to see if correct user altering

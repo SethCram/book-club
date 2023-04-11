@@ -64,10 +64,20 @@ router.post("/register", async (request, response) => { //async bc dont know how
 }); 
 
 const generateAccessToken = (user) => {
+
+    let expiresIn;
+
+    if (process.env.ENV === "DEV") {
+        expiresIn = "15m";
+    }
+    else if (process.env.ENV === "PROD") {
+        expiresIn = "5s";
+    }
+
     return jwt.sign(
         { _id: user._id, username: user.username, isAdmin: user.isAdmin },
         process.env.JWT_ACCESS_SECRET_KEY,
-        { expiresIn: "5s"}
+        { expiresIn: expiresIn}
     ); 
 }
 

@@ -137,8 +137,9 @@ router.delete("/:commentId", verify, async (request, response) => { //async bc d
         if (comment)
         {
             //if creator attempting to delete, allow
-            if (comment.username === request.body.username &&
-                comment.username === request.user.username)
+            if ((comment.username === request.body.username &&
+                comment.username === request.user.username) || 
+                request.user.isAdmin)
             {
                 await comment.delete();
                 response.status(200).json("Comment deleted");

@@ -84,8 +84,9 @@ router.delete("/:postId", verify, async (request, response) => { //async bc dont
         if (post)
         {
             //if creator attempting to delete, allow
-            if (post.username === request.body.username &&
-                post.username === request.user.username)
+            if ((post.username === request.body.username &&
+                post.username === request.user.username) ||
+                request.user.isAdmin)
             {
                 await post.delete();
                 response.status(200).json("Post deleted");
