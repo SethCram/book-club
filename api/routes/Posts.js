@@ -46,8 +46,9 @@ router.put("/:postId", verify, async (request, response) => { //async bc dont kn
         {
 
             //if creator attempting to update, allow
-            if (post.username === request.body.username &&
-                post.username === request.user.username)
+            if ((post.username === request.body.username &&
+                post.username === request.user.username) || 
+                request.user.isAdmin)
             {
                 const updatedPost = await Post.findByIdAndUpdate(
                     request.params.postId,
@@ -76,7 +77,7 @@ router.put("/:postId", verify, async (request, response) => { //async bc dont kn
 
 //Delete Post
 router.delete("/:postId", verify, async (request, response) => { //async bc dont know how long it'll take
-    
+
     try {
         const post = await Post.findById(request.params.postId);
 

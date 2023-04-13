@@ -99,8 +99,9 @@ router.put("/:commentId", verify, async (request, response) => { //async bc dont
             //console.log(request.user);
 
             //if creator attempting to update, allow
-            if (comment.username === request.body.username &&
-                comment.username === request.user.username)
+            if ((comment.username === request.body.username &&
+                comment.username === request.user.username) || 
+                request.user.isAdmin)
             {
                 const updatedComment = await Comment.findByIdAndUpdate(
                     request.params.commentId,

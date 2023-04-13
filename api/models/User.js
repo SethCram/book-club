@@ -53,6 +53,9 @@ const UserSchema = new mongoose.Schema(
         },
         refreshTokens: {
             type: Array
+        },
+        isAdmin: {
+            type: Boolean
         }
     },
     { timestamps: true } //for updated and created at timestamps
