@@ -10,8 +10,7 @@ lerna-debug.log*
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 #ignore build folder in ckeditor5 folder
-**build
-**ckeditor5-upload
+#**build
 
 # Runtime data
 pids
