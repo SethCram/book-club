@@ -149,8 +149,6 @@ export default function Vote({
                 ); 
             }
 
-            console.log(voteObject.data.linkedModel);
-
             //update linked model
             setUpdatedLinkedModel(voteObject.data.linkedModel);
 

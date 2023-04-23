@@ -138,8 +138,9 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
                             handleReply={handleReply}
                             comment={comment}
                             setUpdatedCommentAuthor={setUpdatedCommentAuthor}
+                            getComments={getComments}
                         />
-                        {replyId === comment._id && user &&
+                        {replyId === comment._id && user && //new comments above and below this line
                             <Comment
                                 handleComment={handleComment}
                                 postId={post?._id}
@@ -157,9 +158,14 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
                                     replyId={reply.replyId}
                                     replyUsername={reply.replyUsername}
                                     setUpdatedCommentAuthor = { setUpdatedCommentAuthor }
+                                    getComments={getComments}
                                 />  
-                                {replyId === reply._id && user &&
-                                    <Comment handleComment={handleComment} postId={post?._id} replyId={reply._id} replyUsername={reply.username}/>
+                                {replyId === reply._id && user && //new comment
+                                    <Comment
+                                        handleComment={handleComment}
+                                        postId={post?._id} replyId={reply._id}
+                                        replyUsername={reply.username} 
+                                    />
                                 }
                             </div>
                         ))

@@ -7,7 +7,10 @@ import { Link } from "react-router-dom";
 import Vote, { VoteType } from "../vote/Vote";
 import { getAxiosAuthHeaders } from "../../App";
 
-export default function Comment({ handleComment = null, handleReply = null, comment = null, replyId = "", replyUsername = "", setUpdatedCommentAuthor = null }) {
+export default function Comment({
+    handleComment = null, handleReply = null,
+    comment = null, replyId = "", replyUsername = "",
+    setUpdatedCommentAuthor = null, getComments = null }) {
     const [feedback, setFeedback] = useState("");
     const { user, dispatch } = useContext(Context);
     const [vote, setVote] = useState(null);
@@ -60,7 +63,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
 
         try {
 
-            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+            const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
 
             //update comment in DB
             await axios.put(`/comments/${comment._id}`,
@@ -111,6 +114,27 @@ export default function Comment({ handleComment = null, handleReply = null, comm
 
         return retdUsername
     }
+
+    const handleDeletion = async () => {
+        try {
+
+            const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
+
+            await axios.delete("/comments/" + comment._id,
+                {
+                    data: { username: user.username },
+                    headers: axiosAuthHeaders.headers
+                }
+            )
+
+            console.log("comment deleted");
+
+            await getComments();
+
+        } catch (error) {
+            
+        }
+    };
 
     return (
         <div className="comment">
@@ -190,10 +214,16 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                         </h3>
                         {comment && new Date(comment.updatedAt).toDateString()}
                         {comment && (comment.username === user?.username || user?.isAdmin) && !writeMode && 
-                            <i
-                                className="commentButton commentUpdate fa-regular fa-pen-to-square"
-                                onClick={() => { setWriteMode(true); setFeedback(comment.description); }}
-                            />
+                            <div>
+                                <i
+                                    className="commentButton commentUpdate fa-regular fa-pen-to-square"
+                                    onClick={() => { setWriteMode(true); setFeedback(comment.description); }}
+                                />
+                                <i
+                                    className="commentButton commentDelete fa-regular fa-trash-can"
+                                    onClick={handleDeletion}
+                                />
+                            </div>
                         }
                     </span>
                     {replyUsername &&

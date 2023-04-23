@@ -56,6 +56,11 @@
     color: green !important;
 }
 
+.commentDelete{
+    margin-left: 1rem;
+    color: red !important;
+}
+
 .commentDescription{
     margin: 1rem;
 }

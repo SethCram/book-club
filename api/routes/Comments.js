@@ -223,9 +223,24 @@ router.delete("/:commentId", verify, async (request, response) => { //async bc d
             {
                 await comment.delete();
 
-                //need to delete from comment replies if a reply comment
+                //if deleting a reply comment
+                if (comment.rootCommentId) {
+                    //need to delete from root comment replies 
+                    //update root comment replies arr
+                    var updatedRootComment = await Comment.findByIdAndUpdate(
+                        comment.rootCommentId,
+                        {
+                            $pull: {
+                                replies: {
+                                    _id: comment._id
+                                }
+                            }
+                        },
+                        { new: true }
+                    );
+                }
 
-                response.status(200).json("Comment deleted");
+                response.status(200).json(updatedRootComment);
             }
             else
             {
