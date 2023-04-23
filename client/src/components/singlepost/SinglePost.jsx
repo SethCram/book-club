@@ -339,7 +339,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                         </>
                     }
                 </div>
-                {!updateMode && (post?.username === user?.username || user.isAdmin) &&
+                {!updateMode && user && (post?.username === user.username || user.isAdmin) &&
                     <div className="singlePostIcons">
                         <i className="singlePostIcon fa-regular fa-pen-to-square" onClick={()=>setUpdateMode(true)}></i>
                         <i className="singlePostIcon fa-regular fa-trash-can" onClick={handleDelete}></i>

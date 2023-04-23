@@ -17,8 +17,12 @@ export default function SinglePostPage() {
   //retrieve post according to postId
   useEffect(() => {
     const getPost = async () => {
-      const response = await axios.get("/posts/" + postId);
-      setPost(response.data);
+      try {
+        const response = await axios.get("/posts/" + postId);
+        setPost(response.data);
+      } catch (error) {
+        
+      }
     };
     getPost();   
 
@@ -32,10 +36,10 @@ export default function SinglePostPage() {
           const response = await axios.get("/users/username/" + post.username);
 
           //if the retrieved username isn't the local username
-          if (response.data.username !== user?.username) {
+          //if (response.data.username !== user?.username) {
             //set new sidebar user
             setSidebarUser(response.data);
-          }
+          //}
 
         } catch (error) {
           //couldnt find user
