@@ -50,10 +50,22 @@ router.put("/:postId", verify, async (request, response) => { //async bc dont kn
                 post.username === request.user.username) || 
                 request.user.isAdmin)
             {
+                //don't let the post's username be updated
+                let { username: _, ...newPost } = request.body;
+
+                //if not updated by admin
+                if (!request.user.isAdmin) {
+                    //dont let them change post's rep or badge
+                    ({
+                        reputation: _,
+                        badgeName: _,
+                        ...newPost } = newPost);
+                }
+
                 const updatedPost = await Post.findByIdAndUpdate(
                     request.params.postId,
                     {
-                        $set: request.body,
+                        $set: newPost,
                     }, 
                     { new: true }
                 );
