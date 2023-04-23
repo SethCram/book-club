@@ -74,11 +74,11 @@ const createRandomPhotoUrl = (width, height) => {
         faker.image.abstract,
         faker.image.business,
         faker.image.city,
-        faker.image.fashion,
+        //faker.image.fashion, //contains inappropriate images
         faker.image.food,
         faker.image.image,
         faker.image.nature,
-        faker.image.nightlife,
+        //faker.image.nightlife, //contains inappropriate images
         faker.image.people,
         faker.image.sports,
         faker.image.technics,
@@ -257,7 +257,8 @@ const createFakeVotes = (posts, users) => {
     */
 };
 
-const createFakeComment = (postId, username, badges, minDate, replyId = undefined, replyUsername = "") => {
+const createFakeComment = (postId, username, badges, minDate,
+    replyId = undefined, replyUsername = "", rootId = undefined) => {
     
     const creationDate = faker.date.between(
         minDate,
@@ -278,6 +279,10 @@ const createFakeComment = (postId, username, badges, minDate, replyId = undefine
 
     if (replyUsername) {
         tmpComment["replyUsername"] = replyUsername;
+    }
+
+    if (rootId) {
+        tmpComment["rootCommentId"] = rootId;
     }
 
     //create a fake reputation
@@ -329,6 +334,15 @@ const createFakeReplyComments = (posts, users, commentsToReplyTo, badges, replyR
                 const randomCommentIndex = getRndInteger(0, commentsToReplyTo.length - 1);
                 const commentToReplyTo = commentsToReplyTo[randomCommentIndex];
 
+                let rootId;
+
+                if (commentToReplyTo.replyId) {
+                    rootId = commentToReplyTo.replyId;
+                }
+                else {
+                    rootId = commentToReplyTo._id;
+                }
+
                 //create a reply to the comment
                 const reply = createFakeComment(
                     commentToReplyTo.postId,
@@ -336,7 +350,8 @@ const createFakeReplyComments = (posts, users, commentsToReplyTo, badges, replyR
                     badges,
                     commentToReplyTo.createdAt,
                     commentToReplyTo._id,
-                    commentToReplyTo.username
+                    commentToReplyTo.username,
+                    rootId
                 );
 
                 //add reply to list of comments
@@ -348,7 +363,8 @@ const createFakeReplyComments = (posts, users, commentsToReplyTo, badges, replyR
     return replyComments;
 }
 
-//replyRate must be a number from 0-1
+//Adds reply comments to root comments reply arrs
+// replyRate must be a number from 0-1
 const linkReplyCommentsToRootComments = (rootComments, commentsToReplyTo, newlyPostedReplyComments) => {
 
     //for each newly posted reply comment
@@ -398,7 +414,7 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
 
     //create new users and get their usernames
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(process.env.DEV_PASSWORD, salt);
+    const hashedPassword = await bcrypt.hash(process.env.DEV_PASSWORD, salt); //await req'd here
     const newUsers = createFakeUsers(
         numOf = numOfUsers, password = hashedPassword, badges
     );
@@ -422,18 +438,18 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
     //create new fake votes
     const newVotes = createFakeVotes(insertedPosts, newUsers);
 
-    //INSERT ROOT COMMENTS
+    //CREATE + INSERT ROOT COMMENTS
     const newRootComments = createFakeComments(insertedPosts, newUsers, badges);
     const insertedRootComments = await Comment.insertMany(newRootComments);
     console.log(`   ${insertedRootComments.length} root comments inserted.`);
 
-    //INSERT ROOT REPLY COMMENTS
+    //CREATE ROOT REPLY COMMENTS
     const replyComments = createFakeReplyComments(
-        insertedPosts, newUsers,
+        insertedPosts, newUsers, 
         insertedRootComments, badges, 1
     );
 
-    //POST ROOT REPLY COMMENTS
+    //INSERT ROOT REPLY COMMENTS
     const insertedRootReplyComments = await Comment.insertMany(replyComments );
     console.log(`   ${insertedRootReplyComments.length} root reply comments inserted.`);
     
@@ -444,13 +460,13 @@ const seedDB = async (numOfPosts, numOfUsers, numOfCats) => {
         insertedRootReplyComments
     )
 
-    //INSERT REPLIES TO REPLY COMMENTS
+    //CREATE REPLIES TO REPLY COMMENTS
     const replyReplyComments = createFakeReplyComments(
         insertedPosts, newUsers,
         insertedRootReplyComments, badges, 1
     );
 
-    //POST REPLIES TO REPLY COMMENTS
+    //INSERT REPLIES TO REPLY COMMENTS
     const insertedReplyReplyComments = await Comment.insertMany(replyReplyComments );
     console.log(`   ${insertedReplyReplyComments.length} replies to reply comments inserted.`);
 
@@ -518,7 +534,7 @@ const removeFakeData = async () => {
 
     //delete all users w/ a fake username
     const deletedUsersCount = await User.deleteMany(userFilter);
-    console.log(`Deleted ${deletedUsersCount.deletedCount} users with fake usernames.`);
+    console.log(`Deleted ${deletedUsersCount.deletedCount} users with usernames linked to an authored post's fake category.`);
 
     //delete all categories connected to a fake category
     const deletedCatsCount = await Category.deleteMany({
