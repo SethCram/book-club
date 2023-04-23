@@ -39,8 +39,6 @@ router.post("/", verify, async (request, response) => {
                 currReplyId = replyComment.replyId;
             }
 
-            //console.log(replyComment);
-
             if (createComment) {
 
                 let updatedAuthor;
@@ -51,6 +49,12 @@ router.post("/", verify, async (request, response) => {
                         5,
                         username
                     );
+                }
+
+                //if found root comment
+                if (replyComment) {
+                    //add its id to the comment to save
+                    request.body["rootCommentId"] = replyComment._id;
                 }
 
                 const newComment = new Comment(request.body);
@@ -91,6 +95,40 @@ router.post("/", verify, async (request, response) => {
     }
 });
 
+//if root comment, update its replies 
+const updateRootComment = async (newComment) => {
+
+    const rootCommentId = newComment.rootCommentId;
+    
+    if (rootCommentId) {
+
+        //create update filter for every field in newComment
+        let rootCommentUpdateFilter = {};
+        for (const [key, value] of Object.entries(newComment)) {
+            rootCommentUpdateFilter['replies.$.' + key] = value;
+        }
+
+        //update root comment replies arr
+        const updatedRootComment = await Comment.findOneAndUpdate(
+            {
+                _id: rootCommentId,
+                "replies._id": newComment._id
+            },
+            {
+                $set: rootCommentUpdateFilter
+            },
+            { new: true }
+        );
+
+        //console.log(updatedRootComment?.replies.filter(reply => reply._id.equals(rootCommentId) ));
+    
+        return updatedRootComment;
+
+    } else {
+        throw new Error("To update a root comment, a root comment id is required.");
+    }
+};
+
 //Update Comment
 router.put("/:commentId", verify, async (request, response) => { //async bc dont know how long it'll take
     
@@ -108,8 +146,6 @@ router.put("/:commentId", verify, async (request, response) => { //async bc dont
                 request.user.isAdmin)
             {
 
-                console.log(request.body);
-
                 //don't change the comment's author username
                 let { username: _, ...newComment } = request.body;
 
@@ -126,6 +162,7 @@ router.put("/:commentId", verify, async (request, response) => { //async bc dont
                         ...newComment } = newComment);
                 }
 
+                //update standalone comment
                 const updatedComment = await Comment.findByIdAndUpdate(
                     request.params.commentId,
                     {
@@ -133,7 +170,26 @@ router.put("/:commentId", verify, async (request, response) => { //async bc dont
                     }, 
                     { new: true }
                 );
-                response.status(200).json(updatedComment);
+
+                let updatedRootComment;
+
+                //always return updated comment
+                let responseObj = {
+                    updatedComment
+                }
+
+                //console.log("updated comment: ");
+                //console.log(updatedComment);
+
+                //if a reply comment bc has a root id in it
+                if (updatedComment.rootCommentId) {
+                    //update comment in replies of root comment
+                    updatedRootComment = await updateRootComment(updatedComment);
+                    //add updated root comment to response
+                    responseObj['updatedRootComment'] = updatedRootComment;
+                }
+
+                response.status(200).json(responseObj);
             }
             else
             {
@@ -166,6 +222,9 @@ router.delete("/:commentId", verify, async (request, response) => { //async bc d
                 request.user.isAdmin)
             {
                 await comment.delete();
+
+                //need to delete from comment replies if a reply comment
+
                 response.status(200).json("Comment deleted");
             }
             else

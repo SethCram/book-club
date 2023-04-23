@@ -34,6 +34,9 @@ const CommentSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        rootCommentId: {
+            type: mongoose.ObjectId,
+        },
     },
     { timestamps: true }
 );
