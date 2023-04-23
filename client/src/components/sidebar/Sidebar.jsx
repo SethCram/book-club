@@ -16,10 +16,6 @@ export default function Sidebar({ user, updatedPostAuthor = null }) {
   const contextObj = useContext(Context);
   const navigate = useNavigate();
 
-  console.log(user);
-
-  //shouldn't be updated ever? (if empty, constantly updates)
-
   useEffect(() => {
     const getPosts = async (howMany) => {
       const response = await axios.get(`/posts/sum/sum/?username=${user.username}&&sumBy=category&&count=${howMany}`);
@@ -56,7 +52,7 @@ export default function Sidebar({ user, updatedPostAuthor = null }) {
     <div className='sidebar'>
       {contextObj?.user?.isAdmin &&
         <div div className='sidebarItem' >
-          <i className="sidebarTrashIcon reddishBrown fa-regular fa-trash-can" onClick={handleDeleteAccount}></i>
+          <i className="sidebarTrashIcon fa-regular fa-trash-can" onClick={handleDeleteAccount}></i>
         </div>
       }
       <div className='sidebarItem' >

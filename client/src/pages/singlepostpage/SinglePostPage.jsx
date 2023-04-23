@@ -4,7 +4,6 @@ import { useLocation } from "react-router-dom";
 import Sidebar from "../../components/sidebar/Sidebar"
 import SinglePost from "../../components/singlepost/SinglePost"
 import "./SinglePostPage.css"
-import { Context } from "../../context/Context";
 
 export default function SinglePostPage() {
   const [post, setPost] = useState(null);
@@ -12,7 +11,6 @@ export default function SinglePostPage() {
   const [updatedPostAuthor, setUpdatedPostAuthor] = useState(null);
   const location = useLocation();
   const postId = location.pathname.split("/")[2];
-  const { user } = useContext(Context);
 
   //retrieve post according to postId
   useEffect(() => {
