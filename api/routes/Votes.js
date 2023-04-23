@@ -153,6 +153,10 @@ router.post("/vote", verify, async (request, response) => {
     const username = request.body.username;
     const linkedId = mongoose.Types.ObjectId(request.body.linkedId); //string, not obj id
     const score = request.body.score;
+
+    if (username !== request.user.username) {
+        return response.status(401).json("You can only create a resource linked to your own username.");
+    }
     
     try {
 

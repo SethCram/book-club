@@ -4,9 +4,13 @@ const router = require("express").Router();
 const { updateUserRep, verify } = require("./HelperFunctions");
 
 //Create Comment
-router.post("/", async (request, response) => {
+router.post("/", verify, async (request, response) => {
 
     const username = request.body.username;
+
+    if (username !== request.user.username) {
+        return response.status(401).json("You can only create a resource linked to your own username.");
+    }
 
     try {
         //make sure linked post exists

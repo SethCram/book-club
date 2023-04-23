@@ -1,7 +1,13 @@
 const router = require("express").Router();
 const Badge = require("../models/Badge");
+const { verify } = require("./HelperFunctions");
 
-router.post("/", async (request, response) => {
+router.post("/", verify, async (request, response) => {
+
+    if (!request.user.isAdmin) {
+        response.status(403).json("Only admins can create new badges");
+    }
+
     try {
         const badge = new Badge(request.body);
 

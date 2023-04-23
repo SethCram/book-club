@@ -5,6 +5,7 @@ import Comment from "../comment/Comment";
 import { Context } from "../../context/Context";
 import { useNavigate } from "react-router-dom";
 import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "../../context/Actions";
+import { getAxiosAuthHeaders } from "../../App";
 
 export default function CommentSection({post, setUpdatedPostAuthor}) {
     const [comments, setComments] = useState([]);
@@ -58,7 +59,12 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
         }
 
         try {
-            const response = await axios.post("/comments/", newComment); 
+
+            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+
+            const response = await axios.post("/comments/",
+                newComment,
+                axiosAuthHeaders); 
 
             const updatedAuthor = response.data.updatedUser;
 
@@ -72,6 +78,10 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
                     dispatch(UserUpdateStart());
 
                     const newUser = { ...user, ...updatedAuthor };
+
+                    //make sure the tokens are correct on new user
+                    newUser['accessToken'] = tokens.accessToken;
+                    newUser['refreshToken'] = tokens.refreshToken;
 
                     dispatch(UserUpdateSuccessful(newUser));
                 } catch (error) {

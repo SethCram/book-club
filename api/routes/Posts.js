@@ -3,11 +3,15 @@ const Post = require("../models/Post");
 const { updateUserRep, verify } = require("./HelperFunctions");
 
 //Create Post
-router.post("/", async (request, response) => { //async bc dont know how long it'll take
+router.post("/", verify, async (request, response) => { //async bc dont know how long it'll take
     try {     
         
         const newPost = new Post(request.body);
         const username = request.body.username;
+
+        if (username !== request.user.username) {
+            return response.status(401).json("You can only create a resource linked to your own username.");
+        }
     
         let updatedAuthor;
 

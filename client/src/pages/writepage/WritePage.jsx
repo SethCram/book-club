@@ -6,6 +6,7 @@ import Editor from "../../components/editor/Editor";
 import { useNavigate } from "react-router-dom";
 import MyMultiselect from "../../components/mymultiselect/MyMultiselect";
 import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "../../context/Actions";
+import { getAxiosAuthHeaders } from "../../App";
 
 //should be able to update picture, but no currently possible
 
@@ -59,7 +60,12 @@ export default function WritePage() {
         }
       
         try {
-          const response = await axios.post("/posts", newPost); 
+        
+          const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+
+          const response = await axios.post("/posts",
+            newPost,
+            axiosAuthHeaders); 
 
           const updatedAuthor = response.data.updatedUser;
 
@@ -73,6 +79,10 @@ export default function WritePage() {
                 dispatch(UserUpdateStart());
                 
                 const newUser = { ...user, ...updatedAuthor };
+                
+                //make sure the tokens are correct on new user
+                newUser['accessToken'] = tokens.accessToken;
+                newUser['refreshToken'] = tokens.refreshToken;
 
                 dispatch(UserUpdateSuccessful(newUser));
             } catch (error) {
