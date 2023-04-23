@@ -1,9 +1,11 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import ReputationIcon from '../reputationIcon/ReputationIcon';
 import SocialMediaIcons from '../socialmediaicons/SocialMediaIcons';
 import './Sidebar.css'
+import { getAxiosAuthHeaders } from '../../App';
+import { Context } from '../../context/Context';
 
 export default function Sidebar({ user, updatedPostAuthor = null }) {
   const [categoriesCount, setCategoriesCount] = useState([]);
@@ -11,12 +13,16 @@ export default function Sidebar({ user, updatedPostAuthor = null }) {
     user.twitterLink ||
     user.facebookLink ||
     user.pinterestLink);
+  const contextObj = useContext(Context);
+  const navigate = useNavigate();
 
- //shouldn't be updated ever? (if empty, constantly updates)
+  console.log(user);
+
+  //shouldn't be updated ever? (if empty, constantly updates)
 
   useEffect(() => {
     const getPosts = async (howMany) => {
-      const response = await axios.get(`/posts/sum/sum/?username=${user.username}&&sumBy=category&&count=${howMany}`);  
+      const response = await axios.get(`/posts/sum/sum/?username=${user.username}&&sumBy=category&&count=${howMany}`);
       setCategoriesCount(response.data.categoriesCount);
     }
     const USER_CATS = 6;
@@ -24,12 +30,39 @@ export default function Sidebar({ user, updatedPostAuthor = null }) {
       getPosts(USER_CATS);
     }
   }, [user])
-  
+
+  const handleDeleteAccount = async () => {
+
+    try {
+
+      const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(contextObj.user, contextObj.dispatch);
+
+      await axios.delete("/users/" + user._id,
+        {
+          data: { userId: user._id, username: user.username },
+          headers: axiosAuthHeaders.headers
+        }
+      );
+
+      navigate("/");
+
+    } catch (error) {
+
+    }
+    
+  };
 
   return (
-    <div className='sidebar'> 
-        <div className='sidebarItem' >
-          <span className='sidebarTitle'>ABOUT ME</span>
+    <div className='sidebar'>
+      {contextObj?.user?.isAdmin &&
+        <div div className='sidebarItem' >
+          <i className="sidebarTrashIcon reddishBrown fa-regular fa-trash-can" onClick={handleDeleteAccount}></i>
+        </div>
+      }
+      <div className='sidebarItem' >
+        <span className='sidebarTitle'>
+          ABOUT ME
+        </span>
           <span className='sidebarReputation'> 
           <ReputationIcon
             repScore={

@@ -117,7 +117,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
     const handleDelete = async () => {
         try {
 
-            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+            const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
 
             await axios.delete(`/posts/${post._id}`,
                 {

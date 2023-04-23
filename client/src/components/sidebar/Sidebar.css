@@ -37,6 +37,12 @@
     text-align: center;
 }
 
+.sidebarTrashIcon{
+    margin: 1rem;
+    margin-left: auto;
+    cursor: pointer;
+}
+
 #dark .sidebarTitle{
     color: var(--color-bg-light);
 }

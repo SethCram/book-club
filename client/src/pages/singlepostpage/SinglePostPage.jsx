@@ -48,7 +48,8 @@ export default function SinglePostPage() {
   return (
     <div className='singlepostpage'>
       <SinglePost post={ post } setUpdatedPostAuthor={setUpdatedPostAuthor} />
-      <Sidebar user={ sidebarUser ? sidebarUser : user } updatedPostAuthor={updatedPostAuthor} />
+      {/* Why would user be displayed if sidebar user null?? */}
+      <Sidebar user={sidebarUser} updatedPostAuthor={updatedPostAuthor} />
     </div>
   )
 }
