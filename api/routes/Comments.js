@@ -103,10 +103,29 @@ router.put("/:commentId", verify, async (request, response) => { //async bc dont
                 comment.username === request.user.username) || 
                 request.user.isAdmin)
             {
+
+                console.log(request.body);
+
+                //don't change the comment's author username
+                let { username: _, ...newComment } = request.body;
+
+                //if updater isn't an admin
+                if (!request.user.isAdmin) {
+                    //only let them change the comment's description
+                    ({
+                        reputation: _,
+                        badgeName: _,
+                        postId: _,
+                        replyId: _,
+                        replyUsername: _,
+                        replies: _,
+                        ...newComment } = newComment);
+                }
+
                 const updatedComment = await Comment.findByIdAndUpdate(
                     request.params.commentId,
                     {
-                        $set: request.body,
+                        $set: newComment,
                     }, 
                     { new: true }
                 );
