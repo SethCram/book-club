@@ -21,8 +21,13 @@ router.put("/:userId", verify, async (request, response) => { //async bc dont kn
         //if password sent in
         if (request.body.password) {
             
-            //remove password from update params
-            const { password, ...updatedParams } = request.body;
+            //don't let user update password, isAdmin, badgeName, rep, or username
+            const { password,
+                isAdmin,
+                badgeName,
+                reputation,
+                username,
+                ...updatedParams } = request.body;
 
             //find the user
             const user = await User.findById(request.params.userId);
