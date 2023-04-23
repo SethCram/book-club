@@ -149,11 +149,10 @@ export default function Vote({
                 ); 
             }
 
-            //if linkedModel badgeName, update it locally 
-            if (voteObject.data.linkedModel.badgeName) {
-                //post["badgeName"] = voteObject.data.linkedModel.badgeName;
-                setUpdatedLinkedModel(voteObject.data.linkedModel);
-            }
+            console.log(voteObject.data.linkedModel);
+
+            //update linked model
+            setUpdatedLinkedModel(voteObject.data.linkedModel);
 
             const updatedAuthor = voteObject.data.updatedAuthor;
 

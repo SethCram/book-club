@@ -13,7 +13,7 @@ const updateLinkedModel = async (linkedId, score) => {
 
     let linkedModel;
 
-    let rootComment = null;
+    let rootCommentId = "";
 
     //set linked model to post or comment depending on which can be found
     if (post) {
@@ -26,23 +26,7 @@ const updateLinkedModel = async (linkedId, score) => {
         if (comment) {
             linkedModel = comment;
 
-            let currReplyId = comment.replyId;
-
-            //find the root comment being replied to
-            while (currReplyId) {
-                //find replied to comment
-                rootComment = await Comment.findById(currReplyId);
-
-                //make sure replied to comment exists
-                if (!rootComment ) {
-                    createComment = false;
-                    response.status(404).json("Replied to comment couldn't be found.");
-                    break;
-                }
-
-                //look for next replied to comment
-                currReplyId = rootComment.replyId;
-            }
+            rootCommentId = comment.rootCommentId;
         }
         else
         {
@@ -128,10 +112,10 @@ const updateLinkedModel = async (linkedId, score) => {
         );
 
         //if root comment, update its replies 
-        if (rootComment) {
+        if (rootCommentId) {
             await Comment.findOneAndUpdate(
                 {
-                    _id: rootComment._id,
+                    _id: rootCommentId,
                     "replies._id": linkedId
                 },
                 {
@@ -147,8 +131,49 @@ const updateLinkedModel = async (linkedId, score) => {
     
 };
 
+//middleware to ensure vote score is reasonable
+const verifyVoteScore = (request, response, next) => {
+
+    const score = request.body.score;
+
+    //if user isn't admin and cast an inconceivable vote
+    if (!request.user.isAdmin && (score > 1 || score < -1)) {
+        return response.status(400).json("Score must be +1, -1, or 0 not " + score);
+    }
+
+    const reputationRequirements = {
+        downVote: 50,
+        upVote: 10
+    };
+
+    //if downvote
+    if (score < 0) {
+        //if user rep is too low
+        if (request.user.reputation < reputationRequirements.downVote) {
+            return response.status(400).json(
+                `You need atleast ${reputationRequirements.downVote} 
+                reputation to cast a down-vote.`
+            )
+        }
+    }
+    //if upvote or no score vote
+    else {
+        //if user rep is too low
+        if (request.user.reputation < reputationRequirements.upVote) {
+            return response.status(400).json(
+                `You need atleast ${reputationRequirements.upVote} 
+                reputation to cast an up-vote. 
+                (Try creating a highly reputed post or comment to increase your reputation)`
+            );
+        }
+    }
+
+    next();
+
+};
+
 //create vote and update linked post rep
-router.post("/vote", verify, async (request, response) => {
+router.post("/vote", [verify, verifyVoteScore], async (request, response) => {
     
     const username = request.body.username;
     const linkedId = mongoose.Types.ObjectId(request.body.linkedId); //string, not obj id
@@ -159,38 +184,6 @@ router.post("/vote", verify, async (request, response) => {
     }
     
     try {
-
-        //if user isn't admin and can't cast an inconceivable vote
-        if (!request.user.isAdmin && (score > 1 || score < -1)) {
-            return response.status(400).json("Score must be +1, -1, or 0 not " + score);
-        }
-
-        const reputationRequirements = {
-            downVote: 50,
-            upVote: 10
-        };
-
-        //if downvote
-        if (score < 0) {
-            //if user rep is too low
-            if (request.user.reputation < reputationRequirements.downVote) {
-                return response.status(400).json(
-                    `You need atleast ${reputationRequirements.downVote} 
-                    reputation to cast a down-vote.`
-                )
-            }
-        }
-        //if upvote or no score vote
-        else {
-            //if user rep is too low
-            if (request.user.reputation < reputationRequirements.upVote) {
-                return response.status(400).json(
-                    `You need atleast ${reputationRequirements.upVote} 
-                    reputation to cast an up-vote. 
-                    (Try creating a highly reputed post or comment to increase your reputation)`
-                );
-            }
-        }
 
         //find a vote w/ user as author and same linkedId
         const foundDuplicateVote = await Vote.findOne({
@@ -249,7 +242,7 @@ router.post("/vote", verify, async (request, response) => {
 });
 
 //update vote and update linked post rep
-router.put("/update/:voteId", verify, async (request, response) => {
+router.put("/update/:voteId", [verify, verifyVoteScore], async (request, response) => {
     //ensure vote id's match
     if (request.body.voteId === request.params.voteId) {
 
