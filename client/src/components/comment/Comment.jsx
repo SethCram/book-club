@@ -189,7 +189,7 @@ export default function Comment({ handleComment = null, handleReply = null, comm
                             </Link>
                         </h3>
                         {comment && new Date(comment.updatedAt).toDateString()}
-                        {(comment?.username === user?.username || user?.isAdmin) && !writeMode &&
+                        {comment && (comment.username === user?.username || user?.isAdmin) && !writeMode && 
                             <i
                                 className="commentButton commentUpdate fa-regular fa-pen-to-square"
                                 onClick={() => { setWriteMode(true); setFeedback(comment.description); }}
