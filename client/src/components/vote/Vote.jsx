@@ -21,14 +21,6 @@ export default function Vote({
     const [scoreChange, setScoreChange] = useState(0);
     const [voteIconClasses, setVoteIconClasses] = useState("");
 
-    //const [voteIconSpecifics, setVoteIconSpecifics] = useState(0);
-    /*const VoteIconSpecifics = {
-        HOLLOW_UPVOTE: 0,
-        SOLID_UPVOTE: 1,
-        HOLLOW_DOWNVOTE: 2,
-        SOLID_DOWNVOTE: 3
-    };*/
-
     useEffect(() => {
 
         const getScore = () => {
@@ -124,38 +116,7 @@ export default function Vote({
     
     const handleVote = async () => {
 
-        const reputationRequirements = {
-            downVote: 50,
-            upVote: 10
-        };
-
         setVoteErrorMsg("");
-
-        //if upvote
-        if (voteType === VoteType.UPVOTE) {
-            //if user rep is too low
-            if (user.reputation < reputationRequirements.upVote) {
-                setVoteErrorMsg(
-                    `You need atleast ${reputationRequirements.upVote} 
-                    reputation to cast an up-vote. 
-                    (Try creating a highly reputed post or comment to increase your reputation)`
-                );
-                return;
-            }
-        }
-        //if downvote
-        else if (voteType === VoteType.DOWNVOTE) {
-            //if user rep is too low
-            if (user.reputation < reputationRequirements.downVote) {
-                setVoteErrorMsg(
-                    `You need atleast ${reputationRequirements.downVote} 
-                    reputation to cast a down-vote.`
-                );
-                return;
-            }
-        }
-
-        //console.log(score);
 
         let updateVote = {
             score: scoreChange,
@@ -164,8 +125,6 @@ export default function Vote({
         };
 
         let voteObject;
-
-        //let changeInVoteScoring;
 
         try {
 
@@ -180,8 +139,6 @@ export default function Vote({
                     updateVote,
                     axiosAuthHeaders
                 );
-
-                //changeInVoteScoring = voteObject.data.vote.score - existingVote.score
             }
             else
             {
@@ -190,8 +147,6 @@ export default function Vote({
                     updateVote,
                     axiosAuthHeaders
                 ); 
-
-                //changeInVoteScoring = voteObject.data.vote.score;
             }
 
             //if linkedModel badgeName, update it locally 
@@ -227,11 +182,13 @@ export default function Vote({
             //set new vote properly
             setVote(voteObject.data.vote);
 
-            //change local post rep score
-            //setRepScore(repScore + changeInVoteScoring);
-
         } catch (error) {
-            console.log(error);
+            //if bad request
+            if (error.response.status === 400) {
+                //tell client error
+                setVoteErrorMsg(error.response.data);
+            }
+            //console.log(error);
         } 
     };
 

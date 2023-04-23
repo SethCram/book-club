@@ -156,9 +156,36 @@ router.post("/vote", verify, async (request, response) => {
     
     try {
 
-        //if user isn't admin and cast an inconceivable vote
+        //if user isn't admin and can't cast an inconceivable vote
         if (!request.user.isAdmin && (score > 1 || score < -1)) {
             return response.status(400).json("Score must be +1, -1, or 0 not " + score);
+        }
+
+        const reputationRequirements = {
+            downVote: 50,
+            upVote: 10
+        };
+
+        //if downvote
+        if (score < 0) {
+            //if user rep is too low
+            if (request.user.reputation < reputationRequirements.downVote) {
+                return response.status(400).json(
+                    `You need atleast ${reputationRequirements.downVote} 
+                    reputation to cast a down-vote.`
+                )
+            }
+        }
+        //if upvote or no score vote
+        else {
+            //if user rep is too low
+            if (request.user.reputation < reputationRequirements.upVote) {
+                return response.status(400).json(
+                    `You need atleast ${reputationRequirements.upVote} 
+                    reputation to cast an up-vote. 
+                    (Try creating a highly reputed post or comment to increase your reputation)`
+                );
+            }
         }
 
         //find a vote w/ user as author and same linkedId
