@@ -169,9 +169,9 @@ export default function Vote({
 
         try {
 
-            if (existingVote) {
+            const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
 
-                const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+            if (existingVote) {
 
                 updateVote["voteId"] = existingVote._id;
 
@@ -186,7 +186,10 @@ export default function Vote({
             else
             {
                 //create new vote
-                voteObject = await axios.post("/votes/vote", updateVote); 
+                voteObject = await axios.post("/votes/vote",
+                    updateVote,
+                    axiosAuthHeaders
+                ); 
 
                 //changeInVoteScoring = voteObject.data.vote.score;
             }

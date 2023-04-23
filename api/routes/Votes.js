@@ -148,7 +148,7 @@ const updateLinkedModel = async (linkedId, score) => {
 };
 
 //create vote and update linked post rep
-router.post("/vote", async (request, response) => {
+router.post("/vote", verify, async (request, response) => {
     
     const username = request.body.username;
     const linkedId = mongoose.Types.ObjectId(request.body.linkedId); //string, not obj id
@@ -156,9 +156,9 @@ router.post("/vote", async (request, response) => {
     
     try {
 
-        if (score !== 1 && score !== -1) {
-            //console.log(score);
-            throw new Error("Score must be +1 or -1 not " + score);
+        //if user isn't admin and cast an inconceivable vote
+        if (!request.user.isAdmin && (score > 1 || score < -1)) {
+            return response.status(400).json("Score must be +1, -1, or 0 not " + score);
         }
 
         //find a vote w/ user as author and same linkedId
@@ -216,7 +216,6 @@ router.post("/vote", async (request, response) => {
         response.status(500).json(error);
     }
 });
-
 
 //update vote and update linked post rep
 router.put("/update/:voteId", verify, async (request, response) => {
