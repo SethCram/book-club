@@ -2,8 +2,9 @@
 import { useContext, useEffect, useState } from "react";
 import "./MyMultiselect.css"
 import Multiselect from 'multiselect-react-dropdown'
-import { ThemeContext } from "../../App";
+import { ThemeContext, getAxiosAuthHeaders } from "../../App";
 import axios from "axios";
+import { Context } from "../../context/Context";
 
 export default function MyMultiselect({
     displayValue, options, setOptions, placeholderTxt,
@@ -14,6 +15,7 @@ export default function MyMultiselect({
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [categoriesCount, setCategoriesCount] = useState([]);
+    const { user, dispatch } = useContext(Context);
     
     useEffect(() => {
         setSelectedOptions(preSelectedOptions);
@@ -56,9 +58,15 @@ export default function MyMultiselect({
                 //if searchterm isn't already an option
                 if (!options.some(option => option.name === searchTerm)) {
                     try {
-                        const response = await axios.post("/categories/", {
+
+                        const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+                    
+                        const response = await axios.post("/categories/",
+                            {
                             name: searchTerm
-                        });
+                            },
+                            axiosAuthHeaders
+                        );
                         newSelectedOption = response.data;
 
                         //update dropdown options
