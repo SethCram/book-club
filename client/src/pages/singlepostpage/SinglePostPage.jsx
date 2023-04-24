@@ -47,11 +47,17 @@ export default function SinglePostPage() {
     getUser();
   }, [post])
 
+  useEffect(() => {
+    //if post author was actually updated, update it in the sidebar
+    if (updatedPostAuthor?.username === post?.username) {
+      setSidebarUser(updatedPostAuthor)
+    }
+  }, [updatedPostAuthor, post]);
+
   return (
     <div className='singlepostpage'>
       <SinglePost post={ post } setUpdatedPostAuthor={setUpdatedPostAuthor} />
-      {/* Why would user be displayed if sidebar user null?? */}
-      <Sidebar user={sidebarUser} updatedPostAuthor={updatedPostAuthor} />
+      <Sidebar sidebarUser={sidebarUser} />
     </div>
   )
 }

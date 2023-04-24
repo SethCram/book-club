@@ -7,25 +7,25 @@ import './Sidebar.css'
 import { getAxiosAuthHeaders } from '../../App';
 import { Context } from '../../context/Context';
 
-export default function Sidebar({ user, updatedPostAuthor = null }) {
+export default function Sidebar({ sidebarUser }) {
   const [categoriesCount, setCategoriesCount] = useState([]);
-  const anyUserLinksSet = user && (user.instagramLink ||
-    user.twitterLink ||
-    user.facebookLink ||
-    user.pinterestLink);
+  const anyUserLinksSet = sidebarUser && (sidebarUser.instagramLink ||
+    sidebarUser.twitterLink ||
+    sidebarUser.facebookLink ||
+    sidebarUser.pinterestLink);
   const contextObj = useContext(Context);
   const navigate = useNavigate();
 
   useEffect(() => {
     const getPosts = async (howMany) => {
-      const response = await axios.get(`/posts/sum/sum/?username=${user.username}&&sumBy=category&&count=${howMany}`);
+      const response = await axios.get(`/posts/sum/sum/?username=${sidebarUser.username}&&sumBy=category&&count=${howMany}`);
       setCategoriesCount(response.data.categoriesCount);
     }
     const USER_CATS = 6;
-    if (user) {
+    if (sidebarUser) {
       getPosts(USER_CATS);
     }
-  }, [user])
+  }, [sidebarUser])
 
   const handleDeleteAccount = async () => {
 
@@ -33,9 +33,9 @@ export default function Sidebar({ user, updatedPostAuthor = null }) {
 
       const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(contextObj.user, contextObj.dispatch);
 
-      await axios.delete("/users/" + user._id,
+      await axios.delete("/users/" + sidebarUser._id,
         {
-          data: { userId: user._id, username: user.username },
+          data: { userId: sidebarUser._id, username: sidebarUser.username },
           headers: axiosAuthHeaders.headers
         }
       );
@@ -61,30 +61,18 @@ export default function Sidebar({ user, updatedPostAuthor = null }) {
         </span>
           <span className='sidebarReputation'> 
           <ReputationIcon
-            repScore={
-              (updatedPostAuthor && updatedPostAuthor.username !== user.username)
-                ?
-                updatedPostAuthor.reputation
-                :
-                user?.reputation
-            }
-            user={
-              (updatedPostAuthor && updatedPostAuthor.username !== user.username)
-                ?
-                updatedPostAuthor
-                :
-                user
-            }
+            repScore={sidebarUser?.reputation}
+            user={sidebarUser}
             fromSideBar={true}
           />
-            {user ? user.username : "No user found"}
+            {sidebarUser ? sidebarUser.username : "No user found"}
           </span> 
           <img
-            src={user?.profilePicture && user.profilePicture } 
+            src={sidebarUser?.profilePicture && sidebarUser.profilePicture } 
             alt="" 
           />
           <p>
-            { user?.bio && `"${user.bio}"` /*load bio in quotes if there is one*/} 
+            { sidebarUser?.bio && `"${sidebarUser.bio}"` /*load bio in quotes if there is one*/} 
           </p>
         </div >
       {categoriesCount.length !== 0 &&
@@ -93,7 +81,7 @@ export default function Sidebar({ user, updatedPostAuthor = null }) {
           <ul className='sidebarList'>
             {categoriesCount.map((categoryCount, i) => (
               <li className='sidebarListItem' key={i}>
-                <Link className='link' to={`/?category=${categoryCount._id}&&username=${user.username}`} >
+                <Link className='link' to={`/?category=${categoryCount._id}&&username=${sidebarUser.username}`} >
                   {categoryCount.count} {categoryCount._id}
                 </Link>
               </li>
@@ -105,7 +93,7 @@ export default function Sidebar({ user, updatedPostAuthor = null }) {
         <div className='sidebarItem'>
           <span className='sidebarTitle'>FOLLOW AT</span>
           <div className='sidebarSocial'>
-            <SocialMediaIcons user={user} barPosition="side"/>
+            <SocialMediaIcons user={sidebarUser} barPosition="side"/>
           </div>
         </div>
       }

@@ -128,7 +128,7 @@ export default function Vote({
 
         try {
 
-            const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
+            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
 
             if (existingVote) {
 
@@ -156,8 +156,7 @@ export default function Vote({
 
             if (Object.keys(updatedAuthor).length > 0) {
 
-                //need to update sidebar user reputation
-                console.log("Sidebar author rep should be updated");
+                //need to update sidebar user reputation (if they're actually the post author)
                 setUpdatedAuthor(updatedAuthor);
 
                 //update us if we're the one who's rep changed
@@ -167,6 +166,10 @@ export default function Vote({
                         dispatch(UserUpdateStart());
 
                         const newUser = { ...user, ...updatedAuthor };
+
+                        //ensure tokens also updated
+                        newUser["accessToken"] = tokens.accessToken;
+                        newUser["refreshToken"] = tokens.refreshToken;
 
                         dispatch(UserUpdateSuccessful(newUser));
                     } catch (error) {

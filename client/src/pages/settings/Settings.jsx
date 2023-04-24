@@ -124,7 +124,7 @@ export default function Settings() {
 
         try {
 
-            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+            const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
 
             dispatch(UserUpdateStart());
 
@@ -235,7 +235,7 @@ export default function Settings() {
                   <button className="settingsSubmit" type="submit">Update</button>
               </form>
           </div>
-          <SideBar user={user} />
+          <SideBar sidebarUser={user} />
     </div>
   )
 }

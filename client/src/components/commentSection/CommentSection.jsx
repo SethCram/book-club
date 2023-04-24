@@ -68,6 +68,11 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
 
             const updatedAuthor = response.data.updatedUser;
 
+            //update post author if applicable
+            if (updatedAuthor?.username === post.username) {
+                setUpdatedPostAuthor(updatedAuthor);
+            }
+
             //if we require updating
             // update us if we're the one who's rep changed
             if (updatedAuthor?.username === user.username) {

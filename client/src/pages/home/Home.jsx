@@ -100,7 +100,7 @@ export default function Home() {
         <div className='home'>
           <div className="homeColumnAligned">
             <Posts posts={ posts } />
-            {username && <Sidebar user={user} />}
+            {username && <Sidebar sidebarUser={user} />}
             
             <div className="homePush"></div>
           </div>

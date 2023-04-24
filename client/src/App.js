@@ -8,7 +8,7 @@ import Register from "./pages/register/Register";
 import { Context } from "./context/Context";
 import About from "./pages/about/About";
 import "./App.css"
-import { useEffect, useLayoutEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import NotFound from "./pages/notfound/NotFound";
 import jwt_decode from "jwt-decode";
 import { UserUpdateFailure, UserUpdateStart, UserUpdateSuccessful } from "./context/Actions";
