@@ -89,6 +89,10 @@
     align-items: center;
 }
 
+.sidebarUsername{
+    font-weight: 600;
+}
+
 .sidebarReputationNumber{
     font-size: 10px;
     display: block; 

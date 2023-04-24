@@ -65,7 +65,12 @@ export default function Sidebar({ sidebarUser }) {
             user={sidebarUser}
             fromSideBar={true}
           />
-            {sidebarUser ? sidebarUser.username : "No user found"}
+          {sidebarUser ?
+            <Link to={`/?username=${sidebarUser.username}`} className="link sidebarUsername">
+              {sidebarUser.username}
+            </Link>
+            :
+            "No user found"}
           </span> 
           <img
             src={sidebarUser?.profilePicture && sidebarUser.profilePicture } 
