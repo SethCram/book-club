@@ -45,7 +45,7 @@ export const DeviceType = {
 }
 
 export const GetDeviceType = () => {
-  const [width, height] = useWindowSize();
+  const [width, _] = useWindowSize();
 
   let currDeviceType;
 
@@ -143,10 +143,24 @@ export const getAxiosAuthHeaders = async (user, dispatch) => {
 
 function App() {
   const { user } = useContext(Context);
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState(localStorage.getItem("mode") ? localStorage.getItem("mode"): "dark");
 
   const toggleTheme = () => {
-    setTheme((currTheme) => ( currTheme === "light" ? "dark" : "light" ));
+
+    let newTheme;
+
+    //if theme is light
+    if (theme === "light") {
+      //set it dark
+      newTheme = "dark";
+    //if theme is dark
+    } else {
+      //set it light
+      newTheme = "light"
+    }
+
+    localStorage.setItem("mode", newTheme);
+    setTheme(newTheme);
   };
 
   return (

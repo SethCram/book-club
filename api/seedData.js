@@ -79,7 +79,7 @@ const createRandomPhotoUrl = (width, height) => {
         faker.image.image,
         faker.image.nature,
         //faker.image.nightlife, //contains inappropriate images
-        faker.image.people,
+        //faker.image.people, //contains inappropriate images
         faker.image.sports,
         faker.image.technics,
         faker.image.transport,
