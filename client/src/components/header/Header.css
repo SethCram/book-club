@@ -28,6 +28,11 @@
     font-size: 3em;
 }
 
+.headerSearchSubtitle{
+    font-size: 1.5em;
+    margin-left: 10%;
+}
+
 .headerSearchBar{
     margin-left: 4%;
     margin-right: 25%;

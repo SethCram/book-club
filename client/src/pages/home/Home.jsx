@@ -11,18 +11,9 @@ export default function Home() {
   const [pageNumber, setPageNumber] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [user, setUser] = useState(null);
+  const [queryUsername, setQueryUsername] = useState("");
   const { search } = useLocation(); //just take search prop of location
   const pages = new Array(totalPages).fill(null).map((v, i) => i);
-
-  const findQueryStrValue = (queries, queryString) => {
-    for (let i = 0; i < queries.length; i++) {
-      if (queries[i].indexOf(queryString) !== -1) {
-        return queries[i].split("=")[1];
-      }
-    }
-  }
-  const queries = search.split('&&'); 
-  const username = findQueryStrValue(queries, "username");
 
   useEffect(() => { //cant detch data in here since using sync funct
     
@@ -34,6 +25,18 @@ export default function Home() {
     }
     fetchPosts();
 
+    const findQueryStrValue = (queries, queryString) => {
+      for (let i = 0; i < queries.length; i++) {
+        if (queries[i].indexOf(queryString) !== -1) {
+          return queries[i].split("=")[1];
+        }
+      }
+    }
+    const queries = search.split('&&'); 
+    const username = findQueryStrValue(queries, "username");
+
+    setQueryUsername(username);
+
     //force scroll user to top of page
     window.scrollTo(0, 0);
 
@@ -43,19 +46,19 @@ export default function Home() {
   useEffect(() => {
     const getUser = async () => { 
       //only set user if the search type is requesting them
-      if (username)
+      if (queryUsername)
       {
         try {
-          const response = await axios.get("/users/username/" + username);
+          const response = await axios.get("/users/username/" + queryUsername);
           setUser(response.data);
         } catch (error) {
-          //notify requester that username was changed/user deleted
+          //notify requester that queryUsername was changed/user deleted
         }
       }
     };
     getUser();      
 
-  }, [username]) //run everytime username changes
+  }, [queryUsername]) //run everytime queryUsername changes
 
   function updateUrlParameter(url, param, value){
     var regex = new RegExp('([?|&]'+param+'=)[^\&]+');
@@ -96,11 +99,11 @@ export default function Home() {
 
   return (
     <>
-        <Header queryTerms={search} />
+        <Header queryTerms={search}  />
         <div className='home'>
           <div className="homeColumnAligned">
             <Posts posts={ posts } />
-            {username && <Sidebar sidebarUser={user} />}
+            {queryUsername && <Sidebar sidebarUser={user} />}
             
             <div className="homePush"></div>
           </div>
