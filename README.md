@@ -10,8 +10,8 @@
 - Test data script manages fake posts, users, categories, votes, and comments
   - all linked together
   - from api dir: 
-    - insertion: "node seedData.js -i -p # -u # -c #"
-    - deletion: "node seedData.js -d"
+    - insertion: `node seedData.js -i -p # -u # -c #`
+    - deletion: `node seedData.js -d`
 - CkEditor features can be added or removed:
   - download from https://ckeditor.com/ckeditor-5/online-builder/
   - unzip folder into client folder 
@@ -26,6 +26,8 @@
 
 ## Deployment Notes
 
+The Deployment Instructions assume the project is being deployed onto AWS. The only changes necessary to deploy it elsewhere is to ensure port 80 is open to HTTP traffic and port 443 to HTTPS traffic.
+
 ### Deployment Instructions
 1. Launch a new EC2 instance on AWS:
     1. Select Ubuntu as the OS image
@@ -39,3 +41,18 @@
     3. Open up PuttyGen, "Load" the .pem key, and "Save private key" as .ppk
     4. In Putty, Connection > SSH > Auth > Credentials > and choose "Private key file for authentication" as the .ppk we just generated
     5. When prompted, choose to Accept
+4. Install setup application software Node.js & npm and server software nginx & pm2
+    ```sh
+    sudo apt install -y nodejs
+    sudo apt install -y npm
+    sudo apt install -y nginx
+    sudo npm i -gy pm2
+    ```
+5. Clone the project and install its dependencies
+    ```sh
+    git clone https://github.com/SethCram/book-club.git
+    cd book-club/api/
+    sudo npm install -y 
+    cd ../client/
+    sudo npm install -y
+    ```
