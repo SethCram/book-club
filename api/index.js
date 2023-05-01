@@ -14,6 +14,7 @@ const path = require("path");
 const fs = require('fs');
 const { promisify } = require('util');
 const unlinkAsync = promisify(fs.unlink);
+const {URL} = require('url');
 
 //bring in env vars
 dotenv.config();
@@ -41,10 +42,13 @@ const storage = multer.diskStorage({
 //file upload and deletion
 const upload = multer({ storage: storage });
 app.post("/api/upload", upload.single("file"), (request, response) => {
-    //console.log(request.body.upload);
+
     try {
+        let responseImageURL = new URL(process.env.API_URL);
+        responseImageURL.pathname = path.join("images", request.file.filename);
+
         response.status(201).json({
-            "url": "http://localhost:5000/images/" + request.file.filename
+            "url": responseImageURL.href
         });
     } catch (error) {
         response.status(500).json({
