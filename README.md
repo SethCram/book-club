@@ -98,9 +98,9 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
 9. Indefinitely run both the api and the client, then verify 
     ```sh
     cd api
-    pm2 start --name api-dashboard npm -- start
+    pm2 start --name api npm -- start
     cd ../client/ 
-    pm2 start --name client-dashboard npm -- start
+    pm2 start --name client npm -- start
     pm2 logs 
     ```
 10. Setup nginx to direct external traffic to the client
