@@ -39,19 +39,19 @@ const storage = multer.diskStorage({
     }
 });
 
-//file upload and deletion
+//file upload to environment FILE_STORAGE_URL
 const upload = multer({ storage: storage });
 app.post("/api/upload", upload.single("file"), (request, response) => {
-
+    
     try {
-        let responseImageURL = new URL(process.env.API_URL);
+        let responseImageURL = new URL(process.env.FILE_STORAGE_URL);
         responseImageURL.pathname = path.join("images", request.file.filename);
 
-        response.status(201).json({
+        response.status(201).json({ // responses must be structured this way for ckeditor5 custom image uploader
             "url": responseImageURL.href
         });
     } catch (error) {
-        response.status(500).json({
+        response.status(500).json({ // responses must be structured this way for ckeditor5 custom image uploader
             "error": {
                 "message": "The image upload failed."
             }
@@ -60,6 +60,8 @@ app.post("/api/upload", upload.single("file"), (request, response) => {
         //console.log(request.file.filename);
     }
 });
+
+//local file storage deletion
 app.delete("/api/photo/delete", async (request, response) => {
 
     try {
