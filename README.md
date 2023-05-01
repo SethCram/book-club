@@ -70,6 +70,11 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     npm install 
     cd ..
     ```
+    1. If any npm install hangs, reboot the instance and reconnect to it and then: 
+        ```sh
+        npm config set loglevel info
+        npm install --verbose
+        ```
 6. Copy the example environment setup file for the api
     ```sh
     cd api
