@@ -1,7 +1,7 @@
 import "./About.css"
 import { DeviceType, GetDeviceType } from "../../App";
 
-function renderSlides(src, currDeviceType) {
+function renderSlides(src, currDeviceType, title) {
     return(
         <div className="aboutSlides">
             <iframe
@@ -10,7 +10,7 @@ function renderSlides(src, currDeviceType) {
                 //render width and height based on device type
                 width={currDeviceType === DeviceType.TABLET ? 480 : 960}
                 height={currDeviceType === DeviceType.TABLET ? 299 : 569}
-
+                title={title}
                 allowfullscreen="true"
                 mozallowfullscreen="true"
                 webkitallowfullscreen="true"
@@ -42,13 +42,19 @@ export default function About() {
                     <>
                         {renderSlides(
                             "https://docs.google.com/presentation/d/e/2PACX-1vR09_leK1o_rWDyEh5y2XFQnewpAsDsH7KMYCTVN7Lp4-8DWj-ypn5XleNzpRVYkZQSVq8UcDPSt6d3/embed?start=false&loop=false&delayms=3000",
-                        currDeviceType)}
+                            currDeviceType,
+                            "The Proposal"
+                        )}
                         {renderSlides(
                             "https://docs.google.com/presentation/d/e/2PACX-1vShrTKNKzTwxHvTcFZ5A-4l2wzBum1q6XTT2mueejTnUHgOC2UlhWxbQhwz94sbTPWOtEOG-zPvWs1D/embed?start=false&loop=false&delayms=3000",
-                        currDeviceType)}
+                            currDeviceType,
+                            "The Prototype"
+                        )}
                         {renderSlides(
                             "https://docs.google.com/presentation/d/e/2PACX-1vQnoUQ7HHW5wVI7pFnDQSltu0UbBKyfYRBYms0yDKGJguyymDgLCxFtivHrPfr_48Yuaua6UbEh5iTy/embed?start=false&loop=false&delayms=3000",
-                        currDeviceType)}
+                            currDeviceType,
+                            "The Minimum Viable Product"
+                        )}
                     </>
                 }
                 <div className="aboutContribution">

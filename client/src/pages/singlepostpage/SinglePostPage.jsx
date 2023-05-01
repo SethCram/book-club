@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect} from "react"
 import { useLocation } from "react-router-dom";
 import Sidebar from "../../components/sidebar/Sidebar"
 import SinglePost from "../../components/singlepost/SinglePost"
