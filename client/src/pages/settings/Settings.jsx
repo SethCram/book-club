@@ -24,7 +24,7 @@ export default function Settings() {
     //retrieve user according to userId
     useEffect(() => {
         const getUser = async () => { //could do so thru through using user props instead of api call
-            const response = await axios.get("/users/id/" + user._id);
+            const response = await axios.get("/api/users/id/" + user._id);
                 
             setUsername(response.data.username);
             setEmail(response.data.email);  
@@ -66,7 +66,7 @@ export default function Settings() {
             data.append("file", picture);
 
             try {
-                const response = await axios.post("/upload", data);
+                const response = await axios.post("/api/upload", data);
                 updatedUser.profilePicture = response.data.url;
             } catch (error) {
                 //console.log(error);
@@ -80,7 +80,7 @@ export default function Settings() {
 
             dispatch(UserUpdateStart());
 
-            const response = await axios.put(`/users/${user._id}`,
+            const response = await axios.put(`/api/users/${user._id}`,
                 updatedUser,
                 axiosAuthHeaders
             );
@@ -128,7 +128,7 @@ export default function Settings() {
 
             dispatch(UserUpdateStart());
 
-            await axios.delete("/users/" + user._id,
+            await axios.delete("/api/users/" + user._id,
                 {
                     data: { userId: user._id, username: user.username },
                     headers: axiosAuthHeaders.headers

@@ -69,7 +69,7 @@ export default function TopBar() {
     useEffect(() => {
         const getAutoCompleteTerms = async () => {
             try {
-                const autoCompletes = await axios.get("/posts/autocomplete/" + searchTerm);
+                const autoCompletes = await axios.get("/api/posts/autocomplete/" + searchTerm);
                 setAutoCompleteTerms(autoCompletes.data.posts);
             } catch (error) {
                 //console.log(error);
@@ -100,7 +100,7 @@ export default function TopBar() {
 
             const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
 
-            await axios.put("/auth/logout",
+            await axios.put("/api/auth/logout",
                 {
                     "token": tokens.refreshToken
                 },

@@ -23,7 +23,7 @@ export default function Comment({
         const getVote = async () => {
             try {
                 //get vote
-                const vote = await axios.get(`/votes/get/`, {
+                const vote = await axios.get(`/api/votes/get/`, {
                     params: {
                         username: user.username,
                         linkedId: comment._id
@@ -66,7 +66,7 @@ export default function Comment({
             const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
 
             //update comment in DB
-            await axios.put(`/comments/${comment._id}`,
+            await axios.put(`/api/comments/${comment._id}`,
                 {
                     username: user.username,
                     description: feedback
@@ -120,7 +120,7 @@ export default function Comment({
 
             const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
 
-            await axios.delete("/comments/" + comment._id,
+            await axios.delete("/api/comments/" + comment._id,
                 {
                     data: { username: user.username },
                     headers: axiosAuthHeaders.headers

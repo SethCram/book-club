@@ -70,7 +70,7 @@ const refreshTokens = async (user, dispatch) => {
   try {
     dispatch(UserUpdateStart());
 
-    const response = await axios.post("/auth/refresh", {
+    const response = await axios.post("/api/auth/refresh", {
       token: user.refreshToken
     });
 

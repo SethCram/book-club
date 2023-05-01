@@ -24,7 +24,7 @@ export default function MyMultiselect({
     useEffect(() => {
         const countPostsByCats = async () => {
             
-            const response = await axios.get(`/posts/sum/sum/?sumBy=category`);  
+            const response = await axios.get(`/api/posts/sum/sum/?sumBy=category`);  
             
             //console.log(response.data.categoriesCount);
             
@@ -61,7 +61,7 @@ export default function MyMultiselect({
 
                         const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
                     
-                        const response = await axios.post("/categories/",
+                        const response = await axios.post("/api/categories/",
                             {
                             name: searchTerm
                             },

@@ -18,7 +18,7 @@ export default function Home() {
   useEffect(() => { //cant detch data in here since using sync funct
     
     const fetchPosts = async () => {
-      const response = await axios.get("/posts" + search);  
+      const response = await axios.get("/api/posts" + search);  
 
       setPosts(response.data.posts);
       setTotalPages(response.data.totalPages);
@@ -49,7 +49,7 @@ export default function Home() {
       if (queryUsername)
       {
         try {
-          const response = await axios.get("/users/username/" + queryUsername);
+          const response = await axios.get("/api/users/username/" + queryUsername);
           setUser(response.data);
         } catch (error) {
           //notify requester that queryUsername was changed/user deleted

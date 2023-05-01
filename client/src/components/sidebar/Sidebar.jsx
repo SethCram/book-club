@@ -18,7 +18,7 @@ export default function Sidebar({ sidebarUser }) {
 
   useEffect(() => {
     const getPosts = async (howMany) => {
-      const response = await axios.get(`/posts/sum/sum/?username=${sidebarUser.username}&&sumBy=category&&count=${howMany}`);
+      const response = await axios.get(`/api/posts/sum/sum/?username=${sidebarUser.username}&&sumBy=category&&count=${howMany}`);
       setCategoriesCount(response.data.categoriesCount);
     }
     const USER_CATS = 6;
@@ -33,7 +33,7 @@ export default function Sidebar({ sidebarUser }) {
 
       const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(contextObj.user, contextObj.dispatch);
 
-      await axios.delete("/users/" + sidebarUser._id,
+      await axios.delete("/api/users/" + sidebarUser._id,
         {
           data: { userId: sidebarUser._id, username: sidebarUser.username },
           headers: axiosAuthHeaders.headers

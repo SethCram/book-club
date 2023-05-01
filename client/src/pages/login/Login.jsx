@@ -23,7 +23,7 @@ export default function Login() {
 
     try {
       //validate login
-      const response = await axios.post("/auth/login", {
+      const response = await axios.post("/api/auth/login", {
         email: emailReference.current.value,
         password: passwordReference.current.value
       });

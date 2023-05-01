@@ -16,7 +16,7 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
 
     useEffect(() => {
         const getComments = async () => {
-            const response = await axios.get("/comments/all/" + post._id);
+            const response = await axios.get("/api/comments/all/" + post._id);
             setComments(response.data);
         };
         if (post?._id) {
@@ -34,7 +34,7 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
     }, [updatedCommentAuthor, post, setUpdatedPostAuthor])
 
     const getComments = async () => {
-        const response = await axios.get("/comments/all/" + post._id);
+        const response = await axios.get("/api/comments/all/" + post._id);
         setComments(response.data);
     }
 
@@ -62,7 +62,7 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
 
             const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
 
-            const response = await axios.post("/comments/",
+            const response = await axios.post("/api/comments/",
                 newComment,
                 axiosAuthHeaders); 
 

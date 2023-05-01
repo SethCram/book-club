@@ -48,7 +48,7 @@ export default function WritePage() {
             data.append("file", picture);
 
             try {
-              const response = await axios.post("/upload", data);
+              const response = await axios.post("/api/upload", data);
               newPost.photo = response.data.url;
             } catch (error) {
               //console.log(error);
@@ -63,7 +63,7 @@ export default function WritePage() {
         
           const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
 
-          const response = await axios.post("/posts",
+          const response = await axios.post("/api/posts",
             newPost,
             axiosAuthHeaders); 
 
@@ -103,7 +103,7 @@ export default function WritePage() {
     useEffect(() => {
       const getCategories = async () => {
         try {
-          const storedCategories = await axios.get("/categories/");
+          const storedCategories = await axios.get("/api/categories/");
 
           setCategories(storedCategories.data);
           setPreSelectedCategories([storedCategories.data[0]]);

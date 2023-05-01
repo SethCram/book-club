@@ -15,7 +15,7 @@ export default function RFC_CkEditor({setDescription, defaultText="<p>Tell your 
                         const fileName = Date.now() + file.name;
                         body.append("name", fileName);
                         body.append("file", file);
-                        axios.post("/upload", body)
+                        axios.post("/api/upload", body)
                             //.then((response) => response.json())
                             .then(response => {
                                 resolve({ default: response.data.url })

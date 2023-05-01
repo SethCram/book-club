@@ -135,7 +135,7 @@ export default function Vote({
                 updateVote["voteId"] = existingVote._id;
 
                 //update vote w/ new score
-                voteObject = await axios.put(`/votes/update/${existingVote._id}`,
+                voteObject = await axios.put(`/api/votes/update/${existingVote._id}`,
                     updateVote,
                     axiosAuthHeaders
                 );
@@ -143,7 +143,7 @@ export default function Vote({
             else
             {
                 //create new vote
-                voteObject = await axios.post("/votes/vote",
+                voteObject = await axios.post("/api/votes/vote",
                     updateVote,
                     axiosAuthHeaders
                 ); 

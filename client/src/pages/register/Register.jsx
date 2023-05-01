@@ -20,7 +20,7 @@ export default function Register() { //could use context API to register but not
     setError("");
 
     try { //should return "username in use" if duplicate username (from api error code)
-      const response = await axios.post("/auth/register", { //submit registration w/ all needed info
+      const response = await axios.post("/api/auth/register", { //submit registration w/ all needed info
         username,
         email,
         password

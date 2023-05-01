@@ -69,7 +69,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
         const getVote = async () => {
             try {
                //get vote
-                const vote = await axios.get(`/votes/get/`, {
+                const vote = await axios.get(`/api/votes/get/`, {
                     params: {
                         username: user.username,
                         linkedId: post._id
@@ -105,7 +105,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
     useEffect(() => {
         const getCategories = async () => {
           try {
-            const storedCategories = await axios.get("/categories/");
+            const storedCategories = await axios.get("/api/categories/");
             setAllCategories(storedCategories.data);
           } catch (error) {
           
@@ -119,7 +119,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
 
             const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
 
-            await axios.delete(`/posts/${post._id}`,
+            await axios.delete(`/api/posts/${post._id}`,
                 {
                     data: { username: user.username },
                     headers: axiosAuthHeaders.headers
@@ -158,7 +158,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
             try {
                 
                 //delete from FS
-                await axios.delete("/photo/delete/", {
+                await axios.delete("/api/photo/delete/", {
                     data: { filePath: post.photo }
                 });
 
@@ -184,7 +184,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
             data.append("file", picture);
 
             try {
-                const response = await axios.post("/upload", data);
+                const response = await axios.post("/api/upload", data);
                 //update db photo url
                 postUpdate.photo = response.data.url;
                 //update local cache photo url
@@ -199,7 +199,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
 
             const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
 
-            await axios.put("/posts/" + post._id,
+            await axios.put("/api/posts/" + post._id,
                 postUpdate,
                 axiosAuthHeaders
             );

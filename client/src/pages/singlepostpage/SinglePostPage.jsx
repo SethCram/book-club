@@ -16,7 +16,7 @@ export default function SinglePostPage() {
   useEffect(() => {
     const getPost = async () => {
       try {
-        const response = await axios.get("/posts/" + postId);
+        const response = await axios.get("/api/posts/" + postId);
         setPost(response.data);
       } catch (error) {
         
@@ -31,7 +31,7 @@ export default function SinglePostPage() {
       if (post)
       {
         try {
-          const response = await axios.get("/users/username/" + post.username);
+          const response = await axios.get("/api/users/username/" + post.username);
 
           //if the retrieved username isn't the local username
           //if (response.data.username !== user?.username) {
