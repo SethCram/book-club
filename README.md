@@ -95,15 +95,21 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     npm start 
     cd ..
     ```
-9. Indefinitely run both the api and the client, then verify 
+9. Make sure pm2 runs the required processes on server restart
+    ```sh
+    pm2 startup
+    sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/v16.17.1/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
+    ```
+10. Indefinitely run both the api and the client, then verify and save them to run on server restart 
     ```sh
     cd api
     pm2 start --name api npm -- start
     cd ../client/ 
     pm2 start --name client npm -- start
     pm2 logs 
+    pm2 save
     ```
-10. Setup nginx to direct external traffic to the client
+11. Setup nginx to direct external traffic to the client
     ```sh
     sudo vi /etc/nginx/sites-available/default
     ```
@@ -132,5 +138,5 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     sudo nginx -t
     sudo service nginx restart
     ```
-11. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add both the public and private IP of the AWS EC2 instance (visible under EC2 instance details)
-12. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
+12. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add both the public and private IP of the AWS EC2 instance (visible under EC2 instance details)
+13. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
