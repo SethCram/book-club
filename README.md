@@ -63,9 +63,11 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     ```sh
     git clone https://github.com/SethCram/book-club.git
     cd book-club/api/
-    npm install -y 
-    cd ../client/
-    npm install -y
+    npm install
+    cd ../client/ckeditor5/
+    npm install
+    cd ..
+    npm install 
     cd ..
     ```
 6. Copy the example environment setup file for the api
