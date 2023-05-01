@@ -41,9 +41,10 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     3. Open up PuttyGen, "Load" the .pem key, and "Save private key" as .ppk
     4. In Putty, Connection > SSH > Auth > Credentials > and choose "Private key file for authentication" as the .ppk we just generated
     5. When prompted, choose to Accept
-4. Install setup application software Node.js & npm and server software nginx & pm2
+4. Install setup application software Node.js v16 & npm and server software nginx & pm2
     ```sh
-    sudo apt install -y nodejs
+    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+    sudo apt-get install -y nodejs
     sudo apt install -y npm
     sudo apt install -y nginx
     sudo npm i -gy pm2
@@ -52,7 +53,57 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     ```sh
     git clone https://github.com/SethCram/book-club.git
     cd book-club/api/
-    sudo npm install -y 
+    npm install -y 
     cd ../client/
-    sudo npm install -y
+    npm install -y
+    cd ..
     ```
+6. Copy the example environment setup file for the api
+    ```sh
+    cd api
+    cp .env.example .env
+    ```
+7. Fill out the environment setup file
+    ```sh
+    vi .env
+    ```
+    1. MONGO_URL should be found through MongoDB Atlas "Deployment" > Database > Connect > Drivers > Driver as "Node.js" version "4.1 or later", then copy & paste connection string, and replace <password> with the password for the given user
+    2. DEV_PASSWORD is recommended to be a complex passwords 
+    3. JWT_ACCESS_SECRET_KEY and JWT_REFRESH_SECRET_KEY should be extremely complex and distinct since they won't be required for direct usage, just authentication
+    3. ENV should be set to "PROD" (e.g. ENV="PROD")
+8. Manually start both the api and the client to ensure they both work in isolation
+    ```sh
+    npm start 
+    cd ../client/
+    npm start 
+    cd ..
+    ```
+9. Indefinitely run both the api and the client, then verify 
+    ```sh
+    cd api
+    pm2 start --name api-dashboard npm -- start
+    cd ../client/ 
+    pm2 start --name client-dashboard npm -- start
+    pm2 logs 
+    ```
+10. Setup nginx to direct external traffic to the client
+    ```sh
+    sudo vi /etc/nginx/nginx.conf
+    ```
+    add this inside the "server" block:
+    ```
+    location / {
+            proxy_pass http://localhost:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+        }
+    ```
+    verify the syntax of the config file is okay and start nginx using it
+    ```sh
+    sudo nginx -t
+    sudo service nginx restart
+    ```
+11. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
