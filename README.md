@@ -3,13 +3,10 @@
 - basis: https://www.youtube.com/watch?v=tlTdbc5byAs&list=PLj-4DlPRT48lGpll2kC4wOsLj7SEV_lYu
 
 ## Developer Notes
-### Developer Instructions
-- Node.js must be installed
-- Project dependencies can be installed via "npm install" in the respective directories
-- Both the api and client can be started running "npm start"
+
 - Test data script manages fake posts, users, categories, votes, and comments
   - all linked together
-  - from api dir: 
+  - from api directory: 
     - insertion: `node seedData.js -i -p # -u # -c #`
     - deletion: `node seedData.js -d`
 - CkEditor features can be added or removed:
@@ -17,6 +14,49 @@
   - unzip folder into client folder 
   - rename unzipped folder into "ckeditor5"
   - run "npm add file:./ckeditor5" in the client directory
+
+### Environment File
+1. MONGO_URL should be found through MongoDB Atlas "Deployment" > Database > Connect > Drivers > Driver as "Node.js" version "4.1 or later", then copy & paste connection string, and replace <password> with the password for the given user
+2. DEV_PASSWORD is recommended to be a complex passwords 
+3. JWT_ACCESS_SECRET_KEY and JWT_REFRESH_SECRET_KEY should be extremely complex and distinct since they won't be required for direct usage, just authentication
+3. ENV should be set to "PROD" (e.g. ENV="PROD")
+4. FILE_STORAGE_URL should be set to wherever the uploaded images are supposed to be stored 
+  
+### Developer Setup Instructions
+1. Install Node.js v16 & npm  
+    ```sh
+    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+    sudo apt install -y npm
+    ```
+    1. Verify nodejs is version 16 `node -v`
+    2. If nodejs is lower than v16, install nvm and update to the right node.js version:
+        ```sh
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+        command -v nvm
+        ```
+        If "command -v nvm" doesn't output "nvm", logout and relogin, and then:
+        ```sh
+        nvm install 16.17.1
+        ```
+2. Clone the project and install the project dependencies
+    ```sh
+      git clone https://github.com/SethCram/book-club.git
+      cd book-club/api/
+      npm install
+      cd ../client/ckeditor5/
+      npm install
+      cd ..
+      npm install 
+      cd ..
+    ```
+3. Fill out the environment setup file
+    ```sh
+    vi api/.env
+    ```
+    Refer to https://github.com/SethCram/book-club/README.md#environment-file for more details.
+4. Start the api and client by running `npm start` in their respective directories in different terminals
+  
 ### Packages
 - Nodemon is installed for a responsive api
 - Mongoose connects the API to MongoDB Atlas through NodeJS
@@ -50,7 +90,7 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     sudo npm i -gy pm2
     ```
     1. Verify nodejs is version 16 `node -v`
-    2. If nodejs is lower than v16, instal kvm and updating to the right node.js version:
+    2. If nodejs is lower than v16, install nvm and update to the right node.js version:
         ```sh
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
         command -v nvm
@@ -70,7 +110,7 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     npm install 
     cd ..
     ```
-    1. If any npm install hangs, reboot the instance and reconnect to it and then: 
+    1. If any npm install hangs, reboot the instance and reconnect to it and then setup debugging: 
         ```sh
         npm config set loglevel info
         npm install --verbose
@@ -79,15 +119,13 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     ```sh
     cd api
     cp .env.example .env
+    cd ..
     ```
 7. Fill out the environment setup file
     ```sh
-    vi .env
+    vi api/.env
     ```
-    1. MONGO_URL should be found through MongoDB Atlas "Deployment" > Database > Connect > Drivers > Driver as "Node.js" version "4.1 or later", then copy & paste connection string, and replace <password> with the password for the given user
-    2. DEV_PASSWORD is recommended to be a complex passwords 
-    3. JWT_ACCESS_SECRET_KEY and JWT_REFRESH_SECRET_KEY should be extremely complex and distinct since they won't be required for direct usage, just authentication
-    3. ENV should be set to "PROD" (e.g. ENV="PROD")
+    Refer to https://github.com/SethCram/book-club/README.md#environment-file for more details.
 8. Manually start both the api and the client to ensure they both work in isolation
     ```sh
     npm start 
@@ -100,20 +138,19 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     pm2 startup
     sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/v16.17.1/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
     ```
-10. Indefinitely run both the api and the client, then verify and save them to run on server restart 
+10. Indefinitely run the api, then verify and save it to run on server restart 
     ```sh
     cd api
     pm2 start --name api npm -- start
-    cd ../client/ 
-    pm2 start --name client npm -- start
     pm2 logs 
     pm2 save
+    cd ..
     ```
-11. Setup nginx to direct external traffic to the client
+11. Setup nginx to direct external api requests to the api
     ```sh
     sudo vi /etc/nginx/sites-available/default
     ```
-    add this inside the "server" block, replace the single "location" block with:
+    add this inside the "server" block, replacing the "location" block with:
     ```
     location /api {
         proxy_pass http://localhost:5000;
@@ -123,20 +160,22 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
     }
-  
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
     ```
-    verify the syntax of the config file is okay and start nginx using it
+12. Setup nginx to direct external website connections to the client
+    ```sh
+    sudo vi /etc/nginx/sites-available/default
+    ```
+    add this inside the "server" block, replacing "root" with:
+    ```
+    root /var/www/html;
+    ```
+
+13. Verify the syntax of the nginx config file is okay and start nginx using it
     ```sh
     sudo nginx -t
     sudo service nginx restart
     ```
-12. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add both the public and private IP of the AWS EC2 instance (visible under EC2 instance details)
-13. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
+14. Copy the production build files to their proper location `sudo cp -r ./client/build/* /var/www/html`
+15. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add both the public and private IP of the AWS EC2 instance (visible under EC2 instance details)
+    1. This step will need redoing if the Amazon EC2 instance is stopped and then started again since the public IP address changes, but not if the instance is rebooted
+16. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
