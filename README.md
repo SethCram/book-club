@@ -41,7 +41,7 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     3. Open up PuttyGen, "Load" the .pem key, and "Save private key" as .ppk
     4. In Putty, Connection > SSH > Auth > Credentials > and choose "Private key file for authentication" as the .ppk we just generated
     5. When prompted, choose to Accept
-4. Install setup application software Node.js v16 & npm and server software nginx & pm2
+4. Install setup application software Node.js v16 & npm and server software nginx & pm2    
     ```sh
     curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
     sudo apt-get install -y nodejs
@@ -49,6 +49,16 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     sudo apt install -y nginx
     sudo npm i -gy pm2
     ```
+    1. Verify nodejs is version 16 `node -v`
+    2. If nodejs is lower than v16, instal kvm and updating to the right node.js version:
+        ```sh
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+        command -v nvm
+        ```
+        If "command -v nvm" doesn't output "nvm", logout and relogin, and then:
+        ```sh
+        nvm install 16.17.1
+        ```
 5. Clone the project and install its dependencies
     ```sh
     git clone https://github.com/SethCram/book-club.git
