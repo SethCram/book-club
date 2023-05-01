@@ -132,4 +132,5 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     sudo nginx -t
     sudo service nginx restart
     ```
-11. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
+11. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add both the public and private IP of the AWS EC2 instance (visible under EC2 instance details)
+12. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
