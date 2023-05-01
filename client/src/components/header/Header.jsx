@@ -31,8 +31,6 @@ export default function Header({ queryTerms }) {
 
   }, [search])
 
-  console.log(queryTerms);
-
   return (
       <div className='header'>
         {queryTerms ? 

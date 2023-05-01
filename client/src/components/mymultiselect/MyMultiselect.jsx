@@ -59,7 +59,7 @@ export default function MyMultiselect({
                 if (!options.some(option => option.name === searchTerm)) {
                     try {
 
-                        const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+                        const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
                     
                         const response = await axios.post("/categories/",
                             {
@@ -75,7 +75,7 @@ export default function MyMultiselect({
                         //update selected options
                         setSelectedOptions(prevSelectedOptions => [...prevSelectedOptions, newSelectedOption]);
                     } catch (error) {
-                        console.log(error);
+                        //console.log(error);
                     }
                 }
                 //if searchterm is an option + not already selected

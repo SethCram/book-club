@@ -127,8 +127,6 @@ export default function Comment({
                 }
             )
 
-            console.log("comment deleted");
-
             await getComments();
 
         } catch (error) {

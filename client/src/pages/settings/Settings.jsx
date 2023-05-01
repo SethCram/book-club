@@ -69,7 +69,7 @@ export default function Settings() {
                 const response = await axios.post("/upload", data);
                 updatedUser.profilePicture = response.data.url;
             } catch (error) {
-                console.log(error);
+                //console.log(error);
             }
         }
 
@@ -100,7 +100,7 @@ export default function Settings() {
 
             let errorMsg;
 
-            console.log(error);
+            //console.log(error);
 
             if (typeof error === 'string' || error instanceof String) {
                 errorMsg = error;

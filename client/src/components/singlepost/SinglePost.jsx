@@ -158,7 +158,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
             try {
                 
                 //delete from FS
-                const response = await axios.delete("/photo/delete/", {
+                await axios.delete("/photo/delete/", {
                     data: { filePath: post.photo }
                 });
 
@@ -168,10 +168,10 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                 post.photo = "";
                 setPicture("");
 
-                console.log(response);
+                //console.log(response);
 
             } catch (error) {
-                console.log("Failed to delete " + post.photo);
+                //console.log("Failed to delete " + post.photo);
             }
         }
 
@@ -191,13 +191,13 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
                 post.photo = response.data.url; //need this for future file deletion
                 //setPicture(response.data.url); //cant set this here bc url created from picture var
             } catch (error) {
-                console.log(error);
+                //console.log(error);
             }
         }
         
         try {
 
-            const [axiosAuthHeaders, tokens] = await getAxiosAuthHeaders(user, dispatch);
+            const [axiosAuthHeaders, _] = await getAxiosAuthHeaders(user, dispatch);
 
             await axios.put("/posts/" + post._id,
                 postUpdate,
@@ -206,7 +206,7 @@ export default function SinglePost({post, setUpdatedPostAuthor}) {
 
             setUpdateMode(false); //dont needa update this way
         } catch (error) {
-            console.log(error);
+            //console.log(error);
         }
 
         //reset deletion desires

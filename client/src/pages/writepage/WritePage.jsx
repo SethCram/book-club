@@ -51,7 +51,7 @@ export default function WritePage() {
               const response = await axios.post("/upload", data);
               newPost.photo = response.data.url;
             } catch (error) {
-              console.log(error);
+              //console.log(error);
             }
         }
       
@@ -73,7 +73,7 @@ export default function WritePage() {
           // update us if we're the one who's rep changed
           if (updatedAuthor?.username === user.username) {
 
-            console.log(`updating user rep to ${updatedAuthor.reputation}`);
+            //console.log(`updating user rep to ${updatedAuthor.reputation}`);
                     
             try {
                 dispatch(UserUpdateStart());
@@ -86,7 +86,7 @@ export default function WritePage() {
 
                 dispatch(UserUpdateSuccessful(newUser));
             } catch (error) {
-                console.log(error);
+                //console.log(error);
                 dispatch(UserUpdateFailure());
             }
 
@@ -95,7 +95,7 @@ export default function WritePage() {
           navigate("/singlePostPage/" + response.data.post._id);
 
         } catch (error) {
-          console.log(error);
+          //console.log(error);
           setErrorMsg(error.response.data.message);
         }
     };

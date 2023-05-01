@@ -31,7 +31,7 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
             //update the post author thru sidebar
             setUpdatedPostAuthor(updatedCommentAuthor);
         }
-    }, [updatedCommentAuthor, post])
+    }, [updatedCommentAuthor, post, setUpdatedPostAuthor])
 
     const getComments = async () => {
         const response = await axios.get("/comments/all/" + post._id);
@@ -90,7 +90,7 @@ export default function CommentSection({post, setUpdatedPostAuthor}) {
 
                     dispatch(UserUpdateSuccessful(newUser));
                 } catch (error) {
-                    console.log(error);
+                    //console.log(error);
                     dispatch(UserUpdateFailure());
                 }
 

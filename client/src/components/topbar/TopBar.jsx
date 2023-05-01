@@ -72,7 +72,7 @@ export default function TopBar() {
                 const autoCompletes = await axios.get("/posts/autocomplete/" + searchTerm);
                 setAutoCompleteTerms(autoCompletes.data.posts);
             } catch (error) {
-                console.log(error);
+                //console.log(error);
             }
         };
 
@@ -108,7 +108,7 @@ export default function TopBar() {
             );
 
         } catch (error) {
-            console.log(error);
+            //console.log(error);
         }
 
         dispatch(Logout());
@@ -123,7 +123,7 @@ export default function TopBar() {
             //new posts are auto fetched from DB everytime search term in url changes
             navigate(`/?searchContents=${searchTerm}`);
         } catch (error) {
-            console.log(error);
+            //console.log(error);
         }
     }
 
