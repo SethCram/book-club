@@ -172,8 +172,8 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     add this inside the "server" block, below the first "location" block:
     ```
     location / {
-                try_files $uri $uri/ /index.html; #route all the requests to the index.html file
-        }
+        try_files $uri $uri/ /index.html; #route all the requests to the index.html file
+    }
     ```
 
 13. Verify the syntax of the nginx config file is okay and start nginx using it
