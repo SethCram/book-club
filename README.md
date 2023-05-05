@@ -125,7 +125,7 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     ```sh
     vi api/.env
     ```
-    Refer to https://github.com/SethCram/book-club/README.md#environment-file for more details.
+    Refer to https://github.com/SethCram/book-club#environment-file for more details.
 8. Manually start both the api and the client to ensure they both work in isolation
     ```sh
     npm start 
