@@ -54,7 +54,7 @@
     ```sh
     vi api/.env
     ```
-    Refer to https://github.com/SethCram/book-club/README.md#environment-file for more details.
+    Refer to https://github.com/SethCram/book-club#environment-file for more details.
 4. Start the api and client by running `npm start` in their respective directories in different terminals
   
 ### Packages
