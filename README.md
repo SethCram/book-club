@@ -133,10 +133,11 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     npm start 
     cd ..
     ```
-9. Make sure pm2 runs the required processes on server restart
+9. Make sure pm2 runs the required processes and nginx boots on server restart
     ```sh
     pm2 startup
     sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/v16.17.1/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
+    sudo systemctl enable nginx
     ```
 10. Indefinitely run the api, then verify and save it to run on server restart 
     ```sh
