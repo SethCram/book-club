@@ -69,7 +69,7 @@ app.delete("/api/photo/delete", async (request, response) => {
         const fileName = request.body.filePath.split("/").pop();
 
         //delete file from local FS
-        await unlinkAsync(path.join(__dirname, "/images/" + fileName));
+        await unlinkAsync(path.join(__dirname, "images", fileName));
 
         response.status(200).json("File has been deleted");
     } catch (error) {
