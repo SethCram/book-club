@@ -20,7 +20,7 @@
 2. DEV_PASSWORD is recommended to be a complex passwords 
 3. JWT_ACCESS_SECRET_KEY and JWT_REFRESH_SECRET_KEY should be extremely complex and distinct since they won't be required for direct usage, just authentication
 3. ENV should be set to "PROD" (e.g. ENV="PROD")
-4. FILE_STORAGE_URL should be set to wherever the uploaded images are supposed to be stored 
+4. FILE_STORAGE_URL should be set to wherever the uploaded images are supposed to be stored, currently working properly with http://[publicIpAddress]
   
 ### Developer Setup Instructions
 1. Install Node.js v16 & npm  
@@ -139,10 +139,12 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/v16.17.1/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
     sudo systemctl enable nginx
     ```
-10. Indefinitely run the api, then verify and save it to run on server restart 
+10. Indefinitely run the api and client, then verify and save it to run on server restart 
     ```sh
     cd api
     pm2 start --name api npm -- start
+    cd ../client
+    pm2 start --name client npm -- start
     pm2 logs 
     pm2 save
     cd ..
@@ -166,14 +168,15 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     ```sh
     sudo vi /etc/nginx/sites-available/default
     ```
-    add this inside the "server" block, replacing "root" with:
-    ```
-    root /var/www/html;
-    ```
     add this inside the "server" block, below the first "location" block:
     ```
     location / {
-        try_files $uri $uri/ /index.html; #route all the requests to the index.html file
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
     }
     ```
 
@@ -182,7 +185,6 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     sudo nginx -t
     sudo service nginx restart
     ```
-14. Copy the production build files to their proper location `sudo cp -r ./client/build/* /var/www/html`
-15. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add both the public and private IP of the AWS EC2 instance (visible under EC2 instance details)
+14. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add both the public and private IP of the AWS EC2 instance (visible under EC2 instance details)
     1. This step will need redoing if the Amazon EC2 instance is stopped and then started again since the public IP address changes, but not if the instance is rebooted
-16. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
+15. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
