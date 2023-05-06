@@ -74,14 +74,16 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     2. Generate a new .pem key pair for SSH 
     3. Allow SSH, HTTPS, and HTTP traffic from anywhere on the internet
     4. Set the storage to 20GB (arbitrarily) 
-2. Wait for the Instance State to read "Running" 
-3. Go into the instance > Connect > EC2 Instance Connect > Connect
+2. On AWS, navigate "Network & Security" > "Elastic IPs" > "Allocate Elastic IP address" > "Allocate" > Select the IP > "Associate Elastic IP address" > Choose the instance we're running on > "Associate"
+  1. If an elastic public IP isn't created and associated with the instance, when the instance is stopped and started back up again, the public IP address will change
+3. Wait for the Instance State to read "Running" 
+4. Go into the instance > Connect > EC2 Instance Connect > Connect
     1. If this doesn't work, go into the SSH client tab and follow the below steps, otherwise continue to step 4
     2. Then copy & paste the last part of the "Example:" into Putty as the Session
     3. Open up PuttyGen, "Load" the .pem key, and "Save private key" as .ppk
     4. In Putty, Connection > SSH > Auth > Credentials > and choose "Private key file for authentication" as the .ppk we just generated
     5. When prompted, choose to Accept
-4. Install setup application software Node.js v16 & npm and server software nginx & pm2    
+5. Install setup application software Node.js v16 & npm and server software nginx & pm2    
     ```sh
     curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
     sudo apt-get install -y nodejs
@@ -99,7 +101,7 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
         ```sh
         nvm install 16.17.1
         ```
-5. Clone the project and install its dependencies
+6. Clone the project and install its dependencies
     ```sh
     git clone https://github.com/SethCram/book-club.git
     cd book-club/api/
@@ -115,31 +117,31 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
         npm config set loglevel info
         npm install --verbose
         ```
-6. Copy the example environment setup file for the api
+7. Copy the example environment setup file for the api
     ```sh
     cd api
     cp .env.example .env
     cd ..
     ```
-7. Fill out the environment setup file
+8. Fill out the environment setup file
     ```sh
     vi api/.env
     ```
     Refer to https://github.com/SethCram/book-club#environment-file for more details.
-8. Manually start both the api and the client to ensure they both work in isolation
+9. Manually start both the api and the client to ensure they both work in isolation
     ```sh
     npm start 
     cd ../client/
     npm start 
     cd ..
     ```
-9. Make sure pm2 runs the required processes and nginx boots on server restart
+10. Make sure pm2 runs the required processes and nginx boots on server restart
     ```sh
     pm2 startup
     sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/v16.17.1/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
     sudo systemctl enable nginx
     ```
-10. Indefinitely run the api and client, then verify and save it to run on server restart 
+11. Indefinitely run the api and client, then verify and save it to run on server restart 
     ```sh
     cd api
     pm2 start --name api npm -- start
@@ -149,7 +151,7 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     pm2 save
     cd ..
     ```
-11. Setup nginx to direct external api requests to the api
+12. Setup nginx to direct external api requests to the api
     ```sh
     sudo vi /etc/nginx/sites-available/default
     ```
@@ -164,7 +166,7 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
         proxy_cache_bypass $http_upgrade;
     }
     ```
-12. Setup nginx to direct external website connections to the client
+13. Setup nginx to direct external website connections to the client
     ```sh
     sudo vi /etc/nginx/sites-available/default
     ```
@@ -180,11 +182,10 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     }
     ```
 
-13. Verify the syntax of the nginx config file is okay and start nginx using it
+14. Verify the syntax of the nginx config file is okay and start nginx using it
     ```sh
     sudo nginx -t
     sudo service nginx restart
     ```
-14. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add both the public and private IP of the AWS EC2 instance (visible under EC2 instance details)
-    1. This step will need redoing if the Amazon EC2 instance is stopped and then started again since the public IP address changes, but not if the instance is rebooted
-15. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
+15. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add the elastic public IP of the AWS EC2 instance (visible under EC2 instance details)
+16. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
