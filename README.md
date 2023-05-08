@@ -8,6 +8,7 @@ A creative writing application leveraging MongoDB, Express, React, Node (MERN st
   - from api directory: 
     - insertion: `node seedData.js -i -p # -u # -c #`
     - deletion: `node seedData.js -d`
+    - example usage: `node seedData.js`
 - CkEditor features can be added or removed:
   - download from https://ckeditor.com/ckeditor-5/online-builder/
   - unzip folder into client folder 
