@@ -55,7 +55,31 @@ A creative writing application leveraging MongoDB, Express, React, Node (MERN st
     vi api/.env
     ```
     Refer to https://github.com/SethCram/book-club#environment-file for more details.
-4. Start the api and client by running `npm start` in their respective directories in different terminals
+4. Create the required Search Indices on MongoDB Atlas to allow the Search Bar to function properly
+    1. Login to MongoDB Atlas then go to "Deployment" > "Database" > "Search" > "Create Search Index" > "Visual Editor" > "Next"
+    2. Change the Index Name to "searchPosts" and link it to your Database's posts collection > "Next" > "Create Search Index"
+    3. "Create Index" again > "JSON Editor" > "Next" 
+    4. Change the Index Name to "autoCompletePosts", select your Database's posts collection again, and replace what's in the JSON Editor with 
+    ```JSON
+    {
+      "mappings": {
+        "dynamic": false,
+        "fields": {
+          "title": [
+            {
+              "foldDiacritics": false,
+              "maxGrams": 7, 
+              "minGrams": 3,
+              "tokenization": "edgeGram",
+              "type": "autocomplete"
+            }
+          ]
+        }
+      }
+    }
+    ```
+    5. "Create Search Index"
+5. Start the api and client by running `npm start` in their respective directories in different terminals
   
 ### Packages
 - Nodemon is installed for a responsive api
