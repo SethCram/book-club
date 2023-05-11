@@ -152,20 +152,26 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     vi api/.env
     ```
     Refer to https://github.com/SethCram/book-club#environment-file for more details.
-9. Manually start both the api and the client to ensure they both work in isolation
+9. Make sure the domain and DNS are able to redirect to the public IP
+  ```sh
+  cd client
+  export DANGEROUSLY_DISABLE_HOST_CHECK=true;
+  cd ..
+  ```
+10. Manually start both the api and the client to ensure they both work in isolation
     ```sh
     npm start 
     cd ../client/
     npm start 
     cd ..
     ```
-10. Make sure pm2 runs the required processes and nginx boots on server restart
+11. Make sure pm2 runs the required processes and nginx boots on server restart
     ```sh
     pm2 startup
     sudo env PATH=$PATH:/home/ubuntu/.nvm/versions/node/v16.17.1/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
     sudo systemctl enable nginx
     ```
-11. Indefinitely run the api and client, then verify and save it to run on server restart 
+12. Indefinitely run the api and client, then verify and save it to run on server restart 
     ```sh
     cd api
     pm2 start --name api npm -- start
@@ -175,7 +181,7 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     pm2 save
     cd ..
     ```
-12. Setup nginx to direct external api requests to the api
+13. Setup nginx to direct external api requests to the api
     ```sh
     sudo vi /etc/nginx/sites-available/default
     ```
@@ -190,7 +196,7 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
         proxy_cache_bypass $http_upgrade;
     }
     ```
-13. Setup nginx to direct external website connections to the client
+14. Setup nginx to direct external website connections to the client
     ```sh
     sudo vi /etc/nginx/sites-available/default
     ```
@@ -205,11 +211,20 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
         proxy_cache_bypass $http_upgrade;
     }
     ```
-
-14. Verify the syntax of the nginx config file is okay and start nginx using it
+15. Create an account and register a subdomain and its corresponding "www." at http://freedns.afraid.org/menu/
+16. Setup nginx to accept traffic from the domain name
+    ```sh
+    sudo vi /etc/nginx/sites-available/default
+    ```
+    replace the "server_name" with:
+    ```
+    server_name domain_name www.domain_name
+    ```
+17. Verify the syntax of the nginx config file is okay and start nginx using it
     ```sh
     sudo nginx -t
     sudo service nginx restart
     ```
-15. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add the elastic public IP of the AWS EC2 instance (visible under EC2 instance details)
-16. Navigate to the public IP address using http (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
+18. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add the elastic public IP of the AWS EC2 instance (visible under EC2 instance details)
+19. Navigate to the public IP address using a browser (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
+20. Navigate to the domain name using a browser (e.g. http://[domain_name]) and the frontend should be visible or use curl to verify `curl http://[domain_name]`
