@@ -20,7 +20,8 @@ A creative writing application leveraging MongoDB, Express, React, Node (MERN st
 2. DEV_PASSWORD is recommended to be a complex passwords 
 3. JWT_ACCESS_SECRET_KEY and JWT_REFRESH_SECRET_KEY should be extremely complex and distinct since they won't be required for direct usage, just authentication
 3. ENV should be set to "PROD" (e.g. ENV="PROD")
-4. FILE_STORAGE_URL should be set to wherever the uploaded images are supposed to be stored, currently working properly with http://[publicIpAddress]
+4. FILE_STORAGE_URL should be set to wherever the uploaded images are supposed to be stored
+    1. Currently setup to work properly with the multer at http://[publicIpAddress] or https://[publicIpAddress]
   
 ### Developer Setup Instructions
 1. Install Node.js v16 & npm  
@@ -50,7 +51,7 @@ A creative writing application leveraging MongoDB, Express, React, Node (MERN st
       npm install 
       cd ..
     ```
-3. Fill out the environment setup file
+3. Fill out the environment setup file (use http not https for the file storage url)
     ```sh
     vi api/.env
     ```
@@ -249,8 +250,12 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     ```
     1. Ask for certificates for both subdomains `1, 2`
     2. If a error is encountered that talks about "too many certificates already issued for [domain_name]", wait until the specified date and rerun this step's command or setup an `at` job to automate the certificate issuance
-25. Navigate to the secured domain name using a browser (e.g. https://[domain_name]) and the frontend should be visible or use curl to verify `curl https://[domain_name]`
-26. Lastly, ensure that automatic certificate renewal should go properly
+25. Change the file storage url from using HTTP to using HTTPS 
+    ```sh
+    vi api/.env
+    ```
+26. Navigate to the secured domain name using a browser (e.g. https://[domain_name]) and the frontend should be visible or use curl to verify `curl https://[domain_name]`
+27. Lastly, ensure that automatic certificate renewal should go properly
     ```sh
     sudo certbot renew --dry-run
     ```
