@@ -250,4 +250,8 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     1. Ask for certificates for both subdomains `1, 2`
     2. If a error is encountered that talks about "too many certificates already issued for [domain_name]", wait until the specified date and rerun this step's command or setup an `at` job to automate the certificate issuance
 25. Navigate to the secured domain name using a browser (e.g. https://[domain_name]) and the frontend should be visible or use curl to verify `curl https://[domain_name]`
+26. Lastly, ensure that automatic certificate renewal should go properly
+    ```sh
+    sudo certbot renew --dry-run
+    ```
   
