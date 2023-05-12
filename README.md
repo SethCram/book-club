@@ -1,6 +1,8 @@
 # Book-Club
 A creative writing application leveraging MongoDB, Express, React, Node (MERN stack)
 
+[Read the paper](https://drive.google.com/file/d/1VX7ZRVqH5k_oCriu5xAzAfIMFVA9uyV0/view?usp=sharing)
+
 ## Developer Notes
 - basis: https://www.youtube.com/watch?v=tlTdbc5byAs&list=PLj-4DlPRT48lGpll2kC4wOsLj7SEV_lYu
 - Test data script 
