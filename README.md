@@ -17,11 +17,15 @@ A creative writing application leveraging MongoDB, Express, React, Node (MERN st
 
 ### Environment File
 1. MONGO_URL should be found through MongoDB Atlas "Deployment" > Database > Connect > Drivers > Driver as "Node.js" version "4.1 or later", then copy & paste connection string, and replace <password> with the password for the given user
-2. DEV_PASSWORD is recommended to be a complex passwords 
+    1. Requires account creation/login
+2. DEV_PASSWORD is recommended to be a complex password
 3. JWT_ACCESS_SECRET_KEY and JWT_REFRESH_SECRET_KEY should be extremely complex and distinct since they won't be required for direct usage, just authentication
-3. ENV should be set to "PROD" (e.g. ENV="PROD")
+3. ENV should be set to production or development
+    1. production: `ENV="PROD"`
+    2. development: `ENV="DEV"`
 4. FILE_STORAGE_URL should be set to wherever the uploaded images are supposed to be stored
-    1. Currently setup to work properly with the multer at http://[publicIpAddress] or https://[publicIpAddress]
+    1. production: `FILE_STORAGE_URL="http://[publicIpAddress]"` or `FILE_STORAGE_URL="https://[publicIpAddress]"`
+    2. development: `FILE_STORAGE_URL="http://localhost:5000"`
   
 ### Developer Setup Instructions
 1. Install Node.js v16 & npm  
