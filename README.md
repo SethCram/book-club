@@ -3,15 +3,15 @@ A creative writing application leveraging MongoDB, Express, React, Node (MERN st
 
 ## Developer Notes
 - basis: https://www.youtube.com/watch?v=tlTdbc5byAs&list=PLj-4DlPRT48lGpll2kC4wOsLj7SEV_lYu
-- Test data script manages fake posts, users, categories, votes, and comments
-  - all linked together
+- Test data script 
+  - can create & delete all fake posts, users, categories, votes, and comments
   - from api directory: 
     - insertion: `node seedData.js -i -p # -u # -c #`
     - deletion: `node seedData.js -d`
     - example usage: `node seedData.js`
 - CkEditor features can be added or removed:
   - download from https://ckeditor.com/ckeditor-5/online-builder/
-  - unzip folder into client folder 
+  - unzip folder into "client" folder 
   - rename unzipped folder into "ckeditor5"
   - run "npm add file:./ckeditor5" in the client directory
 
@@ -153,11 +153,11 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     ```
     Refer to https://github.com/SethCram/book-club#environment-file for more details.
 9. Make sure the domain and DNS are able to redirect to the public IP
-  ```sh
-  cd client
-  export DANGEROUSLY_DISABLE_HOST_CHECK=true;
-  cd ..
-  ```
+    ```sh
+    cd client
+    export DANGEROUSLY_DISABLE_HOST_CHECK=true;
+    cd ..
+    ```
 10. Manually start both the api and the client to ensure they both work in isolation
     ```sh
     npm start 
@@ -211,8 +211,15 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
         proxy_cache_bypass $http_upgrade;
     }
     ```
-15. Create an account and register a subdomain and its corresponding "www." at http://freedns.afraid.org/menu/
-16. Setup nginx to accept traffic from the domain name
+15. Verify the syntax of the nginx config file is okay and start nginx using it
+    ```sh
+    sudo nginx -t
+    sudo service nginx restart
+    ```
+16. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add the elastic public IP of the AWS EC2 instance (visible under EC2 instance details)
+17. Verify the website is live through navigating to the public IP address using a browser (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
+18. Create an account and register a subdomain and its corresponding "www." at http://freedns.afraid.org/menu/ (make sure they're linked to the EC2 instance's public IP)
+19. Setup nginx to accept traffic from the domain name
     ```sh
     sudo vi /etc/nginx/sites-available/default
     ```
@@ -220,11 +227,27 @@ The Deployment Instructions assume the project is being deployed onto AWS. The o
     ```
     server_name domain_name www.domain_name
     ```
-17. Verify the syntax of the nginx config file is okay and start nginx using it
+20. Verify the syntax of the nginx config file is okay and restart nginx using it
     ```sh
     sudo nginx -t
     sudo service nginx restart
     ```
-18. Login to MongoDB Atlas and go "Security" > "Network Access" > "Add IP Address", then add the elastic public IP of the AWS EC2 instance (visible under EC2 instance details)
-19. Navigate to the public IP address using a browser (e.g. http://[publicIPAddress]) and the frontend should be visible or use curl to verify `curl http://[publicIPAddress]`
-20. Navigate to the domain name using a browser (e.g. http://[domain_name]) and the frontend should be visible or use curl to verify `curl http://[domain_name]`
+21. Navigate to the domain name using a browser (e.g. http://[domain_name]) and the frontend should be visible or use curl to verify `curl http://[domain_name]`
+22. Make sure the latest version of snapd is installed
+    ```sh 
+    sudo snap install core; sudo snap refresh core
+    ```
+23. Ensure no other versions of certbot exist, install it via snap, and make sure it's properly linked
+    ```sh
+    sudo apt-get remove certbot
+    sudo snap install --classic certbot
+    sudo ln -s /snap/bin/certbot /usr/bin/certbot
+    ```
+24. Get an HTTPS certificate and tell Certbot to edit your nginx config file to enabled HTTPS
+    ```sh
+    sudo certbot --nginx
+    ```
+    1. Ask for certificates for both subdomains `1, 2`
+    2. If a error is encountered that talks about "too many certificates already issued for [domain_name]", wait until the specified date and rerun this step's command or setup an `at` job to automate the certificate issuance
+25. Navigate to the secured domain name using a browser (e.g. https://[domain_name]) and the frontend should be visible or use curl to verify `curl https://[domain_name]`
+  
