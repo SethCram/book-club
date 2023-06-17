@@ -1,5 +1,5 @@
 # Book-Club
-A creative writing application leveraging MongoDB, Express, React, Node (MERN stack)
+A creative writing platform built with MongoDB, Express, React, Node (the MERN stack) and leveraging a novel reputation system.
 
 [Read the paper](https://drive.google.com/file/d/16dYCaEorBKRWKBpJknVr-88mqWJ-_r65/view?usp=sharing)
 
