@@ -3,6 +3,9 @@ A creative writing platform built with MongoDB, Express, React, Node (the MERN s
 
 [Read the paper](https://drive.google.com/file/d/16dYCaEorBKRWKBpJknVr-88mqWJ-_r65/view?usp=sharing)
 
+## Watch the video
+[![Watch the video](https://github.com/SethCram/book-club/assets/86444777/e4d4861a-7ead-46a7-bd0a-f48ae388775d)](https://www.youtube.com/watch?v=hTGMXOkczMM)
+
 ## Developer Notes
 - basis: https://www.youtube.com/watch?v=tlTdbc5byAs&list=PLj-4DlPRT48lGpll2kC4wOsLj7SEV_lYu
 - Test data script 
