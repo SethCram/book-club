@@ -1,5 +1,5 @@
 # Book-Club
-A creative writing platform built with MongoDB, Express, React, Node (the MERN stack) and leveraging a novel reputation system.
+A blogging/creative writing platform built with MongoDB, Express, React, Node (the MERN stack) and leveraging a novel reputation system.
 
 [See the website](https://book-club.us.to)
 
