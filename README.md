@@ -5,7 +5,13 @@ A blogging/creative writing platform built with MongoDB, Express, React, Node (t
 
 [Read the paper](https://drive.google.com/file/d/16dYCaEorBKRWKBpJknVr-88mqWJ-_r65/view?usp=sharing)
 
-## Watch the video
+## Watch the videos
+
+### Quick Intro 
+[![Book Club](https://img.youtube.com/vi/4e1u_vMExBc/maxresdefault.jpg 'Book Club')
+](https://www.youtube.com/watch?v=4e1u_vMExBc)
+
+### Detailed Overview 
 [![Book Club](https://img.youtube.com/vi/hTGMXOkczMM/maxresdefault.jpg 'Book Club')
 ](https://www.youtube.com/watch?v=hTGMXOkczMM)
 
