@@ -1,7 +1,7 @@
 # Book-Club
 A blogging/creative writing platform built with MongoDB, Express, React, Node (the MERN stack) and leveraging a novel reputation system.
 
-[See the website](https://book-club.us.to)
+[//]: # "[See the website](https://book-club.us.to)"
 
 [Read the paper](https://drive.google.com/file/d/16dYCaEorBKRWKBpJknVr-88mqWJ-_r65/view?usp=sharing)
 
